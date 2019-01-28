@@ -21,3 +21,20 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+# External resources
+/dll/
+/lib/
+
+# Distribution
+distribution
+
+# Idee
+/.idea/
+*.iml
+
+# Maven
+/target/
+
+# Hue database
+/hue/
