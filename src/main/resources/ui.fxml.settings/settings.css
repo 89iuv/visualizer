@@ -1,0 +1,50 @@
+.title {
+    -fx-font-size: 18px;
+}
+
+.settings-group {
+    -fx-vgap: 4;
+    -fx-hgap: 20;
+}
+
+.button-group {
+    -fx-spacing: 4;
+}
+
+#hueStatus {
+    -fx-text-overrun: ellipsis;
+}
+
+#side-bar {
+    -fx-pref-width: 130px;
+    -fx-background-color: WHITE;
+}
+
+#center-pane {
+    -fx-padding: 5 20 5 20;
+    -fx-border-width: 0 0 0 3;
+}
+
+.side-bar-text {
+    -fx-font-size: 14px;
+    -fx-fill-width: true;
+    -fx-max-width: Infinity;
+    -fx-border-width: 0 0 0 2;
+    -fx-border-color: WHITE;
+    -fx-padding: 5 10 5 10;
+}
+
+.selected {
+    -fx-border-color: -fx-focus-color;
+    -fx-background-color: #f4f4f4;
+}
+
+.side-bar-text:hover {
+    -fx-background-color: -fx-focus-color;
+    -fx-border-color: -fx-focus-color;
+    -fx-text-fill: WHITE;
+}
+
+.separator {
+    -fx-padding: 10 0 10 0;
+}

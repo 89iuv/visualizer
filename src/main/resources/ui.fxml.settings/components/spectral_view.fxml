@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.lazydash.audio.visualiser.ui.fxml.settings.components.SpectralViewController">
+
+    <Label styleClass="title" text="Spectral view" />
+    <Separator styleClass="separator"/>
+    <GridPane styleClass="settings-group">
+        <Label text="Signal amplification (%):" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <Slider fx:id="signalAmplification" min="0" max="250" majorTickUnit="25" minorTickCount="5" showTickMarks="true" showTickLabels="true"
+                GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.fillWidth="true" GridPane.hgrow="ALWAYS"/>
+
+        <Label text="Signal threshold (db):" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <Slider prefWidth="250" fx:id="signalThreshold" min="-90" max="0" majorTickUnit="10" minorTickCount="5" showTickMarks="true" showTickLabels="true"
+                GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Bars number:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <Spinner fx:id="barNumber" editable="true" GridPane.rowIndex="2" GridPane.columnIndex="1">
+            <valueFactory>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="1" max="999" amountToStepBy="1"/>
+            </valueFactory>
+        </Spinner>
+
+        <Label text="Bars offset number:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <Spinner fx:id="barOffset" editable="true" GridPane.rowIndex="3" GridPane.columnIndex="1">
+            <valueFactory>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="999" amountToStepBy="1"/>
+            </valueFactory>
+        </Spinner>
+
+        <Label text="Min bar height (pixels):" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <Spinner fx:id="minBarHeight" editable="true" GridPane.rowIndex="4" GridPane.columnIndex="1">
+            <valueFactory>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="999" amountToStepBy="1"/>
+            </valueFactory>
+        </Spinner>
+
+    </GridPane>
+
+</VBox>

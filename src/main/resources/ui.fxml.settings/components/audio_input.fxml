@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.lazydash.audio.visualiser.ui.fxml.settings.components.AudioInputController">
+
+    <Label styleClass="title" text="Audio format and buffer size" />
+    <Separator styleClass="separator"/>
+    <GridPane styleClass="settings-group">
+        <Label text="Input device: " GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="inputDevice" onAction="#updateInputDevice" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="Sample rate: " GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="sampleRate" onAction="#updateSampleRate" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Buffer size:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <Spinner fx:id="bufferSize" editable="true" GridPane.rowIndex="2" GridPane.columnIndex="1">
+            <valueFactory>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="32" max="12288" amountToStepBy="256"/>
+            </valueFactory>
+        </Spinner>
+
+        <Label text="buffer overlap:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <Spinner fx:id="bufferOverlap" editable="true" GridPane.rowIndex="3" GridPane.columnIndex="1">
+            <valueFactory>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="12256" amountToStepBy="256"/>
+            </valueFactory>
+        </Spinner>
+
+    </GridPane>
+
+</VBox>
