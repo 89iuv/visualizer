@@ -36,3 +36,6 @@ hs_err_pid*
 /hue/db
 /hue/sdk/*.jar
 /hue/sdk/*.dll
+
+# Config files
+/application.properties
