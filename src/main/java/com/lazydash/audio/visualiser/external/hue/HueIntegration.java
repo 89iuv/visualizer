@@ -12,6 +12,7 @@ import com.philips.lighting.hue.sdk.wrapper.domain.Bridge;
 import com.philips.lighting.hue.sdk.wrapper.domain.BridgeBuilder;
 import com.philips.lighting.hue.sdk.wrapper.domain.resource.Group;
 import com.philips.lighting.hue.sdk.wrapper.entertainment.Entertainment;
+import com.philips.lighting.hue.sdk.wrapper.entertainment.animation.ConstantAnimation;
 import com.philips.lighting.hue.sdk.wrapper.entertainment.effect.AreaEffect;
 import com.philips.lighting.hue.sdk.wrapper.knownbridges.KnownBridge;
 import com.philips.lighting.hue.sdk.wrapper.knownbridges.KnownBridges;
@@ -159,13 +160,15 @@ public class HueIntegration {
     }
 
     public void setColor(Color frontColor, Color backColor) {
-        frontAreaEffect.setFixedColor(new com.philips.lighting.hue.sdk.wrapper.entertainment.Color(
-                frontColor.getRed(), frontColor.getGreen(), frontColor.getBlue(), 1
-        ));
+        frontAreaEffect.setColorAnimation(
+                new ConstantAnimation(frontColor.getRed()),
+                new ConstantAnimation(frontColor.getGreen()),
+                new ConstantAnimation(frontColor.getBlue()));
 
-        backAreaEffect.setFixedColor(new com.philips.lighting.hue.sdk.wrapper.entertainment.Color(
-                backColor.getRed(), backColor.getGreen(), backColor.getBlue(), 1
-        ));
+        backAreaEffect.setColorAnimation(
+                new ConstantAnimation(backColor.getRed()),
+                new ConstantAnimation(backColor.getGreen()),
+                new ConstantAnimation(backColor.getBlue()));
     }
 }
 
