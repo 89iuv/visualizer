@@ -1,5 +1,7 @@
-package com.lazydash.audio.visualiser.external.hue;
+package com.lazydash.audio.visualiser.external.hue.callbacks;
 
+import com.lazydash.audio.visualiser.external.hue.HueIntegration;
+import com.lazydash.audio.visualiser.system.notification.EventEnum;
 import com.lazydash.audio.visualiser.system.notification.NotificationService;
 import com.philips.lighting.hue.sdk.wrapper.connection.BridgeConnection;
 import com.philips.lighting.hue.sdk.wrapper.connection.BridgeConnectionCallback;
@@ -19,13 +21,13 @@ public class BridgeConnectionIntegration extends BridgeConnectionCallback {
     public void onConnectionEvent(BridgeConnection bridgeConnection, ConnectionEvent connectionEvent) {
         switch (connectionEvent) {
             case AUTHENTICATED: {
-                NotificationService.getInstance().emit("hue-integration-status", ConnectionEvent.AUTHENTICATED.toString());
+                NotificationService.getInstance().emit(EventEnum.HUE_INTEGRATION_STATUS, ConnectionEvent.AUTHENTICATED.toString());
                 break;
             }
 
             default:
                 hueIntegration.setReady(false);
-                NotificationService.getInstance().emit("hue-integration-status", connectionEvent.toString());
+                NotificationService.getInstance().emit(EventEnum.HUE_INTEGRATION_STATUS, connectionEvent.toString());
         }
     }
 
@@ -36,7 +38,7 @@ public class BridgeConnectionIntegration extends BridgeConnectionCallback {
             message.append(hueError.toString()).append("\n");
         }
 
-        NotificationService.getInstance().emit("hue-integration-status", ConnectionEvent.DISCONNECTED.toString());
+        NotificationService.getInstance().emit(EventEnum.HUE_INTEGRATION_STATUS, ConnectionEvent.DISCONNECTED.toString());
         throw new RuntimeException(message.toString());
     }
 }

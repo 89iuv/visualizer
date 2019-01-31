@@ -11,8 +11,12 @@ public class FFTTimeFilter {
     public float[] filter(float[] amps) {
         int timeFilterSize = AppConfig.getTimeFilterSize();
 
-        if (timeFilterSize == 0) {
+        if (timeFilterSize < 2) {
             return amps;
+        }
+
+        if (historyAmps.peek() != null && historyAmps.peek().length != amps.length) {
+            historyAmps.clear();
         }
 
         if (historyAmps.size() < timeFilterSize) {

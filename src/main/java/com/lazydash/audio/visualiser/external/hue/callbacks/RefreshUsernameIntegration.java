@@ -1,5 +1,7 @@
-package com.lazydash.audio.visualiser.external.hue;
+package com.lazydash.audio.visualiser.external.hue.callbacks;
 
+import com.lazydash.audio.visualiser.external.hue.HueIntegration;
+import com.lazydash.audio.visualiser.system.notification.EventEnum;
 import com.lazydash.audio.visualiser.system.notification.NotificationService;
 import com.philips.lighting.hue.sdk.wrapper.connection.BridgeResponseCallback;
 import com.philips.lighting.hue.sdk.wrapper.domain.Bridge;
@@ -19,12 +21,12 @@ public class RefreshUsernameIntegration extends BridgeResponseCallback {
     @Override
     public void handleCallback(Bridge bridge, ReturnCode returnCode, List<ClipResponse> list, List<HueError> list1) {
         if (returnCode == ReturnCode.SUCCESS) {
-            NotificationService.getInstance().emit("hue-integration-status", returnCode.toString());
+            NotificationService.getInstance().emit(EventEnum.HUE_INTEGRATION_STATUS, returnCode.toString());
             hueIntegration.openStream();
 
         } else {
             hueIntegration.setReady(false);
-            NotificationService.getInstance().emit("hue-integration-status", returnCode.toString());
+            NotificationService.getInstance().emit(EventEnum.HUE_INTEGRATION_STATUS, returnCode.toString());
 
         }
     }

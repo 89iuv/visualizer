@@ -20,25 +20,25 @@ public class NotificationService {
         return notificationService;
     }
 
-    public synchronized void emit(String eventId, String message) {
+    public synchronized void emit(EventEnum eventEnum, String message) {
         for (EventHandler eventHandler : eventHandlers) {
-            if (eventHandler.getEventId().equals(eventId)) {
+            if (eventHandler.getEventEnum().equals(eventEnum)) {
                 eventHandler.getEventCallback().run(message);
             }
         }
     }
 
-    public synchronized void register(String id, String eventName, EventCallback eventCallback) {
+    public synchronized void register(EventEnum eventEnum, EventCallback eventCallback) {
         Optional<EventHandler> first = eventHandlers.stream()
                 .filter(eventHandler ->
-                        (eventHandler.getHandlerId() + eventHandler.getEventId()).equals(id + eventName))
+                        (eventHandler.getEventEnum()).equals(eventEnum))
                 .findFirst();
 
         if (first.isPresent()) {
             first.get().setEventCallback(eventCallback);
 
         } else {
-            eventHandlers.add(new EventHandler(id, eventName, eventCallback));
+            eventHandlers.add(new EventHandler(eventEnum, eventCallback));
         }
 
         LOGGER.debug("eventHandlers size: " + eventHandlers.size());

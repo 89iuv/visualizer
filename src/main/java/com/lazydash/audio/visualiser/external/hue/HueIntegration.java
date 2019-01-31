@@ -1,6 +1,8 @@
 package com.lazydash.audio.visualiser.external.hue;
 
+import com.lazydash.audio.visualiser.external.hue.callbacks.*;
 import com.lazydash.audio.visualiser.system.config.AppConfig;
+import com.lazydash.audio.visualiser.system.notification.EventEnum;
 import com.lazydash.audio.visualiser.system.notification.NotificationService;
 import com.philips.lighting.hue.sdk.wrapper.connection.BridgeConnectionType;
 import com.philips.lighting.hue.sdk.wrapper.connection.ConnectionEvent;
@@ -10,7 +12,6 @@ import com.philips.lighting.hue.sdk.wrapper.domain.Bridge;
 import com.philips.lighting.hue.sdk.wrapper.domain.BridgeBuilder;
 import com.philips.lighting.hue.sdk.wrapper.domain.resource.Group;
 import com.philips.lighting.hue.sdk.wrapper.entertainment.Entertainment;
-import com.philips.lighting.hue.sdk.wrapper.entertainment.animation.ConstantAnimation;
 import com.philips.lighting.hue.sdk.wrapper.entertainment.effect.AreaEffect;
 import com.philips.lighting.hue.sdk.wrapper.knownbridges.KnownBridge;
 import com.philips.lighting.hue.sdk.wrapper.knownbridges.KnownBridges;
@@ -30,15 +31,11 @@ public class HueIntegration {
     private boolean ready = false;
 
 
-    Bridge getBridge() {
-        return bridge;
-    }
-
-    void setBridge(Bridge bridge) {
+    public void setBridge(Bridge bridge) {
         this.bridge = bridge;
     }
 
-    Entertainment getEntertainment() {
+    public Entertainment getEntertainment() {
         return entertainment;
     }
 
@@ -46,7 +43,7 @@ public class HueIntegration {
         return ready;
     }
 
-    void setReady(boolean ready) {
+    public void setReady(boolean ready) {
         this.ready = ready;
     }
 
@@ -68,7 +65,7 @@ public class HueIntegration {
 
     public HueIntegration() {
         // save hue status on change
-        NotificationService.getInstance().register("HueIntegration-1","hue-integration-status", AppConfig::setHueStatus);
+        NotificationService.getInstance().register(EventEnum.HUE_INTEGRATION_STATUS, AppConfig::setHueStatus);
     }
 
     public void start() {
@@ -80,11 +77,11 @@ public class HueIntegration {
         }
     }
 
-    public void stop(){
+    public void stop() {
         if (running) {
             ready = false;
             running = false;
-            AppConfig.setHueIntegration(false);
+            AppConfig.setHueIntegrationEnabled(false);
 
             if (backAreaEffect != null && !backAreaEffect.isFinished()) {
                 backAreaEffect.finish();
@@ -104,11 +101,11 @@ public class HueIntegration {
                 bridgeDiscovery.stop();
             }
 
-            NotificationService.getInstance().emit("hue-integration-status", ConnectionEvent.DISCONNECTED.toString());
+            NotificationService.getInstance().emit(EventEnum.HUE_INTEGRATION_STATUS, ConnectionEvent.DISCONNECTED.toString());
         }
     }
 
-    private boolean connectToLastKnownBridge(){
+    private boolean connectToLastKnownBridge() {
         List<KnownBridge> all = KnownBridges.getAll();
         Optional<KnownBridge> first = all.stream().findFirst();
 
@@ -124,16 +121,16 @@ public class HueIntegration {
         }
     }
 
-    private void discoverAndConnectToBridge(){
+    private void discoverAndConnectToBridge() {
         if (bridgeDiscovery == null) {
             bridgeDiscovery = new BridgeDiscoveryImpl();
         }
 
         bridgeDiscovery.search(new BridgeDiscoveryIntegration(this));
-        NotificationService.getInstance().emit("hue-integration-status", BridgeDiscovery.ReturnCode.BUSY.toString());
+        NotificationService.getInstance().emit(EventEnum.HUE_INTEGRATION_STATUS, BridgeDiscovery.ReturnCode.BUSY.toString());
     }
 
-    void connectToBridge(String bridgeIp){
+    public void connectToBridge(String bridgeIp) {
         bridge = new BridgeBuilder("Bass Visualisation", "device")
                 .setConnectionType(BridgeConnectionType.LOCAL)
                 .setIpAddress(bridgeIp)
@@ -144,17 +141,17 @@ public class HueIntegration {
         bridge.connect();
     }
 
-    void refreshUser(){
-        getBridge().refreshUsername(new RefreshUsernameIntegration(this));
+    public void refreshUser() {
+        bridge.refreshUsername(new RefreshUsernameIntegration(this));
     }
 
-    void openStream(){
-        List<Group> groups = getBridge().getBridgeState().getGroups();
+    public void openStream() {
+        List<Group> groups = bridge.getBridgeState().getGroups();
 
         Optional<Group> group = groups.stream().filter(currentGroup -> currentGroup.getName().equals(AppConfig.getHueEntertainmentName())).findFirst();
         if (group.isPresent()) {
-           entertainment = new Entertainment(getBridge(), group.get().getIdentifier());
-           entertainment.start(new EntertainmentStartIntegration(this));
+            entertainment = new Entertainment(bridge, group.get().getIdentifier());
+            entertainment.start(new EntertainmentStartIntegration(this));
 
         } else {
             throw new RuntimeException("Group: " + AppConfig.getHueEntertainmentName() + " is not found.");
@@ -162,19 +159,13 @@ public class HueIntegration {
     }
 
     public void setColor(Color frontColor, Color backColor) {
-        entertainment.lockMixer();
+        frontAreaEffect.setFixedColor(new com.philips.lighting.hue.sdk.wrapper.entertainment.Color(
+                frontColor.getRed(), frontColor.getGreen(), frontColor.getBlue(), 1
+        ));
 
-        frontAreaEffect.setColorAnimation(
-                new ConstantAnimation(frontColor.getRed()),
-                new ConstantAnimation(frontColor.getGreen()),
-                new ConstantAnimation(frontColor.getBlue()));
-
-        backAreaEffect.setColorAnimation(
-                new ConstantAnimation(backColor.getRed()),
-                new ConstantAnimation(backColor.getGreen()),
-                new ConstantAnimation(backColor.getBlue()));
-
-        entertainment.unlockMixer();
+        backAreaEffect.setFixedColor(new com.philips.lighting.hue.sdk.wrapper.entertainment.Color(
+                backColor.getRed(), backColor.getGreen(), backColor.getBlue(), 1
+        ));
     }
 }
 

@@ -1,4 +1,4 @@
-package com.lazydash.audio.visualiser.system.configure;
+package com.lazydash.audio.visualiser.system.setup;
 
 import com.philips.lighting.hue.sdk.wrapper.HueLog;
 import com.philips.lighting.hue.sdk.wrapper.Persistence;
@@ -7,10 +7,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class SystemConfigure {
-    private String hueDBFolder = "./hue";
-    private String hueDLLFile = "./dll/huesdk.dll";
-    private String hueJarFile = "./lib/huecppsdk-wrapper.jar";
+public class SystemSetup {
+    private String hueDBFolder = "./hue/db";
+    private String hueDLLFile = "./hue/sdk/huesdk.dll";
+    private String hueJarFile = "./hue/sdk/huecppsdk-wrapper.jar";
 
     public void runHueConfiguration() {
        checkForHueDll();

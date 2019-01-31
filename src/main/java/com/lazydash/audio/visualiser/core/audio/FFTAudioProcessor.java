@@ -3,7 +3,7 @@ package com.lazydash.audio.visualiser.core.audio;
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.util.fft.FFT;
-import be.tarsos.dsp.util.fft.HannWindow;
+import be.tarsos.dsp.util.fft.HammingWindow;
 import be.tarsos.dsp.util.fft.WindowFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,10 +13,11 @@ import java.util.List;
 
 public class FFTAudioProcessor implements AudioProcessor {
     private static final Logger LOGGER = LoggerFactory.getLogger(FFTAudioProcessor.class);
+    long oldTime = System.currentTimeMillis();
 
     private List<FFTListener> listenerList;
     private AudioFormat audioFormat;
-    private WindowFunction windowFunction = new HannWindow();
+    private WindowFunction windowFunction = new HammingWindow();
 
     public FFTAudioProcessor(AudioFormat audioFormat, List<FFTListener> listenerList) {
         this.audioFormat = audioFormat;
@@ -25,8 +26,6 @@ public class FFTAudioProcessor implements AudioProcessor {
 
     @Override
     public boolean process(AudioEvent audioEvent) {
-        long oldTime = System.currentTimeMillis();
-
         double spl = audioEvent.getdBSPL();
         float[] audioFloatBuffer = audioEvent.getFloatBuffer();
 
@@ -46,14 +45,15 @@ public class FFTAudioProcessor implements AudioProcessor {
         double[] hzBins = new double[amplitudes.length];
         for (int i = 0; i < amplitudes.length; i++) {
             hzBins[i] = fft.binToHz(i, audioFormat.getSampleRate());
-            amplitudes[i] = (float) (20 * Math.log10((amplitudes[i]  / amplitudes.length) * 2.00)); // with window correction factor
+            amplitudes[i] = (float) (20 * Math.log10((amplitudes[i]  / amplitudes.length) * 1.85)); // with window correction factor
         }
 
         listenerList.forEach(listener -> listener.frame(hzBins, amplitudes, spl));
 
         long newTime = System.currentTimeMillis();
         long deltaTime = newTime - oldTime;
-//        LOGGER.trace("process duration: " + deltaTime);
+//        LOGGER.trace(String.valueOf(deltaTime));
+        oldTime = newTime;
 
         return true;
     }

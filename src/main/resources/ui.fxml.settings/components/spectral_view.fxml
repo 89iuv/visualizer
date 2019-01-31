@@ -9,13 +9,15 @@
     <Label styleClass="title" text="Spectral view" />
     <Separator styleClass="separator"/>
     <GridPane styleClass="settings-group">
-        <Label text="Signal amplification (%):" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-        <Slider fx:id="signalAmplification" min="0" max="250" majorTickUnit="25" minorTickCount="5" showTickMarks="true" showTickLabels="true"
+        <Label text="Signal amplification (factor):" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <Slider fx:id="signalAmplification" min="0" max="30" majorTickUnit="5" minorTickCount="4" showTickMarks="true" showTickLabels="true"
                 GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.fillWidth="true" GridPane.hgrow="ALWAYS"/>
+        <Label fx:id="signalAmplificationValue" styleClass="sliderValueLabel" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
 
         <Label text="Signal threshold (db):" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-        <Slider prefWidth="250" fx:id="signalThreshold" min="-90" max="0" majorTickUnit="10" minorTickCount="5" showTickMarks="true" showTickLabels="true"
+        <Slider prefWidth="250" fx:id="signalThreshold" min="-60" max="0" majorTickUnit="10" minorTickCount="9" showTickMarks="true" showTickLabels="true"
                 GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+        <Label fx:id="signalThresholdValue" styleClass="sliderValueLabel" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
 
         <Label text="Bars number:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
         <Spinner fx:id="barNumber" editable="true" GridPane.rowIndex="2" GridPane.columnIndex="1">

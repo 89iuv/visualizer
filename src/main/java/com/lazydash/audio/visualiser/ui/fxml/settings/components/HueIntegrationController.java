@@ -2,6 +2,7 @@ package com.lazydash.audio.visualiser.ui.fxml.settings.components;
 
 import com.lazydash.audio.visualiser.system.config.AppConfig;
 import com.lazydash.audio.visualiser.system.notification.EventCallback;
+import com.lazydash.audio.visualiser.system.notification.EventEnum;
 import com.lazydash.audio.visualiser.system.notification.NotificationService;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -15,7 +16,7 @@ public class HueIntegrationController {
 
     public void initialize() {
         hueStatus.setText(AppConfig.getHueStatus());
-        NotificationService.getInstance().register("HueIntegrationController-1", "hue-integration-status", new EventCallback() {
+        NotificationService.getInstance().register(EventEnum.HUE_INTEGRATION_STATUS, new EventCallback() {
             @Override
             public void run(String message) {
                 Platform.runLater(() -> hueStatus.setText(message));
@@ -27,11 +28,11 @@ public class HueIntegrationController {
     }
 
     public void stopHueIntegration(ActionEvent actionEvent) {
-        AppConfig.setHueIntegration(false);
+        AppConfig.setHueIntegrationEnabled(false);
     }
 
     public void startHueIntegration(ActionEvent actionEvent) {
-        AppConfig.setHueIntegration(true);
+        AppConfig.setHueIntegrationEnabled(true);
     }
 
     public void updateHueEntertainmentName(KeyEvent keyEvent) {

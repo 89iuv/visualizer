@@ -1,5 +1,7 @@
-package com.lazydash.audio.visualiser.external.hue;
+package com.lazydash.audio.visualiser.external.hue.callbacks;
 
+import com.lazydash.audio.visualiser.external.hue.HueIntegration;
+import com.lazydash.audio.visualiser.system.notification.EventEnum;
 import com.lazydash.audio.visualiser.system.notification.NotificationService;
 import com.philips.lighting.hue.sdk.wrapper.discovery.BridgeDiscovery;
 import com.philips.lighting.hue.sdk.wrapper.discovery.BridgeDiscoveryResult;
@@ -21,12 +23,12 @@ public class BridgeDiscoveryIntegration implements BridgeDiscovery.Callback {
 
             } else {
                 hueIntegration.setReady(false);
-                NotificationService.getInstance().emit("hue-integration-status", returnCode.toString());
+                NotificationService.getInstance().emit(EventEnum.HUE_INTEGRATION_STATUS, returnCode.toString());
             }
 
         } else {
             hueIntegration.setReady(false);
-            NotificationService.getInstance().emit("hue-integration-status", returnCode.toString());
+            NotificationService.getInstance().emit(EventEnum.HUE_INTEGRATION_STATUS, returnCode.toString());
         }
 
     }

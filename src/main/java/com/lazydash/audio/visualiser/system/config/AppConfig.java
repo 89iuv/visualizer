@@ -13,12 +13,12 @@ public class AppConfig {
     private static boolean bigEndian = false;
 
     // audio buffer settings
-    private static int bufferSize = 1024*4;
-    private static int bufferOverlap = 1024*3;
+    private static int bufferSize = 6000;
+    private static int bufferOverlap = 4976;
 
     // spectral view
-    private static int barNumber = 9;
-    private static int barOffset = 3;
+    private static int barNumber = 12;
+    private static int barOffset = 4;
 
     private static int minBarHeight = 3;
     private static double maxBarHeight = 750;
@@ -29,24 +29,24 @@ public class AppConfig {
     private static int globalColorHeight = 40;
 
     // bar acceleration
-    private static int decayTime = 2;
-    private static int accelerationFactor = 2;
+    private static int decayTime = 400;
+    private static int accelerationFactor = 20;
 
     // input signal
-    private static int signalAmplification = 100;
-    private static int signalThreshold = -40;
+    private static int signalAmplification = 16;
+    private static int signalThreshold = -34;
 
     // fft
     private static int timeFilterSize = 2;
 
     // hue
-    private static boolean hueIntegration = false;
+    private static boolean hueIntegrationEnabled = false;
     private static String hueEntertainmentName = "Bass";
     private static String hueStatus = "DISCONNECT";
 
     // window
-    private static double windowWidth = 400;
-    private static double windowHeight = 820;
+    private static double windowWidth = 500;
+    private static double windowHeight = 850;
 
     public static int getSampleRate() {
         return sampleRate;
@@ -168,12 +168,12 @@ public class AppConfig {
         AppConfig.signalThreshold = signalThreshold;
     }
 
-    public static boolean isHueIntegration() {
-        return hueIntegration;
+    public static boolean isHueIntegrationEnabled() {
+        return hueIntegrationEnabled;
     }
 
-    public static void setHueIntegration(boolean hueIntegration) {
-        AppConfig.hueIntegration = hueIntegration;
+    public static void setHueIntegrationEnabled(boolean hueIntegrationEnabled) {
+        AppConfig.hueIntegrationEnabled = hueIntegrationEnabled;
     }
 
     public static int getDecayTime() {

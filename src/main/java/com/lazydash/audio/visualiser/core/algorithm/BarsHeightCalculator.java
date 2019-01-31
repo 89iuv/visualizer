@@ -9,51 +9,53 @@ public class BarsHeightCalculator {
     // holds state and modifies it's internal state based on the input
     public float[] processAmplitudes(float[] newAmplitudes) {
         // init on first run or if number of newAmplitudes has changed
-        if (amplitudes == null || amplitudes.length != newAmplitudes.length){
-
+        if (amplitudes == null || amplitudes.length != newAmplitudes.length) {
             amplitudes = new float[newAmplitudes.length];
             System.arraycopy(newAmplitudes, 0, amplitudes, 0, newAmplitudes.length);
 
             decay = new double[amplitudes.length];
         }
 
-        for (int i = 0; i<newAmplitudes.length; i++) {
+        for (int i = 0; i < newAmplitudes.length; i++) {
             double oldHeight = amplitudes[i];
 
             double maxHeight = Math.abs(AppConfig.getSignalThreshold());
             double newHeight = (newAmplitudes[i] + Math.abs(AppConfig.getSignalThreshold()));
             double windowHeight = AppConfig.getMaxBarHeight();
 
-            newHeight = ((newHeight * windowHeight) / maxHeight) * (AppConfig.getSignalAmplification() / 100d);
+            newHeight =(((newHeight * windowHeight) / maxHeight) * (AppConfig.getSignalAmplification() / 10d));
 
-            // ceiling hit
+            // apply limits
             if (newHeight > AppConfig.getMaxBarHeight()) {
+                // ceiling hit
                 newHeight = AppConfig.getMaxBarHeight();
-            }
 
-            // below floor
-            if (newHeight < AppConfig.getMinBarHeight()) {
+            } else if (newHeight < AppConfig.getMinBarHeight()) {
+                // below floor
                 newHeight = AppConfig.getMinBarHeight();
             }
 
-            if (newHeight > oldHeight) {
+            int decayDeltaTreshold = 3;
+            if (newHeight - oldHeight > decayDeltaTreshold) {
                 // use new height
                 amplitudes[i] = (float) newHeight;
                 decay[i] = 0;
 
-            // reduce fluctuation introduce because of low sample buffer and double comparison
-            } else if (oldHeight - newHeight > 0.01) {
+            } else if (oldHeight - newHeight > decayDeltaTreshold) {
+                // only do the decay if the new height is bellow the minimum decay frames in order to not flicker.
                 doDecay(i);
 
-            } // if they are equal do nothing
+            } else if (newHeight <= decayDeltaTreshold) {
+                amplitudes[i] = AppConfig.getMinBarHeight();
 
+            }
         }
 
         return amplitudes;
     }
 
 
-    private void doDecay(int i){
+    private void doDecay(int i) {
         double decayFrames = 0;
         if (AppConfig.getDecayTime() > 0) {
             decayFrames = (AppConfig.getMaxBarHeight() * (1000d / AppConfig.getTargetFPS()) / AppConfig.getDecayTime());
@@ -65,18 +67,11 @@ public class BarsHeightCalculator {
             decay[i] = decay[i] + accelerationStep;
         }
 
-        if (amplitudes[i] > AppConfig.getMinBarHeight()) {
-            if (amplitudes[i] - decayFrames < AppConfig.getMinBarHeight()) {
-                amplitudes[i] = AppConfig.getMinBarHeight();
+        if (amplitudes[i] - decayFrames < AppConfig.getMinBarHeight()) {
+            amplitudes[i] = AppConfig.getMinBarHeight();
 
-            } else {
-                amplitudes[i] = (float) (amplitudes[i] - decayFrames);
-            }
-
-        } else if (amplitudes[i] < AppConfig.getMinBarHeight()) {
-            amplitudes[i] = (AppConfig.getMinBarHeight());
+        } else {
+            amplitudes[i] = (float) (amplitudes[i] - decayFrames);
         }
-
     }
-
 }

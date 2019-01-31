@@ -1,8 +1,6 @@
 package com.lazydash.audio.visualiser.ui.code.spectral;
 
-import com.lazydash.audio.visualiser.core.algorithm.BarsHeightCalculator;
-import com.lazydash.audio.visualiser.core.algorithm.FFTTimeFilter;
-import com.lazydash.audio.visualiser.core.service.SpectralFFTService;
+import com.lazydash.audio.visualiser.core.service.GenericFFTService;
 import com.lazydash.audio.visualiser.system.config.AppConfig;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -18,19 +16,14 @@ public class SpectralAnimator {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpectralAnimator.class);
     private long oldTime = System.currentTimeMillis();
 
-    private double[] oldBinsHz = new double[AppConfig.getBarNumber()];
-
-    private SpectralFFTService spectralFFTService;
+    private GenericFFTService spectralFFTService;
     private SpectralView spectralView;
-
-    private BarsHeightCalculator barsHeightCalculator = new BarsHeightCalculator();
-    private FFTTimeFilter fftTimeFilter = new FFTTimeFilter();
 
     private Timeline timeline = new Timeline(new KeyFrame(
             Duration.millis(1000d / AppConfig.getTargetFPS()),
             ae -> updateSpectralView()));
 
-    public SpectralAnimator(SpectralFFTService spectralFFTService, SpectralView spectralView) {
+    public SpectralAnimator(GenericFFTService spectralFFTService, SpectralView spectralView) {
         this.spectralFFTService = spectralFFTService;
         this.spectralView = spectralView;
     }
@@ -53,16 +46,7 @@ public class SpectralAnimator {
                 return;
             }
 
-            if (this.oldBinsHz.length != binsHz.length) {
-                barsHeightCalculator = new BarsHeightCalculator();
-                fftTimeFilter = new FFTTimeFilter();
-            }
-            this.oldBinsHz = binsHz;
-
-            float[] timeFilteredAmplitudes = fftTimeFilter.filter(amplitudes);
-            float[] processAmplitudes = barsHeightCalculator.processAmplitudes(timeFilteredAmplitudes);
-
-            spectralView.updateState(binsHz, processAmplitudes);
+            spectralView.updateState(binsHz, amplitudes);
 
             long newTime = System.currentTimeMillis();
             long deltaTime = newTime - oldTime;

@@ -1,14 +1,13 @@
 package com.lazydash.audio.visualiser;
 
 import com.lazydash.audio.visualiser.core.audio.TarsosAudioEngine;
-import com.lazydash.audio.visualiser.core.manager.HueIntegrationManager;
-import com.lazydash.audio.visualiser.core.service.HueFFTService;
-import com.lazydash.audio.visualiser.core.service.SpectralFFTService;
+import com.lazydash.audio.visualiser.core.service.GenericFFTService;
 import com.lazydash.audio.visualiser.external.hue.HueIntegration;
+import com.lazydash.audio.visualiser.external.hue.manager.HueIntegrationManager;
 import com.lazydash.audio.visualiser.system.config.AppConfig;
 import com.lazydash.audio.visualiser.system.config.WindowConfig;
-import com.lazydash.audio.visualiser.system.configure.SystemConfigure;
 import com.lazydash.audio.visualiser.system.persistance.ConfigurationService;
+import com.lazydash.audio.visualiser.system.setup.SystemSetup;
 import com.lazydash.audio.visualiser.ui.code.color.GlobalColorAnimator;
 import com.lazydash.audio.visualiser.ui.code.color.GlobalColorView;
 import com.lazydash.audio.visualiser.ui.code.spectral.SpectralAnimator;
@@ -19,6 +18,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -27,12 +28,24 @@ import java.io.IOException;
 
 public class Main extends Application {
     static {
-        SystemConfigure systemConfigure = new SystemConfigure();
-        systemConfigure.runHueConfiguration();
+        try {
+            SystemSetup systemSetup = new SystemSetup();
+            systemSetup.runHueConfiguration();
+
+        } catch (RuntimeException e) {
+            displayExceptionAndClose(e);
+        }
+
     }
 
     public static void main(String[] args) {
-        launch(args);
+        try {
+            launch(args);
+
+        } catch (RuntimeException e) {
+            displayExceptionAndClose(e);
+        }
+
     }
 
     @Override
@@ -47,15 +60,16 @@ public class Main extends Application {
         Scene scene = createScene(spectralView, globalColorView);
         Stage settingsStage = createSettingsStage();
 
-        SpectralFFTService spectralFFTService = new SpectralFFTService();
-        HueFFTService hueFFTService = new HueFFTService();
+        GenericFFTService spectralFFTService = new GenericFFTService();
+        GenericFFTService hueFFTService = new GenericFFTService();
+        GenericFFTService globalColorFFTService = new GenericFFTService();
 
         HueIntegrationManager hueIntegrationManager = new HueIntegrationManager(hueIntegration, hueFFTService);
 
-        GlobalColorAnimator globalColorAnimator = new GlobalColorAnimator(globalColorView, spectralView);
+        GlobalColorAnimator globalColorAnimator = new GlobalColorAnimator(globalColorFFTService, globalColorView);
         SpectralAnimator spectralAnimator = new SpectralAnimator(spectralFFTService, spectralView);
 
-        // configure
+        // setup
         globalColorView.configure();
         spectralView.configure();
         configureStage(stage, scene);
@@ -63,13 +77,14 @@ public class Main extends Application {
         // wire
         tarsosAudioEngine.getFttListenerList().add(spectralFFTService);
         tarsosAudioEngine.getFttListenerList().add(hueFFTService);
-        tarsosAudioEngine.getFttListenerList().add(hueIntegrationManager);
+        tarsosAudioEngine.getFttListenerList().add(globalColorFFTService);
 
         wireSettingsStage(settingsStage, scene);
         wirePrimaryStage(stage, configurationService);
 
         // run
         tarsosAudioEngine.start();
+        hueIntegrationManager.start();
 
         stage.show();
 
@@ -113,7 +128,7 @@ public class Main extends Application {
     }
 
     private void configureStage(Stage stage, Scene scene){
-        // configure
+        // setup
         stage.setTitle("Visualiser");
 
         stage.setWidth(AppConfig.getWindowWidth());
@@ -130,12 +145,20 @@ public class Main extends Application {
         Scene settingsScene = new Scene(root);
         Stage settingsStage = new Stage();
 
-        // configure
+        // setup
         settingsStage.setTitle("Settings");
         settingsStage.setScene(settingsScene);
         settingsStage.setHeight(400);
         settingsStage.setWidth(700);
 
         return settingsStage;
+    }
+
+    private static void displayExceptionAndClose(RuntimeException e) {
+        Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage(), ButtonType.CLOSE);
+        alert.showAndWait();
+
+        e.printStackTrace();
+        System.exit(1);
     }
 }

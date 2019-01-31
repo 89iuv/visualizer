@@ -1,5 +1,6 @@
-package com.lazydash.audio.visualiser.external.hue;
+package com.lazydash.audio.visualiser.external.hue.callbacks;
 
+import com.lazydash.audio.visualiser.external.hue.HueIntegration;
 import com.philips.lighting.hue.sdk.wrapper.connection.BridgeStateUpdatedCallback;
 import com.philips.lighting.hue.sdk.wrapper.connection.BridgeStateUpdatedEvent;
 import com.philips.lighting.hue.sdk.wrapper.domain.Bridge;

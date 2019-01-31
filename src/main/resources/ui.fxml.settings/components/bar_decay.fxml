@@ -11,13 +11,14 @@
     <GridPane styleClass="settings-group">
 
         <Label text="Decay top speed (ms): " GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-        <Slider fx:id="decayTime" min="0" max="1000" majorTickUnit="100" minorTickCount="5" showTickMarks="true" showTickLabels="true"
+        <Slider fx:id="decayTime" min="0" max="800" majorTickUnit="100" minorTickCount="4" showTickMarks="true" showTickLabels="true"
                 GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.fillWidth="true" GridPane.hgrow="ALWAYS"/>
+        <Label fx:id="decayTimeValue" styleClass="sliderValueLabel" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
 
         <Label text="Decay acceleration (factor): " GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-        <Slider fx:id="decayAcceleration" min="0" max="100" majorTickUnit="10" minorTickCount="5" showTickMarks="true" showTickLabels="true"
+        <Slider fx:id="decayAcceleration" min="0" max="50" majorTickUnit="5" minorTickCount="4" showTickMarks="true" showTickLabels="true"
                 GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.fillWidth="true" GridPane.hgrow="ALWAYS"/>
-
+        <Label fx:id="decayAccelerationValue" styleClass="sliderValueLabel" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
 
     </GridPane>
 
