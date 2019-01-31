@@ -23,6 +23,8 @@ public class HueIntegrationManager {
     private HueIntegration hueIntegration;
     private GenericFFTService hueFFTService;
 
+    private Color previousColor = Color.BLACK;
+
     private GlobalColorCalculator globalColorCalculator = new GlobalColorCalculator();
 
     public HueIntegrationManager(HueIntegration hueIntegration, GenericFFTService hueFFTService) {
@@ -67,9 +69,12 @@ public class HueIntegrationManager {
             float[] amplitudes = entry.getValue();
 
             List<FrequencyBar> frequencyBars = globalColorCalculator.createFrequencyBars(binsHz, amplitudes);
-            Color frontColor = globalColorCalculator.getGlobalColor(frequencyBars, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
-            Color backColor = globalColorCalculator.getGlobalColor(frequencyBars, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
-            hueIntegration.setColor(frontColor, backColor);
+            Color color = globalColorCalculator.getGlobalColor(frequencyBars, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+
+            if (!previousColor.equals(color)) {
+                hueIntegration.setColor(color);
+                previousColor = color;
+            }
 
             long newTime = System.currentTimeMillis();
             long deltaTime = newTime - oldTime;

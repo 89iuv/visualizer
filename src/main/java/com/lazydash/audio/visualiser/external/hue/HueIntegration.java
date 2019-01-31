@@ -25,8 +25,7 @@ public class HueIntegration {
     private Bridge bridge;
     private BridgeDiscovery bridgeDiscovery;
     private Entertainment entertainment;
-    private AreaEffect backAreaEffect;
-    private AreaEffect frontAreaEffect;
+    private AreaEffect allAreaEffect;
 
     private boolean running = false;
     private boolean ready = false;
@@ -48,20 +47,12 @@ public class HueIntegration {
         this.ready = ready;
     }
 
-    public AreaEffect getBackAreaEffect() {
-        return backAreaEffect;
+    public AreaEffect getAllAreaEffect() {
+        return allAreaEffect;
     }
 
-    public AreaEffect getFrontAreaEffect() {
-        return frontAreaEffect;
-    }
-
-    public void setFrontAreaEffect(AreaEffect frontAreaEffect) {
-        this.frontAreaEffect = frontAreaEffect;
-    }
-
-    public void setBackAreaEffect(AreaEffect backAreaEffect) {
-        this.backAreaEffect = backAreaEffect;
+    public void setAllAreaEffect(AreaEffect allAreaEffect) {
+        this.allAreaEffect = allAreaEffect;
     }
 
     public HueIntegration() {
@@ -84,8 +75,8 @@ public class HueIntegration {
             running = false;
             AppConfig.setHueIntegrationEnabled(false);
 
-            if (backAreaEffect != null && !backAreaEffect.isFinished()) {
-                backAreaEffect.finish();
+            if (allAreaEffect != null && !allAreaEffect.isFinished()) {
+                allAreaEffect.finish();
             }
 
             if (entertainment != null) {
@@ -159,16 +150,11 @@ public class HueIntegration {
         }
     }
 
-    public void setColor(Color frontColor, Color backColor) {
-        frontAreaEffect.setColorAnimation(
-                new ConstantAnimation(frontColor.getRed()),
-                new ConstantAnimation(frontColor.getGreen()),
-                new ConstantAnimation(frontColor.getBlue()));
-
-        backAreaEffect.setColorAnimation(
-                new ConstantAnimation(backColor.getRed()),
-                new ConstantAnimation(backColor.getGreen()),
-                new ConstantAnimation(backColor.getBlue()));
+    public void setColor(Color color) {
+        allAreaEffect.setColorAnimation(
+                new ConstantAnimation(color.getRed()),
+                new ConstantAnimation(color.getGreen()),
+                new ConstantAnimation(color.getBlue()));
     }
 }
 
