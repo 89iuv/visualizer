@@ -68,7 +68,7 @@
                             <archive>
                                 <manifest>
                                     <mainClass>
-                                        com.lazydash.audio.visualiser.Main
+                                        com.lazydash.audio.visualizer.Main
                                     </mainClass>
                                 </manifest>
                             </archive>

@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.lazydash.audio.visualiser.ui.fxml.settings.components.SpectralViewController">
+      fx:controller="com.lazydash.audio.visualizer.ui.fxml.settings.components.SpectralViewController">
 
     <Label styleClass="title" text="Spectral view" />
     <Separator styleClass="separator"/>

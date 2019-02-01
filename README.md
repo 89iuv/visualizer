@@ -28,7 +28,7 @@ If you do not have a "Stereo Mix" device you will have to use "Virtual Cable"
 `mvn clean install`
 
 # Run
-`java -Djava.library.path=./hue/sdk -cp ./target/visualizer-1.0-SNAPSHOT-jar-with-dependencies.jar;./hue/sdk/* com.lazydash.audio.visualiser.Main`
+`java -Djava.library.path=./hue/sdk -cp ./target/visualizer-1.0-SNAPSHOT-jar-with-dependencies.jar;./hue/sdk/* com.lazydash.audio.visualizer.Main`
 
 # Use
 1. Create an entertainment group called "bass" from the Official Philips Hue App: https://play.google.com/store/apps/details?id=com.philips.lighting.hue2&hl=en
