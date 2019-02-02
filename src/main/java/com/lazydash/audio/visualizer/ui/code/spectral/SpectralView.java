@@ -1,8 +1,7 @@
 package com.lazydash.audio.visualizer.ui.code.spectral;
 
-import com.lazydash.audio.visualizer.core.model.ColorBand;
+import com.lazydash.audio.visualizer.core.model.FrequencyBar;
 import com.lazydash.audio.visualizer.system.config.AppConfig;
-import com.lazydash.audio.visualizer.system.config.ColorConfig;
 import com.lazydash.audio.visualizer.system.config.WindowConfig;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -32,74 +31,48 @@ public class SpectralView extends GridPane {
                 AppConfig.setMaxBarHeight(newValue.doubleValue() - AppConfig.getHzLabelHeight()));
     }
 
-    public void updateState(double[] hzBins, float[] amplitudeArray) {
-        if (hzBins.length != frequencyViewList.size()) {
-            createBars(hzBins);
-            updateBarsColor();
-        }
+    public void updateState(List<FrequencyBar> frequencyBarList) {
+        if (frequencyBarList.size() != frequencyViewList.size()) {
+            createBars(frequencyBarList);
 
-        for (int i = 0; i < frequencyViewList.size(); i++) {
-            FrequencyView frequencyView = frequencyViewList.get(i);
-            frequencyView.getHzLabel().setText(String.valueOf(Math.round(hzBins[i])));
-            frequencyView.getRectangle().setHeight(Math.round(amplitudeArray[i]));
-
-//            Color fill = (Color) frequencyView.getRectangle().getFill();
-//            frequencyView.getRectangle().setFill(Color.color(fill.getRed(), fill.getGreen(), fill.getBlue(), amplitudeArray[i] / AppConfig.getMaxBarHeight()));
+        } else {
+            updateBars(frequencyBarList);
         }
     }
 
-    private void createBars(double[] hzArray) {
+    private void updateBars(List<FrequencyBar> frequencyBarList) {
+        for (int i = 0; i < frequencyViewList.size(); i++) {
+            FrequencyView frequencyView = frequencyViewList.get(i);
+            FrequencyBar frequencyBar = frequencyBarList.get(i);
+            frequencyView.setHz((int)(Math.round(frequencyBar.getHz())));
+            frequencyView.setColor(frequencyBar.getColor());
+            frequencyView.setHeight((int) Math.round(frequencyBar.getHeight()));
+        }
+    }
+
+    private void createBars(List<FrequencyBar> frequencyBarList) {
         frequencyViewList.clear();
         this.getChildren().clear();
         this.setHgap(AppConfig.getBarGap());
 
-        for (int i = 0; i < hzArray.length; i++) {
+        for (int i = 0; i < frequencyBarList.size(); i++) {
             FrequencyView frequencyView = new FrequencyView(
-                    (int) Math.round(hzArray[i]),
+                    (int) Math.round(frequencyBarList.get(i).getHz()),
                     AppConfig.getHzLabelHeight(),
-                    AppConfig.getMinBarHeight(),
-                    AppConfig.getBarWidth());
+                    (int) Math.round(frequencyBarList.get(i).getHeight()),
+                    AppConfig.getBarWidth(),
+                    frequencyBarList.get(i).getColor());
 
             frequencyViewList.add(frequencyView);
 
+            // todo encapsulate rectangle and hzLabel in FrequencyView
             this.add(frequencyView.getRectangle(), i, 0);
             this.add(frequencyView.getHzLabel(), i, 1);
 
             GridPane.setValignment(frequencyView.getRectangle(), VPos.BOTTOM);
             GridPane.setHalignment(frequencyView.getHzLabel(), HPos.CENTER);
 
-            frequencyView.getRectangle().widthProperty().bind(WindowConfig.widthProperty.divide(hzArray.length).subtract(AppConfig.getBarGap() + 1));
-        }
-    }
-
-    private void updateBarsColor() {
-        for (ColorBand colorBand: ColorConfig.colorBands) {
-            setBarsColor(
-                    colorBand.getStartColor(),
-                    colorBand.getEndColor(),
-                    colorBand.getStartHz(),
-                    colorBand.getEndHz()
-            );
-        }
-    }
-
-    private void setBarsColor(Color startColor, Color endColor, int startHz, int endHz) {
-        int countFreq = 0;
-        for (FrequencyView frequencyView : frequencyViewList) {
-            if (startHz <= Integer.valueOf(frequencyView.getHzLabel().getText())
-                    && Integer.valueOf(frequencyView.getHzLabel().getText()) <= endHz ) {
-                countFreq++;
-            }
-        }
-
-        double step = 0.0;
-        double stepIncrement = 1d / countFreq;
-        for (FrequencyView frequencyView : frequencyViewList) {
-            if (startHz <= Integer.valueOf(frequencyView.getHzLabel().getText())
-                    && Integer.valueOf(frequencyView.getHzLabel().getText()) <= endHz ) {
-                frequencyView.getRectangle().setFill(startColor.interpolate(endColor, step));
-                step = step + stepIncrement;
-            }
+            frequencyView.getRectangle().widthProperty().bind(WindowConfig.widthProperty.divide(frequencyBarList.size()).subtract(AppConfig.getBarGap() + 1));
         }
     }
 

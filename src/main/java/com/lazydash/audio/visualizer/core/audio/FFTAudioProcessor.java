@@ -5,6 +5,7 @@ import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.util.fft.FFT;
 import be.tarsos.dsp.util.fft.HammingWindow;
 import be.tarsos.dsp.util.fft.WindowFunction;
+import com.lazydash.audio.visualizer.system.config.AppConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +49,14 @@ public class FFTAudioProcessor implements AudioProcessor {
             amplitudes[i] = (float) (20 * Math.log10((amplitudes[i]  / amplitudes.length) * 1.85)); // with window correction factor
         }
 
-        listenerList.forEach(listener -> listener.frame(hzBins, amplitudes, spl));
+        double[] truncatedBins = new double[AppConfig.getBarNumber()];
+        System.arraycopy(hzBins, AppConfig.getBarOffset(), truncatedBins, 0, truncatedBins.length);
+
+        float[] truncatedAmplitudes = new float[AppConfig.getBarNumber()];
+        System.arraycopy(amplitudes, AppConfig.getBarOffset(), truncatedAmplitudes, 0, truncatedAmplitudes.length);
+
+
+        listenerList.forEach(listener -> listener.frame(truncatedBins, truncatedAmplitudes, spl));
 
         long newTime = System.currentTimeMillis();
         long deltaTime = newTime - oldTime;

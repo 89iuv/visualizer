@@ -43,6 +43,7 @@ public class AppConfig {
     private static boolean hueIntegrationEnabled = false;
     private static String hueEntertainmentName = "Bass";
     private static String hueStatus = "DISCONNECT";
+    private static double hueTargetFPS = 25;
 
     // window
     private static double windowWidth = 500;
@@ -262,5 +263,13 @@ public class AppConfig {
 
     public static void setHueStatus(String hueStatus) {
         AppConfig.hueStatus = hueStatus;
+    }
+
+    public static double getHueTargetFPS() {
+        return hueTargetFPS;
+    }
+
+    public static void setHueTargetFPS(double hueTargetFPS) {
+        AppConfig.hueTargetFPS = hueTargetFPS;
     }
 }

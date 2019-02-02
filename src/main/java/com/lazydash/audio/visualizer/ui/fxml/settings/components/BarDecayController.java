@@ -19,7 +19,7 @@ public class BarDecayController {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 AppConfig.setDecayTime(newValue.intValue());
-                decayTimeValue.setText(String.valueOf(AppConfig.getDecayTime()));
+                decayTimeValue.setText(String.valueOf(Math.round(AppConfig.getDecayTime() / 10d) * 10));
             }
         });
 

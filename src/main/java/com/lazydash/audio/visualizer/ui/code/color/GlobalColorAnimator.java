@@ -2,7 +2,7 @@ package com.lazydash.audio.visualizer.ui.code.color;
 
 import com.lazydash.audio.visualizer.core.algorithm.GlobalColorCalculator;
 import com.lazydash.audio.visualizer.core.model.FrequencyBar;
-import com.lazydash.audio.visualizer.core.service.GenericFFTService;
+import com.lazydash.audio.visualizer.core.service.FrequencyBarsFFTService;
 import com.lazydash.audio.visualizer.system.config.AppConfig;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -11,12 +11,10 @@ import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 public class GlobalColorAnimator {
     private GlobalColorView globalColorView;
-    private GenericFFTService globalColorFFTService;
+    private FrequencyBarsFFTService globalColorFFTService;
 
     private GlobalColorCalculator globalColorCalculator = new GlobalColorCalculator();
 
@@ -24,7 +22,7 @@ public class GlobalColorAnimator {
             Duration.millis(1000d / AppConfig.getTargetFPS()),
             ae -> updateGlobalColor()));
 
-    public GlobalColorAnimator(GenericFFTService globalColorFFTService, GlobalColorView globalColorView) {
+    public GlobalColorAnimator(FrequencyBarsFFTService globalColorFFTService, GlobalColorView globalColorView) {
         this.globalColorView = globalColorView;
         this.globalColorFFTService = globalColorFFTService;
         timeline.setCycleCount(Animation.INDEFINITE);
@@ -35,18 +33,8 @@ public class GlobalColorAnimator {
     }
 
     private void updateGlobalColor() {
-        Map<double[], float[]> binsToAmplitudesMap = globalColorFFTService.getBinsToAmplitudesMap();
-        Optional<Map.Entry<double[], float[]>> first = binsToAmplitudesMap.entrySet().stream().findFirst();
-
-        first.ifPresent(entry -> {
-            double[] binsHz = entry.getKey();
-            float[] amplitudes = entry.getValue();
-
-            List<FrequencyBar> frequencyBars = globalColorCalculator.createFrequencyBars(binsHz, amplitudes);
-            Color color = globalColorCalculator.getGlobalColor(frequencyBars, Integer.MIN_VALUE, Integer.MAX_VALUE, false);
-            globalColorView.setColor(color);
-
-        });
-
+        List<FrequencyBar> frequencyBars = globalColorFFTService.getFrequencyBarList(AppConfig.getTargetFPS());
+        Color color = globalColorCalculator.getGlobalColor(frequencyBars, Integer.MIN_VALUE, Integer.MAX_VALUE, false);
+        globalColorView.setColor(color);
     }
 }

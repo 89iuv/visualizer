@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ColorConfig {
-    public static Color baseColor = Color.color(0.1, 0.1, 0.4);
+    public static Color baseColor = Color.color(0.1, 0.1, 0.2);
 
     public static List<ColorBand> colorBands = Arrays.asList(
             new ColorBand(

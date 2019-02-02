@@ -1,7 +1,7 @@
 package com.lazydash.audio.visualizer;
 
 import com.lazydash.audio.visualizer.core.audio.TarsosAudioEngine;
-import com.lazydash.audio.visualizer.core.service.GenericFFTService;
+import com.lazydash.audio.visualizer.core.service.FrequencyBarsFFTService;
 import com.lazydash.audio.visualizer.external.hue.HueIntegration;
 import com.lazydash.audio.visualizer.external.hue.manager.HueIntegrationManager;
 import com.lazydash.audio.visualizer.system.config.AppConfig;
@@ -60,9 +60,9 @@ public class Main extends Application {
         Scene scene = createScene(spectralView, globalColorView);
         Stage settingsStage = createSettingsStage();
 
-        GenericFFTService spectralFFTService = new GenericFFTService();
-        GenericFFTService hueFFTService = new GenericFFTService();
-        GenericFFTService globalColorFFTService = new GenericFFTService();
+        FrequencyBarsFFTService spectralFFTService = new FrequencyBarsFFTService();
+        FrequencyBarsFFTService hueFFTService = new FrequencyBarsFFTService();
+        FrequencyBarsFFTService globalColorFFTService = new FrequencyBarsFFTService();
 
         HueIntegrationManager hueIntegrationManager = new HueIntegrationManager(hueIntegration, hueFFTService);
 

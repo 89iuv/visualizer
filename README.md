@@ -24,7 +24,7 @@ If you do not have a "Stereo Mix" device you will have to use "Virtual Cable"
 ## Hue integration requirement
 I am not allowed to distribute the hue libraries or materials until hue edk comes out of beta.
 Please follow the steps bellow in order to get access to the hue libraries and put them in the correct location:
-1. Create an account and agree to the philips EDK terms and conditions here: https://developers.meethue.com/login/?redirect_to=https%3A%2F%2Fdevelopers.meethue.com%2Fedk-terms-and-conditions%2F
+1. Create an account and agree to the philips EDK terms and conditions here: https://developers.meethue.com/edk-terms-and-conditions/
 2. Get access to the following git repository: https://github.com/PhilipsHue/HueSDK4EDK
 3. Copy the files from https://github.com/PhilipsHue/HueSDK4EDK/tree/master/HueSDK/Windows to ./hue/sdk 
 

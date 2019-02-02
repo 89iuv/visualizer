@@ -7,7 +7,7 @@ public class BarsHeightCalculator {
     private double[] decay;
 
     // holds state and modifies it's internal state based on the input
-    public float[] processAmplitudes(float[] newAmplitudes) {
+    public float[] processAmplitudes(float[] newAmplitudes, double targetFPS) {
         // init on first run or if number of newAmplitudes has changed
         if (amplitudes == null || amplitudes.length != newAmplitudes.length) {
             amplitudes = new float[newAmplitudes.length];
@@ -43,7 +43,7 @@ public class BarsHeightCalculator {
 
             } else if (oldHeight - newHeight > decayDeltaTreshold) {
                 // only do the decay if the new height is bellow the minimum decay frames in order to not flicker.
-                doDecay(i);
+                doDecay(i, targetFPS);
 
             } else if (newHeight <= decayDeltaTreshold) {
                 amplitudes[i] = AppConfig.getMinBarHeight();
@@ -55,16 +55,16 @@ public class BarsHeightCalculator {
     }
 
 
-    private void doDecay(int i) {
+    private void doDecay(int i, double targetFPS) {
         double decayFrames = 0;
         if (AppConfig.getDecayTime() > 0) {
-            decayFrames = (AppConfig.getMaxBarHeight() * (1000d / AppConfig.getTargetFPS()) / AppConfig.getDecayTime());
+            decayFrames = (AppConfig.getMaxBarHeight() * (1000d / targetFPS) / AppConfig.getDecayTime());
         }
 
         if (decay[i] < 1) {
-            decayFrames = decayFrames * decay[i];
-            double accelerationStep = AppConfig.getMaxBarHeight() / (AppConfig.getMaxBarHeight() + (AppConfig.getMaxBarHeight() * (AppConfig.getAccelerationFactor())));
+            double accelerationStep = (decayFrames / (decayFrames * AppConfig.getAccelerationFactor()));
             decay[i] = decay[i] + accelerationStep;
+            decayFrames = decayFrames * decay[i];
         }
 
         if (amplitudes[i] - decayFrames < AppConfig.getMinBarHeight()) {

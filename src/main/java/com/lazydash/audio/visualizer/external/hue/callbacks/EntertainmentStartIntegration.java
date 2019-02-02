@@ -2,11 +2,13 @@ package com.lazydash.audio.visualizer.external.hue.callbacks;
 
 import com.lazydash.audio.visualizer.external.hue.HueIntegration;
 import com.lazydash.audio.visualizer.system.config.AppConfig;
+import com.lazydash.audio.visualizer.system.config.ColorConfig;
 import com.lazydash.audio.visualizer.system.notification.EventEnum;
 import com.lazydash.audio.visualizer.system.notification.NotificationService;
 import com.philips.lighting.hue.sdk.wrapper.entertainment.Area;
 import com.philips.lighting.hue.sdk.wrapper.entertainment.Entertainment;
 import com.philips.lighting.hue.sdk.wrapper.entertainment.StartCallback;
+import com.philips.lighting.hue.sdk.wrapper.entertainment.animation.ConstantAnimation;
 import com.philips.lighting.hue.sdk.wrapper.entertainment.effect.AreaEffect;
 
 public class EntertainmentStartIntegration implements StartCallback {
@@ -22,6 +24,11 @@ public class EntertainmentStartIntegration implements StartCallback {
 
             AreaEffect allAreaEffect = new AreaEffect("allAreaEffect", 0);
             allAreaEffect.setArea(Area.Predefine.All);
+            allAreaEffect.setColorAnimation(
+                    new ConstantAnimation(ColorConfig.baseColor.getRed()),
+                    new ConstantAnimation(ColorConfig.baseColor.getGreen()),
+                    new ConstantAnimation(ColorConfig.baseColor.getBlue())
+            );
 
             Entertainment entertainment = hueIntegration.getEntertainment();
 
