@@ -19,26 +19,39 @@
                 GridPane.rowIndex="1" GridPane.columnIndex="1"/>
         <Label fx:id="signalThresholdValue" styleClass="sliderValueLabel" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
 
-        <Label text="Bars number:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-        <Spinner fx:id="barNumber" editable="true" GridPane.rowIndex="2" GridPane.columnIndex="1">
+        <Label text="Smoothness:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <Spinner fx:id="timeFilter" editable="true" GridPane.rowIndex="2" GridPane.columnIndex="1">
+            <valueFactory>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="100" amountToStepBy="1"/>
+            </valueFactory>
+        </Spinner>
+
+        <Label text="Bars number:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <Spinner fx:id="barNumber" editable="true" GridPane.rowIndex="3" GridPane.columnIndex="1">
             <valueFactory>
                 <SpinnerValueFactory.IntegerSpinnerValueFactory min="1" max="999" amountToStepBy="1"/>
             </valueFactory>
         </Spinner>
 
-        <Label text="Bars offset number:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-        <Spinner fx:id="barOffset" editable="true" GridPane.rowIndex="3" GridPane.columnIndex="1">
+        <Label text="Bars offset number:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <Spinner fx:id="barOffset" editable="true" GridPane.rowIndex="4" GridPane.columnIndex="1">
             <valueFactory>
                 <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="999" amountToStepBy="1"/>
             </valueFactory>
         </Spinner>
 
-        <Label text="Min bar height (pixels):" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-        <Spinner fx:id="minBarHeight" editable="true" GridPane.rowIndex="4" GridPane.columnIndex="1">
+        <Label text="Min bar height (pixels):" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+        <Spinner fx:id="minBarHeight" editable="true" GridPane.rowIndex="5" GridPane.columnIndex="1">
             <valueFactory>
                 <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="999" amountToStepBy="1"/>
             </valueFactory>
         </Spinner>
+
+        <Label text="Start color:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+        <ColorPicker fx:id="startColor" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+
+        <Label text="End color:" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
+        <ColorPicker fx:id="endColor" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
 
     </GridPane>
 

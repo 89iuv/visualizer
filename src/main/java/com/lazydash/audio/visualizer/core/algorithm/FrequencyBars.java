@@ -28,14 +28,6 @@ public class FrequencyBars {
         return frequencyBars;
     }
 
-    public static void updateFrequencyBars(List<FrequencyBar> frequencyBars, double[] binsHz, float[] amplitudes){
-        for (int i = 0; i < frequencyBars.size(); i++) {
-            FrequencyBar frequencyBar = frequencyBars.get(i);
-            frequencyBar.setHz(binsHz[i]);
-            frequencyBar.setHeight(amplitudes[i]);
-        }
-    }
-
     private static void addColorsToFrequencyBars(List<FrequencyBar> frequencyBars, Color startColor, Color endColor, int startHz, int endHz){
         int countFreq = 0;
         for (FrequencyBar frequencyBar : frequencyBars) {

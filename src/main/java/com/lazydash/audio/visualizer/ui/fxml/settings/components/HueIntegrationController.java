@@ -7,12 +7,14 @@ import com.lazydash.audio.visualizer.system.notification.NotificationService;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Label;
+import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 
 public class HueIntegrationController {
     public Label hueStatus;
     public TextField hueEntertainmentName;
+    public Spinner<Integer> hueTargetFrameRate;
 
     public void initialize() {
         hueStatus.setText(AppConfig.getHueStatus());
@@ -25,6 +27,11 @@ public class HueIntegrationController {
         });
 
         hueEntertainmentName.setText(AppConfig.getHueEntertainmentName());
+
+        hueTargetFrameRate.getValueFactory().setValue((int) AppConfig.getHueTargetFPS());
+        hueTargetFrameRate.valueProperty().addListener((observable, oldValue, newValue) -> {
+            AppConfig.setHueTargetFPS(newValue);
+        });
     }
 
     public void stopHueIntegration(ActionEvent actionEvent) {

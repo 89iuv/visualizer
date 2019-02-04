@@ -54,11 +54,7 @@ public class FrequencyBarsFFTService implements FFTListener {
 
         }
 
-        if (frequencyBarList.size() != returnBinz.length) {
-            frequencyBarList = FrequencyBars.createFrequencyBars(returnBinz, returnAmplitudes);
-        } else {
-            FrequencyBars.updateFrequencyBars(frequencyBarList, returnBinz, returnAmplitudes);
-        }
+        frequencyBarList = FrequencyBars.createFrequencyBars(returnBinz, returnAmplitudes);
 
         return frequencyBarList;
 

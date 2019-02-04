@@ -12,22 +12,22 @@ import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.stream.Stream;
 
-public class ConfigurationService {
-    private String applicationProperties = "application.properties";
+public class AppConfigPersistence {
+    private String applicationPropertiesLocation = "application.properties";
 
-    public static ConfigurationService createAndReadConfiguration() {
-        ConfigurationService configurationService = new ConfigurationService();
-        configurationService.readConfig();
-        return configurationService;
+    public static AppConfigPersistence createAndReadConfiguration() {
+        AppConfigPersistence appConfigPersistence = new AppConfigPersistence();
+        appConfigPersistence.readConfig();
+        return appConfigPersistence;
     }
 
     private void readConfig() {
-        Path applicationPropertiesPath = Paths.get(applicationProperties);
+        Path applicationPropertiesPath = Paths.get(applicationPropertiesLocation);
         if (Files.exists(applicationPropertiesPath)) {
 
             Properties appProps = new Properties();
             try {
-                appProps.load(new FileReader(applicationProperties));
+                appProps.load(new FileReader(applicationPropertiesLocation));
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -82,7 +82,7 @@ public class ConfigurationService {
 
 
         try {
-            appProps.store(new FileWriter(applicationProperties), "Bass Frequency Analyzer");
+            appProps.store(new FileWriter(applicationPropertiesLocation), "visualizer - config");
 
         } catch (IOException e) {
             e.printStackTrace();

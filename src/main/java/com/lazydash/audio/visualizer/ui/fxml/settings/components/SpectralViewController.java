@@ -1,8 +1,10 @@
 package com.lazydash.audio.visualizer.ui.fxml.settings.components;
 
 import com.lazydash.audio.visualizer.system.config.AppConfig;
+import com.lazydash.audio.visualizer.system.config.ColorConfig;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Spinner;
@@ -16,6 +18,9 @@ public class SpectralViewController {
     public Slider signalThreshold;
     public Label signalAmplificationValue;
     public Label signalThresholdValue;
+    public Spinner<Integer> timeFilter;
+    public ColorPicker startColor;
+    public ColorPicker endColor;
 
     public void initialize() {
         signalAmplificationValue.setText(String.valueOf(AppConfig.getSignalAmplification()));
@@ -38,6 +43,11 @@ public class SpectralViewController {
             }
         });
 
+        timeFilter.getValueFactory().setValue(AppConfig.getTimeFilterSize());
+        timeFilter.valueProperty().addListener((observable, oldValue, newValue) -> {
+            AppConfig.setTimeFilterSize(newValue);
+        });
+
         barNumber.getValueFactory().setValue(AppConfig.getBarNumber());
         barNumber.valueProperty().addListener((observable, oldValue, newValue) -> {
             AppConfig.setBarNumber(newValue);
@@ -51,6 +61,16 @@ public class SpectralViewController {
         minBarHeight.getValueFactory().setValue(AppConfig.getMinBarHeight());
         minBarHeight.valueProperty().addListener((observable, oldValue, newValue) -> {
             AppConfig.setMinBarHeight(newValue);
+        });
+
+        startColor.setValue(ColorConfig.colorBands.get(0).getStartColor());
+        startColor.valueProperty().addListener((observable, oldValue, newValue) -> {
+            ColorConfig.colorBands.get(0).setStartColor(newValue);
+        });
+
+        endColor.setValue(ColorConfig.colorBands.get(0).getEndColor());
+        endColor.valueProperty().addListener((observable, oldValue, newValue) -> {
+            ColorConfig.colorBands.get(0).setEndColor(newValue);
         });
     }
 }

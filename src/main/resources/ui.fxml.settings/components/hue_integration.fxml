@@ -16,7 +16,14 @@
         <Label text="Entertainment name:" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.halignment="RIGHT"/>
         <TextField fx:id="hueEntertainmentName" onKeyReleased="#updateHueEntertainmentName" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
-        <HBox styleClass="button-group" GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.halignment="RIGHT"
+        <Label text="Target frame rate:" GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.halignment="RIGHT"/>
+        <Spinner fx:id="hueTargetFrameRate" editable="true" GridPane.rowIndex="2" GridPane.columnIndex="1">
+            <valueFactory>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="1" max="60" amountToStepBy="1"/>
+            </valueFactory>
+        </Spinner>
+
+        <HBox styleClass="button-group" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.halignment="RIGHT"
               alignment="CENTER_RIGHT">
             <Button text="Stop" onAction="#stopHueIntegration"/>
             <Button text="Start" onAction="#startHueIntegration"/>

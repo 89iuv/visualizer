@@ -6,7 +6,8 @@ import com.lazydash.audio.visualizer.external.hue.HueIntegration;
 import com.lazydash.audio.visualizer.external.hue.manager.HueIntegrationManager;
 import com.lazydash.audio.visualizer.system.config.AppConfig;
 import com.lazydash.audio.visualizer.system.config.WindowConfig;
-import com.lazydash.audio.visualizer.system.persistance.ConfigurationService;
+import com.lazydash.audio.visualizer.system.persistance.AppConfigPersistence;
+import com.lazydash.audio.visualizer.system.persistance.ColorConfigPersistence;
 import com.lazydash.audio.visualizer.system.setup.SystemSetup;
 import com.lazydash.audio.visualizer.ui.code.color.GlobalColorAnimator;
 import com.lazydash.audio.visualizer.ui.code.color.GlobalColorView;
@@ -51,7 +52,8 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         // create
-        ConfigurationService configurationService = ConfigurationService.createAndReadConfiguration();
+        AppConfigPersistence appConfigPersistence = AppConfigPersistence.createAndReadConfiguration();
+        ColorConfigPersistence colorConfigPersistence = ColorConfigPersistence.createAndReadColorConfiguration();
         TarsosAudioEngine tarsosAudioEngine = new TarsosAudioEngine();
         HueIntegration hueIntegration = new HueIntegration();
 
@@ -80,7 +82,7 @@ public class Main extends Application {
         tarsosAudioEngine.getFttListenerList().add(globalColorFFTService);
 
         wireSettingsStage(settingsStage, scene);
-        wirePrimaryStage(stage, configurationService);
+        wirePrimaryStage(stage, appConfigPersistence, colorConfigPersistence);
 
         // run
         tarsosAudioEngine.start();
@@ -101,11 +103,12 @@ public class Main extends Application {
         });
     }
 
-    private void wirePrimaryStage(Stage primaryStage, ConfigurationService configurationService) {
+    private void wirePrimaryStage(Stage primaryStage, AppConfigPersistence appConfigPersistence, ColorConfigPersistence colorConfigPersistence) {
         primaryStage.setOnCloseRequest(event -> {
             AppConfig.setWindowHeight(primaryStage.getHeight());
             AppConfig.setWindowWidth(primaryStage.getWidth());
-            configurationService.persistConfig();
+            appConfigPersistence.persistConfig();
+            colorConfigPersistence.persistConfig();
             Platform.exit();
         });
     }
