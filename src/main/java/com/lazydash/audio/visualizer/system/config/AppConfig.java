@@ -16,10 +16,6 @@ public class AppConfig {
     private static int bufferSize = 6000;
     private static int bufferOverlap = 4976;
 
-    // spectral view
-    private static int barNumber = 12;
-    private static int barOffset = 4;
-
     private static int minBarHeight = 3;
     private static double maxBarHeight = 750;
     private static int barWidth = 40;
@@ -27,6 +23,11 @@ public class AppConfig {
 
     private static int hzLabelHeight = 20;
     private static int globalColorHeight = 40;
+
+    private static int frequencyStart = 20;
+    private static int frequencyCenter = 1000;
+    private static int frequencyEnd = 22000;
+    private static int octave = 1;
 
     // bar acceleration
     private static int decayTime = 400;
@@ -38,6 +39,7 @@ public class AppConfig {
 
     // fft
     private static int timeFilterSize = 2;
+    private static int zeroPadding = 0;
 
     // hue
     private static boolean hueIntegrationEnabled = false;
@@ -111,22 +113,6 @@ public class AppConfig {
 
     public static void setTimeFilterSize(int timeFilterSize) {
         AppConfig.timeFilterSize = timeFilterSize;
-    }
-
-    public static int getBarNumber() {
-        return barNumber;
-    }
-
-    public static void setBarNumber(int barNumber) {
-        AppConfig.barNumber = barNumber;
-    }
-
-    public static int getBarOffset() {
-        return barOffset;
-    }
-
-    public static void setBarOffset(int barOffset) {
-        AppConfig.barOffset = barOffset;
     }
 
     public static int getBarGap() {
@@ -271,5 +257,45 @@ public class AppConfig {
 
     public static void setHueTargetFPS(double hueTargetFPS) {
         AppConfig.hueTargetFPS = hueTargetFPS;
+    }
+
+    public static int getZeroPadding() {
+        return zeroPadding;
+    }
+
+    public static void setZeroPadding(int zeroPadding) {
+        AppConfig.zeroPadding = zeroPadding;
+    }
+
+    public static int getFrequencyStart() {
+        return frequencyStart;
+    }
+
+    public static void setFrequencyStart(int frequencyStart) {
+        AppConfig.frequencyStart = frequencyStart;
+    }
+
+    public static int getFrequencyEnd() {
+        return frequencyEnd;
+    }
+
+    public static void setFrequencyEnd(int frequencyEnd) {
+        AppConfig.frequencyEnd = frequencyEnd;
+    }
+
+    public static int getOctave() {
+        return octave;
+    }
+
+    public static void setOctave(int octave) {
+        AppConfig.octave = octave;
+    }
+
+    public static int getFrequencyCenter() {
+        return frequencyCenter;
+    }
+
+    public static void setFrequencyCenter(int frequencyCenter) {
+        AppConfig.frequencyCenter = frequencyCenter;
     }
 }

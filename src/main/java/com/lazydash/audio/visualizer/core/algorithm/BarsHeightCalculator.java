@@ -21,9 +21,11 @@ public class BarsHeightCalculator {
 
             double maxHeight = Math.abs(AppConfig.getSignalThreshold());
             double newHeight = (newAmplitudes[i] + Math.abs(AppConfig.getSignalThreshold()));
+//            double newHeight = (newAmplitudes[i]);
             double windowHeight = AppConfig.getMaxBarHeight();
 
-            newHeight =(((newHeight * windowHeight) / maxHeight) * (AppConfig.getSignalAmplification() / 10d));
+            newHeight =(((windowHeight) / maxHeight)) * (newHeight * (AppConfig.getSignalAmplification() / 100d));
+//            newHeight = (newHeight * (AppConfig.getSignalAmplification()));
 
             // apply limits
             if (newHeight > AppConfig.getMaxBarHeight()) {
@@ -35,17 +37,17 @@ public class BarsHeightCalculator {
                 newHeight = AppConfig.getMinBarHeight();
             }
 
-            int decayDeltaTreshold = 3;
-            if (newHeight - oldHeight > decayDeltaTreshold) {
+            int decayDeltaThreshold = 1;
+            if (newHeight - oldHeight > decayDeltaThreshold) {
                 // use new height
                 amplitudes[i] = (float) newHeight;
                 decay[i] = 0;
 
-            } else if (oldHeight - newHeight > decayDeltaTreshold) {
+            } else if (oldHeight - newHeight >= decayDeltaThreshold) {
                 // only do the decay if the new height is bellow the minimum decay frames in order to not flicker.
                 doDecay(i, targetFPS);
 
-            } else if (newHeight <= decayDeltaTreshold) {
+            } else if (newHeight - AppConfig.getMinBarHeight() <= decayDeltaThreshold) {
                 amplitudes[i] = AppConfig.getMinBarHeight();
 
             }
@@ -61,7 +63,7 @@ public class BarsHeightCalculator {
             decayFrames = (AppConfig.getMaxBarHeight() * (1000d / targetFPS) / AppConfig.getDecayTime());
         }
 
-        if (decay[i] < 1) {
+        if (decay[i] < 1 && AppConfig.getAccelerationFactor() > 0) {
             double accelerationStep = (decayFrames / (decayFrames * AppConfig.getAccelerationFactor()));
             decay[i] = decay[i] + accelerationStep;
             decayFrames = decayFrames * decay[i];

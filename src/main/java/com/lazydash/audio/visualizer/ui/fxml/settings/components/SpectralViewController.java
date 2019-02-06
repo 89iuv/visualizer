@@ -11,8 +11,6 @@ import javafx.scene.control.Spinner;
 
 public class SpectralViewController {
 
-    public Spinner<Integer> barNumber;
-    public Spinner<Integer> barOffset;
     public Spinner<Integer> minBarHeight;
     public Slider signalAmplification;
     public Slider signalThreshold;
@@ -21,6 +19,10 @@ public class SpectralViewController {
     public Spinner<Integer> timeFilter;
     public ColorPicker startColor;
     public ColorPicker endColor;
+    public Spinner<Integer> frequencyStart;
+    public Spinner<Integer> frequencyEnd;
+    public Spinner<Integer> octave;
+    public Spinner<Integer> frequencyCenter;
 
     public void initialize() {
         signalAmplificationValue.setText(String.valueOf(AppConfig.getSignalAmplification()));
@@ -48,14 +50,29 @@ public class SpectralViewController {
             AppConfig.setTimeFilterSize(newValue);
         });
 
-        barNumber.getValueFactory().setValue(AppConfig.getBarNumber());
-        barNumber.valueProperty().addListener((observable, oldValue, newValue) -> {
-            AppConfig.setBarNumber(newValue);
+        frequencyStart.getValueFactory().setValue(AppConfig.getFrequencyStart());
+        frequencyStart.valueProperty().addListener((observable, oldValue, newValue) -> {
+            AppConfig.setFrequencyStart(newValue);
         });
 
-        barOffset.getValueFactory().setValue(AppConfig.getBarOffset());
-        barOffset.valueProperty().addListener((observable, oldValue, newValue) -> {
-            AppConfig.setBarOffset(newValue);
+        frequencyCenter.getValueFactory().setValue(AppConfig.getFrequencyCenter());
+        frequencyCenter.valueProperty().addListener((observable, oldValue, newValue) -> {
+            AppConfig.setFrequencyCenter(newValue);
+        });
+
+        frequencyEnd.getValueFactory().setValue(AppConfig.getFrequencyEnd());
+        frequencyEnd.valueProperty().addListener((observable, oldValue, newValue) -> {
+            AppConfig.setFrequencyEnd(newValue);
+        });
+
+        frequencyEnd.getValueFactory().setValue(AppConfig.getFrequencyEnd());
+        frequencyEnd.valueProperty().addListener((observable, oldValue, newValue) -> {
+            AppConfig.setFrequencyEnd(newValue);
+        });
+
+        octave.getValueFactory().setValue(AppConfig.getOctave());
+        octave.valueProperty().addListener((observable, oldValue, newValue) -> {
+            AppConfig.setOctave(newValue);
         });
 
         minBarHeight.getValueFactory().setValue(AppConfig.getMinBarHeight());

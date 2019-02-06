@@ -44,9 +44,14 @@ public class SpectralView extends GridPane {
         for (int i = 0; i < frequencyViewList.size(); i++) {
             FrequencyView frequencyView = frequencyViewList.get(i);
             FrequencyBar frequencyBar = frequencyBarList.get(i);
-            frequencyView.setHz((int)(Math.round(frequencyBar.getHz())));
-            frequencyView.setColor(frequencyBar.getColor());
-            frequencyView.setHeight((int) Math.round(frequencyBar.getHeight()));
+            frequencyView.setBarColor(frequencyBar.getColor());
+            frequencyView.setHzValue(frequencyBar.getHz());
+            frequencyView.setBarHeight(frequencyBar.getHeight());
+
+            if (frequencyBar.getHz() == 0) {
+                frequencyView.setBarColor(Color.WHITE);
+            }
+
         }
     }
 
@@ -56,12 +61,16 @@ public class SpectralView extends GridPane {
         this.setHgap(AppConfig.getBarGap());
 
         for (int i = 0; i < frequencyBarList.size(); i++) {
-            FrequencyView frequencyView = new FrequencyView(
-                    (int) Math.round(frequencyBarList.get(i).getHz()),
-                    AppConfig.getHzLabelHeight(),
-                    (int) Math.round(frequencyBarList.get(i).getHeight()),
-                    AppConfig.getBarWidth(),
-                    frequencyBarList.get(i).getColor());
+            FrequencyView frequencyView = new FrequencyView();
+            FrequencyBar frequencyBar = frequencyBarList.get(i);
+            frequencyView.setBarColor(frequencyBar.getColor());
+            frequencyView.setHzValue(frequencyBar.getHz());
+            frequencyView.setBarHeight(frequencyBar.getHeight());
+            frequencyView.setHzHeight(AppConfig.getHzLabelHeight());
+
+            if (frequencyBar.getHz() == 0) {
+                frequencyView.setBarColor(Color.WHITE);
+            }
 
             frequencyViewList.add(frequencyView);
 

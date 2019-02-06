@@ -16,6 +16,7 @@ public class AudioInputController {
     public ComboBox<Integer> sampleRate;
     public Spinner<Integer> bufferSize;
     public Spinner<Integer> bufferOverlap;
+    public Spinner<Integer> zeroPadding;
 
     public void initialize() {
         List<String> inputDeviceList = new ArrayList<>(0);
@@ -72,6 +73,21 @@ public class AudioInputController {
 
             bufferOverlap.getValueFactory().setValue(newValue);
             AppConfig.setBufferOverlap(newValue);
+        });
+
+        zeroPadding.getValueFactory().setValue(AppConfig.getZeroPadding());
+        zeroPadding.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue % 2 != 0) {
+                if (newValue > 12256) {
+                    newValue = newValue - 1;
+
+                } else {
+                    newValue = newValue + 1;
+                }
+            }
+
+            zeroPadding.getValueFactory().setValue(newValue);
+            AppConfig.setZeroPadding(newValue);
         });
 
     }

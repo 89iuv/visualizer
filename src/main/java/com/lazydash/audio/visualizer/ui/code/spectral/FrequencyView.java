@@ -10,34 +10,35 @@ public class FrequencyView {
     private Label hzLabel = new Label();
     private Rectangle rectangle = new Rectangle();
 
-    public FrequencyView(int hz, int hzHeight, int height, int width, Color color) {
-        this.hzLabel.setText(String.valueOf(hz));
-        this.hzLabel.setPrefHeight(hzHeight);
-        this.hzLabel.setMinHeight(hzHeight);
-        this.hzLabel.setMaxHeight(hzHeight);
 
-        this.rectangle.setHeight(height);
-        this.rectangle.setWidth(width);
-        this.rectangle.setFill(color);
-    }
-
-    public void setHeight(int height) {
-        this.rectangle.setHeight(height);
-    }
-
-    public void setHz(int hz) {
-        this.hzLabel.setText(String.valueOf(hz));
-    }
-
-    public void setColor(Color color){
-        this.rectangle.setFill(color);
-    }
-
-    public Label getHzLabel() {
+    Label getHzLabel() {
         return hzLabel;
     }
 
-    public Rectangle getRectangle() {
+    Rectangle getRectangle() {
         return rectangle;
+    }
+
+    public void setHzHeight(double hzHeight) {
+        this.getHzLabel().setMinHeight(hzHeight);
+
+    }
+
+    public void setHzValue(double hz) {
+        if (hz >= 1000) {
+            this.hzLabel.setText(String.format("%.1f",hz / 1000d) + "K");
+        } else {
+            this.hzLabel.setText(String.format("%.0f", hz));
+        }
+
+    }
+
+    public void setBarHeight(double height) {
+        this.rectangle.setHeight(Math.round(height));
+    }
+
+
+    public void setBarColor(Color color){
+        this.rectangle.setFill(color);
     }
 }

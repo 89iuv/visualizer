@@ -82,7 +82,7 @@ public class Main extends Application {
         tarsosAudioEngine.getFttListenerList().add(globalColorFFTService);
 
         wireSettingsStage(settingsStage, scene);
-        wirePrimaryStage(stage, appConfigPersistence, colorConfigPersistence);
+        wirePrimaryStage(stage, appConfigPersistence, colorConfigPersistence, tarsosAudioEngine);
 
         // run
         tarsosAudioEngine.start();
@@ -103,13 +103,27 @@ public class Main extends Application {
         });
     }
 
-    private void wirePrimaryStage(Stage primaryStage, AppConfigPersistence appConfigPersistence, ColorConfigPersistence colorConfigPersistence) {
+    private void wirePrimaryStage(Stage primaryStage, AppConfigPersistence appConfigPersistence, ColorConfigPersistence colorConfigPersistence, TarsosAudioEngine tarsosAudioEngine) {
         primaryStage.setOnCloseRequest(event -> {
             AppConfig.setWindowHeight(primaryStage.getHeight());
             AppConfig.setWindowWidth(primaryStage.getWidth());
             appConfigPersistence.persistConfig();
             colorConfigPersistence.persistConfig();
+            tarsosAudioEngine.stop();
             Platform.exit();
+
+            // force exit in 5 seconds if application does not finish
+            Thread exit = new Thread(() -> {
+                try {
+                    Thread.sleep(5 * 1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.err.println("Forced exit");
+                System.exit(1);
+            });
+            exit.setDaemon(true);
+            exit.start();
         });
     }
 

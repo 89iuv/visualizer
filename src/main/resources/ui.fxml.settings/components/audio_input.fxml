@@ -18,12 +18,19 @@
         <Label text="Buffer size:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
         <Spinner fx:id="bufferSize" editable="true" GridPane.rowIndex="2" GridPane.columnIndex="1">
             <valueFactory>
-                <SpinnerValueFactory.IntegerSpinnerValueFactory min="32" max="12288" amountToStepBy="256"/>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="32" max="24000" amountToStepBy="256"/>
             </valueFactory>
         </Spinner>
 
-        <Label text="buffer overlap:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <Label text="Buffer overlap:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
         <Spinner fx:id="bufferOverlap" editable="true" GridPane.rowIndex="3" GridPane.columnIndex="1">
+            <valueFactory>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="23744" amountToStepBy="256"/>
+            </valueFactory>
+        </Spinner>
+
+        <Label text="Zero padding:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <Spinner fx:id="zeroPadding" editable="true" GridPane.rowIndex="4" GridPane.columnIndex="1">
             <valueFactory>
                 <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="12256" amountToStepBy="256"/>
             </valueFactory>

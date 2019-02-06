@@ -10,6 +10,15 @@ import java.util.List;
 public class GlobalColorCalculator {
 
     public Color getGlobalColor(List<FrequencyBar> frequencyBars, int startHz, int endHz, boolean darkMode) {
+        if (frequencyBars.size() == 0) {
+            if (darkMode) {
+                return Color.BLACK;
+
+            } else {
+                return Color.WHITE;
+            }
+        }
+
         double sumIntensity = 0;
         double maxIntensity = 0;
 

@@ -41,7 +41,7 @@ public class TarsosAudioEngine {
         try {
             dispatcher.stop();
             // wait 5 seconds for audio dispatcher to finish
-            audioThread.join(5 * 1000);
+            audioThread.join(1 * 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -97,6 +97,7 @@ public class TarsosAudioEngine {
 
         // run the dispatcher (on a new thread).
         audioThread = new Thread(dispatcher, "Audio dispatching");
+        audioThread.setPriority(Thread.MAX_PRIORITY);
         audioThread.setDaemon(true);
         audioThread.start();
     }
