@@ -18,11 +18,9 @@ public class AppConfig {
 
     private static int minBarHeight = 3;
     private static double maxBarHeight = 750;
-    private static int barWidth = 40;
     private static int barGap = 2;
 
     private static int hzLabelHeight = 20;
-    private static int globalColorHeight = 40;
 
     private static int frequencyStart = 20;
     private static int frequencyCenter = 1000;
@@ -179,14 +177,6 @@ public class AppConfig {
         AppConfig.hueEntertainmentName = hueEntertainmentName;
     }
 
-    public static int getBarWidth() {
-        return barWidth;
-    }
-
-    public static void setBarWidth(int barWidth) {
-        AppConfig.barWidth = barWidth;
-    }
-
     public static int getHzLabelHeight() {
         return hzLabelHeight;
     }
@@ -225,14 +215,6 @@ public class AppConfig {
 
     public static void setTargetFPS(double targetFPS) {
         AppConfig.targetFPS = targetFPS;
-    }
-
-    public static int getGlobalColorHeight() {
-        return globalColorHeight;
-    }
-
-    public static void setGlobalColorHeight(int globalColorHeight) {
-        AppConfig.globalColorHeight = globalColorHeight;
     }
 
     public static int getAccelerationFactor() {

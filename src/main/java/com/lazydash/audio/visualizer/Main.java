@@ -8,20 +8,15 @@ import com.lazydash.audio.visualizer.system.config.AppConfig;
 import com.lazydash.audio.visualizer.system.config.WindowConfig;
 import com.lazydash.audio.visualizer.system.persistance.AppConfigPersistence;
 import com.lazydash.audio.visualizer.system.setup.SystemSetup;
-import com.lazydash.audio.visualizer.ui.code.color.GlobalColorAnimator;
-import com.lazydash.audio.visualizer.ui.code.color.GlobalColorView;
 import com.lazydash.audio.visualizer.ui.code.spectral.SpectralAnimator;
 import com.lazydash.audio.visualizer.ui.code.spectral.SpectralView;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -56,8 +51,7 @@ public class Main extends Application {
         HueIntegration hueIntegration = new HueIntegration();
 
         SpectralView spectralView = new SpectralView();
-        GlobalColorView globalColorView = new GlobalColorView();
-        Scene scene = createScene(spectralView, globalColorView);
+        Scene scene = createScene(spectralView);
         Stage settingsStage = createSettingsStage();
 
         FrequencyBarsFFTService spectralFFTService = new FrequencyBarsFFTService();
@@ -66,11 +60,9 @@ public class Main extends Application {
 
         HueIntegrationManager hueIntegrationManager = new HueIntegrationManager(hueIntegration, hueFFTService);
 
-        GlobalColorAnimator globalColorAnimator = new GlobalColorAnimator(globalColorFFTService, globalColorView);
         SpectralAnimator spectralAnimator = new SpectralAnimator(spectralFFTService, spectralView);
 
         // setup
-        globalColorView.configure();
         spectralView.configure();
         configureStage(stage, scene);
 
@@ -89,7 +81,6 @@ public class Main extends Application {
         stage.show();
 
         spectralAnimator.play();
-        globalColorAnimator.play();
 
     }
 
@@ -124,16 +115,9 @@ public class Main extends Application {
         });
     }
 
-    private Scene createScene(SpectralView spectralView, GlobalColorView globalColorView){
+    private Scene createScene(SpectralView spectralView){
         //create
-        VBox rootVbox = new VBox();
-        Scene scene = new Scene(rootVbox);
-
-        // wire
-        rootVbox.getChildren().add(spectralView);
-        rootVbox.getChildren().add(globalColorView);
-        rootVbox.setAlignment(Pos.BOTTOM_CENTER);
-        VBox.setVgrow(spectralView, Priority.ALWAYS);
+        Scene scene = new Scene(spectralView);
 
         WindowConfig.widthProperty = scene.widthProperty();
         WindowConfig.heightProperty = scene.heightProperty();
