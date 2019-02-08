@@ -61,12 +61,6 @@
             </valueFactory>
         </Spinner>
 
-        <Label text="Start color:" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
-        <ColorPicker fx:id="startColor" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
-
-        <Label text="End color:" GridPane.rowIndex="9" GridPane.columnIndex="0"/>
-        <ColorPicker fx:id="endColor" GridPane.rowIndex="9" GridPane.columnIndex="1"/>
-
     </GridPane>
 
 </VBox>

@@ -21,8 +21,8 @@ public class HueIntegrationController {
         NotificationService.getInstance().register(EventEnum.HUE_INTEGRATION_STATUS, new EventCallback() {
             @Override
             public void run(String message) {
+                AppConfig.setHueStatus(message);
                 Platform.runLater(() -> hueStatus.setText(message));
-
             }
         });
 

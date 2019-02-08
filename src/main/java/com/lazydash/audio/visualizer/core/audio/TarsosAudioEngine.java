@@ -97,7 +97,6 @@ public class TarsosAudioEngine {
 
         // run the dispatcher (on a new thread).
         audioThread = new Thread(dispatcher, "Audio dispatching");
-        audioThread.setPriority(Thread.MAX_PRIORITY);
         audioThread.setDaemon(true);
         audioThread.start();
     }

@@ -2,7 +2,7 @@ package com.lazydash.audio.visualizer.core.algorithm;
 
 import com.lazydash.audio.visualizer.core.model.ColorBand;
 import com.lazydash.audio.visualizer.core.model.FrequencyBar;
-import com.lazydash.audio.visualizer.system.config.ColorConfig;
+import com.lazydash.audio.visualizer.system.config.SpectralColorConfig;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ public class FrequencyBars {
             frequencyBars.add(new FrequencyBar(binsHz[i], amplitudes[i], Color.BLACK));
         }
 
-        for (ColorBand colorBand: ColorConfig.colorBands) {
+        for (ColorBand colorBand: SpectralColorConfig.colorBands) {
             addColorsToFrequencyBars(
                     frequencyBars,
                     colorBand.getStartColor(),

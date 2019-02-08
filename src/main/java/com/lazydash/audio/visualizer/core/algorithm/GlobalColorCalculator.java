@@ -2,7 +2,7 @@ package com.lazydash.audio.visualizer.core.algorithm;
 
 import com.lazydash.audio.visualizer.core.model.FrequencyBar;
 import com.lazydash.audio.visualizer.system.config.AppConfig;
-import com.lazydash.audio.visualizer.system.config.ColorConfig;
+import com.lazydash.audio.visualizer.system.config.SpectralColorConfig;
 import javafx.scene.paint.Color;
 
 import java.util.List;
@@ -54,7 +54,7 @@ public class GlobalColorCalculator {
 
         double avgIntensity = sumIntensity / nrBars;
 
-        Color baseColor = ColorConfig.baseColor;
+        Color baseColor = SpectralColorConfig.baseColor;
         Color mixColor = baseColor.interpolate(Color.color(avgRed, avgGreen, avgBlue, 1), maxIntensity);
 
         Color hsb;

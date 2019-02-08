@@ -7,7 +7,6 @@ import com.lazydash.audio.visualizer.external.hue.manager.HueIntegrationManager;
 import com.lazydash.audio.visualizer.system.config.AppConfig;
 import com.lazydash.audio.visualizer.system.config.WindowConfig;
 import com.lazydash.audio.visualizer.system.persistance.AppConfigPersistence;
-import com.lazydash.audio.visualizer.system.persistance.ColorConfigPersistence;
 import com.lazydash.audio.visualizer.system.setup.SystemSetup;
 import com.lazydash.audio.visualizer.ui.code.color.GlobalColorAnimator;
 import com.lazydash.audio.visualizer.ui.code.color.GlobalColorView;
@@ -53,7 +52,6 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         // create
         AppConfigPersistence appConfigPersistence = AppConfigPersistence.createAndReadConfiguration();
-        ColorConfigPersistence colorConfigPersistence = ColorConfigPersistence.createAndReadColorConfiguration();
         TarsosAudioEngine tarsosAudioEngine = new TarsosAudioEngine();
         HueIntegration hueIntegration = new HueIntegration();
 
@@ -82,7 +80,7 @@ public class Main extends Application {
         tarsosAudioEngine.getFttListenerList().add(globalColorFFTService);
 
         wireSettingsStage(settingsStage, scene);
-        wirePrimaryStage(stage, appConfigPersistence, colorConfigPersistence, tarsosAudioEngine);
+        wirePrimaryStage(stage, appConfigPersistence, tarsosAudioEngine);
 
         // run
         tarsosAudioEngine.start();
@@ -103,12 +101,11 @@ public class Main extends Application {
         });
     }
 
-    private void wirePrimaryStage(Stage primaryStage, AppConfigPersistence appConfigPersistence, ColorConfigPersistence colorConfigPersistence, TarsosAudioEngine tarsosAudioEngine) {
+    private void wirePrimaryStage(Stage primaryStage, AppConfigPersistence appConfigPersistence, TarsosAudioEngine tarsosAudioEngine) {
         primaryStage.setOnCloseRequest(event -> {
             AppConfig.setWindowHeight(primaryStage.getHeight());
             AppConfig.setWindowWidth(primaryStage.getWidth());
             appConfigPersistence.persistConfig();
-            colorConfigPersistence.persistConfig();
             tarsosAudioEngine.stop();
             Platform.exit();
 

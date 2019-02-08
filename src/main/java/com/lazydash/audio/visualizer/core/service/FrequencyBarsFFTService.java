@@ -12,22 +12,22 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class FrequencyBarsFFTService implements FFTListener {
     // the hzBins and the amplitudes come in pairs and access to them needs to be synchronized
-    private static ReentrantLock lock = new ReentrantLock(true);
+    private ReentrantLock lock = new ReentrantLock(true);
 
     // all of the instances have the same input from the audio dispatcher
-    private static double[] hzBins = null;
-    private static float[] amplitudes = null;
+    private double[] hzBins = null;
+    private float[] amplitudes = null;
 
     private FFTTimeFilter fftTimeFilter = new FFTTimeFilter();
     private BarsHeightCalculator barsHeightCalculator = new BarsHeightCalculator();
 
 
     @Override
-    public void frame(double[] hzBins, float[] normalizedAmplitudes, double spl) {
+    public void frame(double[] hzBins, float[] normalizedAmplitudes) {
         try {
             lock.lock();
-            FrequencyBarsFFTService.hzBins = hzBins;
-            FrequencyBarsFFTService.amplitudes = normalizedAmplitudes;
+            this.hzBins = hzBins;
+            this.amplitudes = normalizedAmplitudes;
 
         } finally {
             lock.unlock();
@@ -39,8 +39,8 @@ public class FrequencyBarsFFTService implements FFTListener {
         float[] returnAmplitudes;
         try {
             lock.lock();
-            returnBinz = FrequencyBarsFFTService.hzBins;
-            returnAmplitudes = FrequencyBarsFFTService.amplitudes;
+            returnBinz = this.hzBins;
+            returnAmplitudes = this.amplitudes;
 
         } finally {
             lock.unlock();

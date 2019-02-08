@@ -5,7 +5,7 @@ import com.lazydash.audio.visualizer.core.model.FrequencyBar;
 import com.lazydash.audio.visualizer.core.service.FrequencyBarsFFTService;
 import com.lazydash.audio.visualizer.external.hue.HueIntegration;
 import com.lazydash.audio.visualizer.system.config.AppConfig;
-import com.lazydash.audio.visualizer.system.config.ColorConfig;
+import com.lazydash.audio.visualizer.system.config.SpectralColorConfig;
 import javafx.scene.paint.Color;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ public class HueIntegrationManager {
     private HueIntegration hueIntegration;
     private FrequencyBarsFFTService hueFFTService;
 
-    private Color previousColor = ColorConfig.baseColor;
+    private Color previousColor = SpectralColorConfig.baseColor;
 
     private GlobalColorCalculator globalColorCalculator = new GlobalColorCalculator();
 
@@ -38,7 +38,8 @@ public class HueIntegrationManager {
             return thread;
         });
 
-        double delayMs = (1000 / AppConfig.getHueTargetFPS());
+        // process correction of 2 ms
+        double delayMs = (1000 / AppConfig.getHueTargetFPS()) - 2;
         executorService.scheduleWithFixedDelay(
                 this::run,
                 0,
@@ -63,7 +64,11 @@ public class HueIntegrationManager {
 
     private void updateHueColor() {
         List<FrequencyBar> frequencyBarList = hueFFTService.getFrequencyBarList(AppConfig.getHueTargetFPS());
-        Color color = globalColorCalculator.getGlobalColor(frequencyBarList, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+        Color color = globalColorCalculator.getGlobalColor(
+                frequencyBarList,
+                Integer.MIN_VALUE,
+                125,
+                true);
 
         if (!previousColor.equals(color)) {
             hueIntegration.setColor(color);

@@ -48,10 +48,6 @@ public class SpectralView extends GridPane {
             frequencyView.setHzValue(frequencyBar.getHz());
             frequencyView.setBarHeight(frequencyBar.getHeight());
 
-            if (frequencyBar.getHz() == 0) {
-                frequencyView.setBarColor(Color.WHITE);
-            }
-
         }
     }
 
@@ -68,10 +64,6 @@ public class SpectralView extends GridPane {
             frequencyView.setBarHeight(frequencyBar.getHeight());
             frequencyView.setHzHeight(AppConfig.getHzLabelHeight());
 
-            if (frequencyBar.getHz() == 0) {
-                frequencyView.setBarColor(Color.WHITE);
-            }
-
             frequencyViewList.add(frequencyView);
 
             // todo encapsulate rectangle and hzLabel in FrequencyView
@@ -81,7 +73,10 @@ public class SpectralView extends GridPane {
             GridPane.setValignment(frequencyView.getRectangle(), VPos.BOTTOM);
             GridPane.setHalignment(frequencyView.getHzLabel(), HPos.CENTER);
 
-            frequencyView.getRectangle().widthProperty().bind(WindowConfig.widthProperty.divide(frequencyBarList.size()).subtract(AppConfig.getBarGap() + 1));
+            frequencyView.getRectangle().widthProperty().bind(
+                    WindowConfig.widthProperty
+                            .divide(frequencyBarList.size())
+                            .subtract(AppConfig.getBarGap() + 1));
         }
     }
 
