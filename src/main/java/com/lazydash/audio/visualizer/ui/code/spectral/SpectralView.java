@@ -2,7 +2,7 @@ package com.lazydash.audio.visualizer.ui.code.spectral;
 
 import com.lazydash.audio.visualizer.core.model.FrequencyBar;
 import com.lazydash.audio.visualizer.system.config.AppConfig;
-import com.lazydash.audio.visualizer.system.config.WindowConfig;
+import com.lazydash.audio.visualizer.system.config.WindowProperty;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
@@ -18,15 +18,15 @@ public class SpectralView extends GridPane {
         this.setAlignment(Pos.BOTTOM_CENTER);
         this.setHgap(AppConfig.getBarGap());
 
-        WindowConfig.heightProperty.addListener((observable, oldValue, newValue) -> {
+        WindowProperty.heightProperty.addListener((observable, oldValue, newValue) -> {
             AppConfig.setMaxBarHeight(newValue.doubleValue() - AppConfig.getHzLabelHeight());
         });
 
-        WindowConfig.widthProperty.addListener((observable, oldValue, newValue) -> {
+        WindowProperty.widthProperty.addListener((observable, oldValue, newValue) -> {
             this.setPrefWidth(newValue.doubleValue());
         });
 
-        WindowConfig.widthProperty.addListener((observable, oldValue, newValue) -> {
+        WindowProperty.widthProperty.addListener((observable, oldValue, newValue) -> {
             frequencyViewList.forEach(frequencyView -> {
                 frequencyView.getRectangle().setWidth((int) (this.getWidth() / frequencyViewList.size()) - AppConfig.getBarGap());
             });
@@ -48,6 +48,7 @@ public class SpectralView extends GridPane {
             FrequencyBar frequencyBar = frequencyBarList.get(i);
             frequencyView.setBarColor(frequencyBar.getColor());
             frequencyView.setBarHeight(frequencyBar.getHeight());
+            frequencyView.setHzValue(frequencyBar.getHz());
         }
     }
 
@@ -63,7 +64,7 @@ public class SpectralView extends GridPane {
             frequencyView.setHzValue(frequencyBar.getHz());
             frequencyView.setHzHeight(AppConfig.getHzLabelHeight());
 
-            frequencyView.getRectangle().setWidth((int) (WindowConfig.widthProperty.getValue() / frequencyBarList.size()) - AppConfig.getBarGap());
+            frequencyView.getRectangle().setWidth((int) (WindowProperty.widthProperty.getValue() / frequencyBarList.size()) - AppConfig.getBarGap());
 
             frequencyViewList.add(frequencyView);
 

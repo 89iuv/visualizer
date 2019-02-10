@@ -8,7 +8,7 @@ import javafx.scene.paint.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FrequencyBars {
+public class FrequencyBarsCreator {
 
     public static List<FrequencyBar> createFrequencyBars(double[] binsHz, float[] amplitudes) {
         List<FrequencyBar> frequencyBars = new ArrayList<>(binsHz.length);

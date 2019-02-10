@@ -37,43 +37,42 @@ public class BarsHeightCalculator {
                 newHeight = AppConfig.getMinBarHeight();
             }
 
-            int decayDeltaThreshold = 1;
-            if (newHeight - oldHeight > decayDeltaThreshold) {
+
+            if (newHeight > oldHeight) {
                 // use new height
                 amplitudes[i] = (float) newHeight;
                 decay[i] = 0;
 
-            } else if (oldHeight - newHeight >= decayDeltaThreshold) {
-                // only do the decay if the new height is bellow the minimum decay frames in order to not flicker.
-                doDecay(i, targetFPS);
+            } else if (newHeight < oldHeight) {
+                // decayFrames is per bar because of acceleration variances
+                double decayFrames = 0;
+                if (AppConfig.getDecayTime() > 0) {
+                    decayFrames = (AppConfig.getMaxBarHeight() * (1000d / targetFPS) / AppConfig.getDecayTime());
+                }
 
-            } else if (newHeight - AppConfig.getMinBarHeight() <= decayDeltaThreshold) {
-                amplitudes[i] = AppConfig.getMinBarHeight();
+                if (AppConfig.getAccelerationFactor() > 0 && decay[i] < 1) {
+                    double accelerationStep = (decayFrames / (decayFrames * AppConfig.getAccelerationFactor()));
+                    decay[i] = decay[i] + accelerationStep;
+                    decayFrames = decayFrames * decay[i];
+                }
+
+                if (oldHeight - decayFrames < newHeight) {
+                    decay[i] = 0;
+                    amplitudes[i] = (float) newHeight;
+
+                } else {
+                    amplitudes[i] = (float) (amplitudes[i] - decayFrames);
+                }
 
             }
+
+            // correction for bellow min bar height
+            if (amplitudes[i] < AppConfig.getMinBarHeight()) {
+                amplitudes[i] = AppConfig.getMinBarHeight();
+            }
+
         }
 
         return amplitudes;
-    }
-
-
-    private void doDecay(int i, double targetFPS) {
-        double decayFrames = 0;
-        if (AppConfig.getDecayTime() > 0) {
-            decayFrames = (AppConfig.getMaxBarHeight() * (1000d / targetFPS) / AppConfig.getDecayTime());
-        }
-
-        if (decay[i] < 1 && AppConfig.getAccelerationFactor() > 0) {
-            double accelerationStep = (decayFrames / (decayFrames * AppConfig.getAccelerationFactor()));
-            decay[i] = decay[i] + accelerationStep;
-            decayFrames = decayFrames * decay[i];
-        }
-
-        if (amplitudes[i] - decayFrames < AppConfig.getMinBarHeight()) {
-            amplitudes[i] = AppConfig.getMinBarHeight();
-
-        } else {
-            amplitudes[i] = (float) (amplitudes[i] - decayFrames);
-        }
     }
 }

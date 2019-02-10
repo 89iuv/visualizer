@@ -2,7 +2,7 @@ package com.lazydash.audio.visualizer.core.service;
 
 import com.lazydash.audio.visualizer.core.algorithm.BarsHeightCalculator;
 import com.lazydash.audio.visualizer.core.algorithm.FFTTimeFilter;
-import com.lazydash.audio.visualizer.core.algorithm.FrequencyBars;
+import com.lazydash.audio.visualizer.core.algorithm.FrequencyBarsCreator;
 import com.lazydash.audio.visualizer.core.audio.FFTListener;
 import com.lazydash.audio.visualizer.core.model.FrequencyBar;
 
@@ -37,6 +37,7 @@ public class FrequencyBarsFFTService implements FFTListener {
     public List<FrequencyBar> getFrequencyBarList(double targetFps) {
         double[] returnBinz;
         float[] returnAmplitudes;
+
         try {
             lock.lock();
             returnBinz = this.hzBins;
@@ -50,9 +51,10 @@ public class FrequencyBarsFFTService implements FFTListener {
         if (returnAmplitudes != null) {
             returnAmplitudes = fftTimeFilter.filter(returnAmplitudes);
             returnAmplitudes = barsHeightCalculator.processAmplitudes(returnAmplitudes, targetFps);
-            frequencyBars = FrequencyBars.createFrequencyBars(returnBinz, returnAmplitudes);
+            frequencyBars = FrequencyBarsCreator.createFrequencyBars(returnBinz, returnAmplitudes);
 
         } else {
+            // return empty array
             frequencyBars = new ArrayList<>();
         }
 

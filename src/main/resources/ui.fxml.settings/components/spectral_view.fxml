@@ -29,7 +29,7 @@
         <Label text="Frequency start:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
         <Spinner fx:id="frequencyStart" editable="true" GridPane.rowIndex="3" GridPane.columnIndex="1">
             <valueFactory>
-                <SpinnerValueFactory.IntegerSpinnerValueFactory min="20" max="22000" amountToStepBy="1"/>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="1" max="22000" amountToStepBy="1"/>
             </valueFactory>
         </Spinner>
 

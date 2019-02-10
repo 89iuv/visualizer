@@ -25,8 +25,12 @@ public class FrequencyView {
     }
 
     public void setHzValue(double hz) {
-        if (hz >= 1000) {
-            this.hzLabel.setText(String.format("%.1f",hz / 1000d) + "K");
+        if (hz >= 10000) {
+            this.hzLabel.setText(String.format("%.0f", hz / 1000d) + "K");
+
+        } else if (hz >= 1000) {
+            this.hzLabel.setText(String.format("%.1f", hz / 1000d) + "K");
+
         } else {
             this.hzLabel.setText(String.format("%.0f", hz));
         }

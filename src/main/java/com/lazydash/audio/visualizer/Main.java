@@ -5,7 +5,7 @@ import com.lazydash.audio.visualizer.core.service.FrequencyBarsFFTService;
 import com.lazydash.audio.visualizer.external.hue.HueIntegration;
 import com.lazydash.audio.visualizer.external.hue.manager.HueIntegrationManager;
 import com.lazydash.audio.visualizer.system.config.AppConfig;
-import com.lazydash.audio.visualizer.system.config.WindowConfig;
+import com.lazydash.audio.visualizer.system.config.WindowProperty;
 import com.lazydash.audio.visualizer.system.persistance.AppConfigPersistence;
 import com.lazydash.audio.visualizer.system.setup.SystemSetup;
 import com.lazydash.audio.visualizer.ui.code.spectral.SpectralAnimator;
@@ -119,8 +119,8 @@ public class Main extends Application {
         //create
         Scene scene = new Scene(spectralView);
 
-        WindowConfig.widthProperty = scene.widthProperty();
-        WindowConfig.heightProperty = scene.heightProperty();
+        WindowProperty.widthProperty = scene.widthProperty();
+        WindowProperty.heightProperty = scene.heightProperty();
 
         return scene;
     }

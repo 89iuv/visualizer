@@ -36,9 +36,7 @@ public class SpectralAnimator {
         long newTime = System.currentTimeMillis();
         long deltaTime = newTime - oldTime;
 
-        if (Math.abs(deltaTime - 1000d / AppConfig.getTargetFPS()) > 3) {
-//                LOGGER.trace(String.valueOf(deltaTime));
-        }
+//        LOGGER.info(String.valueOf(deltaTime));
         oldTime = newTime;
     }
 

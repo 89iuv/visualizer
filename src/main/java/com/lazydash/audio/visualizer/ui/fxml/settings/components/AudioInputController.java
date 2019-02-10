@@ -34,15 +34,6 @@ public class AudioInputController {
 
         bufferSize.getValueFactory().setValue(AppConfig.getBufferSize());
         bufferSize.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue % 2 != 0) {
-                if (newValue > 12288) {
-                    newValue = newValue - 1;
-
-                } else {
-                    newValue = newValue + 1;
-                }
-            }
-
             if (bufferOverlap.getValue() > newValue - 256) {
                 bufferOverlap.getValueFactory().setValue(newValue - 256);
                 AppConfig.setBufferOverlap(newValue - 256);
@@ -54,15 +45,6 @@ public class AudioInputController {
 
         bufferOverlap.getValueFactory().setValue(AppConfig.getBufferOverlap());
         bufferOverlap.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue % 2 != 0) {
-                if (newValue > 12256) {
-                    newValue = newValue - 1;
-
-                } else {
-                    newValue = newValue + 1;
-                }
-            }
-
             if (newValue > bufferSize.getValue() - 256) {
                 newValue = newValue - 256;
             }
