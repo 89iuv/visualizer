@@ -3,12 +3,13 @@ package com.lazydash.audio.visualizer.core.audio;
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.util.fft.FFT;
-import be.tarsos.dsp.util.fft.HannWindow;
+import be.tarsos.dsp.util.fft.HammingWindow;
 import be.tarsos.dsp.util.fft.WindowFunction;
 import com.lazydash.audio.visualizer.core.algorithm.OctaveGenerator;
 import com.lazydash.audio.visualizer.system.config.AppConfig;
-import org.apache.commons.math3.analysis.interpolation.NevilleInterpolator;
-import org.apache.commons.math3.analysis.polynomials.PolynomialFunctionLagrangeForm;
+import org.apache.commons.math3.analysis.UnivariateFunction;
+import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
+import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,9 +23,9 @@ public class FFTAudioProcessor implements AudioProcessor {
 
     private List<FFTListener> listenerList;
     private AudioFormat audioFormat;
-    private WindowFunction windowFunction = new HannWindow();
-    private double windowCorrectionFactor = 2.00;
-    private NevilleInterpolator nevilleInterpolator = new NevilleInterpolator();
+    private WindowFunction windowFunction = new HammingWindow();
+    private double windowCorrectionFactor = 1.85;
+    private UnivariateInterpolator interpolator = new LinearInterpolator();
 
     FFTAudioProcessor(AudioFormat audioFormat, List<FFTListener> listenerList) {
         this.audioFormat = audioFormat;
@@ -65,8 +66,7 @@ public class FFTAudioProcessor implements AudioProcessor {
         // m is the position in the octaveFrequency vectors
         int m = 0;
         // k is the position in the amplitudes vector
-        // ignore first bin as it has the DC component in it
-        int k = 1;
+        int k = 0;
         for (int i = 0; i < octaveFrequencies.size(); i++) {
             // the target octave frequency will be calculated
             // by grouping bins from half right to half left
@@ -86,7 +86,7 @@ public class FFTAudioProcessor implements AudioProcessor {
             while (bins[k] <= frequencyHigh) {
                 // skip k values until we get to the first target frequency
                 // otherwise the first target frequency will have all the energy from the first bins
-                if (bins[k] < octaveFrequencies.get(0)) {
+                if (bins[k] < (octaveFrequencies.get(0) + octaveFrequencies.get(1)) / 2) {
                     k++;
                     continue;
                 }
@@ -99,15 +99,15 @@ public class FFTAudioProcessor implements AudioProcessor {
                 p++;
             }
 
-            // interpolate missing value using a 3 point quadratic interpolator
-            // http://commons.apache.org/proper/commons-math/userguide/analysis.html
+            // interpolate missing value using a 3 points
             if (p < 3) {
+                octaveBins[m] = - octaveFrequencies.get(i);
                 double value;
-                PolynomialFunctionLagrangeForm interpolate;
-                if (k > 3) {
+                UnivariateFunction interpolate;
+                if (k > 2) {
                     // k has been previously incremented past the frequency of interest
                     // and we need to take the 3 points starting from the - 2 position in the bins vector
-                    interpolate = nevilleInterpolator.interpolate(new double[]{
+                    interpolate = interpolator.interpolate(new double[]{
                                     bins[k - 2],
                                     bins[k - 1],
                                     bins[k]},
@@ -118,14 +118,14 @@ public class FFTAudioProcessor implements AudioProcessor {
                 } else {
                     // we need values that are smaller than the first bin can return
                     // we interpolate from the first 3 bins in this case
-                    interpolate = nevilleInterpolator.interpolate(new double[]{
+                    interpolate = interpolator.interpolate(new double[]{
+                                    bins[0],
                                     bins[1],
-                                    bins[2],
-                                    bins[3]},
+                                    bins[2]},
                             new double[]{
+                                    amplitudes[0],
                                     amplitudes[1],
-                                    amplitudes[2],
-                                    amplitudes[3]});
+                                    amplitudes[2]});
                 }
 
                 value = interpolate.value(octaveFrequencies.get(i));
