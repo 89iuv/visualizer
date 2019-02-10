@@ -3,12 +3,12 @@ package com.lazydash.audio.visualizer.core.audio;
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.util.fft.FFT;
-import be.tarsos.dsp.util.fft.HammingWindow;
+import be.tarsos.dsp.util.fft.HannWindow;
 import be.tarsos.dsp.util.fft.WindowFunction;
 import com.lazydash.audio.visualizer.core.algorithm.OctaveGenerator;
 import com.lazydash.audio.visualizer.system.config.AppConfig;
 import org.apache.commons.math3.analysis.UnivariateFunction;
-import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
+import org.apache.commons.math3.analysis.interpolation.NevilleInterpolator;
 import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +23,9 @@ public class FFTAudioProcessor implements AudioProcessor {
 
     private List<FFTListener> listenerList;
     private AudioFormat audioFormat;
-    private WindowFunction windowFunction = new HammingWindow();
-    private double windowCorrectionFactor = 1.85;
-    private UnivariateInterpolator interpolator = new LinearInterpolator();
+    private WindowFunction windowFunction = new HannWindow();
+    private double windowCorrectionFactor = 2.00;
+    private UnivariateInterpolator interpolator = new NevilleInterpolator();
 
     FFTAudioProcessor(AudioFormat audioFormat, List<FFTListener> listenerList) {
         this.audioFormat = audioFormat;
@@ -136,7 +136,7 @@ public class FFTAudioProcessor implements AudioProcessor {
             }
 
             octaveAmplitudes[m] = (float) Math.sqrt(octaveAmplitudes[m]); // square root the energy
-            octaveAmplitudes[m] = (float) (Math.sqrt(Math.pow(octaveAmplitudes[m], 2) / 2)); // calculate the RMS of the amplitude
+//            octaveAmplitudes[m] = (float) (Math.sqrt(Math.pow(octaveAmplitudes[m], 2) / 2)); // calculate the RMS of the amplitude
             octaveAmplitudes[m] = (float) (20 * Math.log10(octaveAmplitudes[m])); // convert to logarithmic scale
 
             m++;
