@@ -20,12 +20,12 @@ public class BarsHeightCalculator {
             double oldHeight = amplitudes[i];
 
             double maxHeight = Math.abs(AppConfig.getSignalThreshold());
-            double newHeight = (newAmplitudes[i] + Math.abs(AppConfig.getSignalThreshold()));
-//            double newHeight = (newAmplitudes[i]);
             double windowHeight = AppConfig.getMaxBarHeight();
 
-            newHeight =(((windowHeight) / maxHeight)) * (newHeight * (AppConfig.getSignalAmplification() / 100d));
-//            newHeight = (newHeight * (AppConfig.getSignalAmplification()));
+            double newHeight = (newAmplitudes[i] + Math.abs(AppConfig.getSignalThreshold()));
+            newHeight = (windowHeight / maxHeight) * (newHeight);
+            newHeight = (newHeight * (AppConfig.getSignalAmplification() / 100d));
+
 
             // apply limits
             if (newHeight > AppConfig.getMaxBarHeight()) {

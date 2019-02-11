@@ -8,13 +8,14 @@ import be.tarsos.dsp.util.fft.WindowFunction;
 import com.lazydash.audio.visualizer.core.algorithm.OctaveGenerator;
 import com.lazydash.audio.visualizer.system.config.AppConfig;
 import org.apache.commons.math3.analysis.UnivariateFunction;
-import org.apache.commons.math3.analysis.interpolation.NevilleInterpolator;
+import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sound.sampled.AudioFormat;
 import java.util.List;
+import java.util.stream.IntStream;
 
 
 public class FFTAudioProcessor implements AudioProcessor {
@@ -25,7 +26,7 @@ public class FFTAudioProcessor implements AudioProcessor {
     private AudioFormat audioFormat;
     private WindowFunction windowFunction = new HannWindow();
     private double windowCorrectionFactor = 2.00;
-    private UnivariateInterpolator interpolator = new NevilleInterpolator();
+    private UnivariateInterpolator interpolator = new LinearInterpolator();
 
     FFTAudioProcessor(AudioFormat audioFormat, List<FFTListener> listenerList) {
         this.audioFormat = audioFormat;
@@ -56,9 +57,9 @@ public class FFTAudioProcessor implements AudioProcessor {
         fft.forwardTransform(transformBuffer);
         fft.modulus(transformBuffer, amplitudes);
 
-        for (int i = 0; i < bins.length; i++) {
-            bins[i] = fft.binToHz(i, audioFormat.getSampleRate());
-        }
+        bins = IntStream.range(0, bins.length).mapToDouble(i -> fft.binToHz(i, audioFormat.getSampleRate())).toArray();
+        double[] doublesAmplitudes = IntStream.range(0, amplitudes.length).mapToDouble(value -> amplitudes[value]).toArray();
+        UnivariateFunction interpolate = interpolator.interpolate(bins, doublesAmplitudes);
 
         double[] octaveBins = new double[octaveFrequencies.size()];
         float[] octaveAmplitudes = new float[octaveFrequencies.size()];
@@ -86,7 +87,7 @@ public class FFTAudioProcessor implements AudioProcessor {
             while (bins[k] <= frequencyHigh) {
                 // skip k values until we get to the first target frequency
                 // otherwise the first target frequency will have all the energy from the first bins
-                if (bins[k] < (octaveFrequencies.get(0) + octaveFrequencies.get(1)) / 2) {
+                if (bins[k] < octaveFrequencies.get(0)) {
                     k++;
                     continue;
                 }
@@ -99,36 +100,10 @@ public class FFTAudioProcessor implements AudioProcessor {
                 p++;
             }
 
-            // interpolate missing value using a 3 points
-            if (p < 3) {
+            // interpolate if there is to little data
+            if (p < 5) {
                 octaveBins[m] = - octaveFrequencies.get(i);
-                double value;
-                UnivariateFunction interpolate;
-                if (k > 2) {
-                    // k has been previously incremented past the frequency of interest
-                    // and we need to take the 3 points starting from the - 2 position in the bins vector
-                    interpolate = interpolator.interpolate(new double[]{
-                                    bins[k - 2],
-                                    bins[k - 1],
-                                    bins[k]},
-                            new double[]{
-                                    amplitudes[k - 2],
-                                    amplitudes[k - 1],
-                                    amplitudes[k]});
-                } else {
-                    // we need values that are smaller than the first bin can return
-                    // we interpolate from the first 3 bins in this case
-                    interpolate = interpolator.interpolate(new double[]{
-                                    bins[0],
-                                    bins[1],
-                                    bins[2]},
-                            new double[]{
-                                    amplitudes[0],
-                                    amplitudes[1],
-                                    amplitudes[2]});
-                }
-
-                value = interpolate.value(octaveFrequencies.get(i));
+                double value = interpolate.value(octaveFrequencies.get(i));
 
                 float amplitude = (float) (value / amplitudes.length); // normalize (n/2)
                 amplitude = (float) (amplitude * windowCorrectionFactor); // apply window correction
