@@ -8,13 +8,10 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.Spinner;
 
 public class SpectralViewController {
-
-    public Spinner<Integer> minBarHeight;
     public Slider signalAmplification;
     public Slider signalThreshold;
     public Label signalAmplificationValue;
     public Label signalThresholdValue;
-    public Spinner<Integer> timeFilter;
     public Spinner<Integer> frequencyStart;
     public Spinner<Integer> frequencyEnd;
     public Spinner<Integer> octave;
@@ -41,11 +38,6 @@ public class SpectralViewController {
             }
         });
 
-        timeFilter.getValueFactory().setValue(AppConfig.getTimeFilterSize());
-        timeFilter.valueProperty().addListener((observable, oldValue, newValue) -> {
-            AppConfig.setTimeFilterSize(newValue);
-        });
-
         frequencyStart.getValueFactory().setValue(AppConfig.getFrequencyStart());
         frequencyStart.valueProperty().addListener((observable, oldValue, newValue) -> {
             AppConfig.setFrequencyStart(newValue);
@@ -69,11 +61,6 @@ public class SpectralViewController {
         octave.getValueFactory().setValue(AppConfig.getOctave());
         octave.valueProperty().addListener((observable, oldValue, newValue) -> {
             AppConfig.setOctave(newValue);
-        });
-
-        minBarHeight.getValueFactory().setValue(AppConfig.getMinBarHeight());
-        minBarHeight.valueProperty().addListener((observable, oldValue, newValue) -> {
-            AppConfig.setMinBarHeight(newValue);
         });
     }
 }

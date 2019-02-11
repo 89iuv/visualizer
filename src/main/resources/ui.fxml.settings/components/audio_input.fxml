@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.lazydash.audio.visualizer.ui.common.Counter?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <VBox xmlns="http://javafx.com/javafx"
@@ -9,28 +10,33 @@
     <Label styleClass="title" text="Audio format and buffer size" />
     <Separator styleClass="separator"/>
     <GridPane styleClass="settings-group">
-        <Label text="Input device: " GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-        <ComboBox fx:id="inputDevice" onAction="#updateInputDevice" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
-        <Label text="Sample rate: " GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-        <ComboBox fx:id="sampleRate" onAction="#updateSampleRate" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+        <fx:define>
+            <Counter fx:id="row" />
+        </fx:define>
 
-        <Label text="Buffer size:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-        <Spinner fx:id="bufferSize" editable="true" GridPane.rowIndex="2" GridPane.columnIndex="1">
+        <Label text="Input device: " GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="inputDevice" onAction="#updateInputDevice" GridPane.rowIndex="$row.value" GridPane.columnIndex="1"/>
+
+        <Label text="Sample rate: " GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="sampleRate" onAction="#updateSampleRate" GridPane.rowIndex="$row.value" GridPane.columnIndex="1"/>
+
+        <Label text="Buffer size:" GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
+        <Spinner fx:id="bufferSize" editable="true" GridPane.rowIndex="$row.value" GridPane.columnIndex="1">
             <valueFactory>
                 <SpinnerValueFactory.IntegerSpinnerValueFactory min="32" max="24000" amountToStepBy="256"/>
             </valueFactory>
         </Spinner>
 
-        <Label text="Buffer overlap:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-        <Spinner fx:id="bufferOverlap" editable="true" GridPane.rowIndex="3" GridPane.columnIndex="1">
+        <Label text="Buffer overlap:" GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
+        <Spinner fx:id="bufferOverlap" editable="true" GridPane.rowIndex="$row.value" GridPane.columnIndex="1">
             <valueFactory>
                 <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="23744" amountToStepBy="256"/>
             </valueFactory>
         </Spinner>
 
-        <Label text="Zero padding:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-        <Spinner fx:id="zeroPadding" editable="true" GridPane.rowIndex="4" GridPane.columnIndex="1">
+        <Label text="Zero padding:" GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
+        <Spinner fx:id="zeroPadding" editable="true" GridPane.rowIndex="$row.value" GridPane.columnIndex="1">
             <valueFactory>
                 <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="12256" amountToStepBy="256"/>
             </valueFactory>
