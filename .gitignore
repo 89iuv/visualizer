@@ -18,25 +18,23 @@
 *.zip
 *.tar.gz
 *.rar
+*.dll
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
 # Distribution
-/distribution/
+dist/
 
 # Idee
-/.idea/
+.idea/
 *.iml
 
 # Maven
-/target/
+target/
 
-# Hue
-/hue/db
-/hue/sdk/*.jar
-/hue/sdk/*.dll
+# Plugins data
+spectrum/data/
 
 # Config files
-/application.properties
-/color.properties
+application.properties
