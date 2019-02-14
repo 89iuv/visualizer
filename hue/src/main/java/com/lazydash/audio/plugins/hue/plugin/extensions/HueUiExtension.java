@@ -1,0 +1,34 @@
+package com.lazydash.audio.plugins.hue.plugin.extensions;
+
+import com.lazydash.audio.spectrum.plugin.UiExtensionPoint;
+import com.lazydash.audio.spectrum.ui.fxml.settings.SettingsController;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import org.pf4j.Extension;
+
+import java.io.IOException;
+
+@Extension
+public class HueUiExtension implements UiExtensionPoint {
+
+    @Override
+    public void extendSettingsController(SettingsController settingsController) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/ui.fxml.settings/components/hue_integration.fxml"));
+
+            // here something interesting happens
+            // the code gets initialized using the classpath of the parent
+            // but what we want is the classpath of the plugin
+            // in order to detect and initialize the plugin controller
+            fxmlLoader.setClassLoader(getClass().getClassLoader());
+
+            Parent parent = fxmlLoader.load();
+            settingsController.addTitleToFMXL("Hue integration", parent);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+}

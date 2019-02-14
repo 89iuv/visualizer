@@ -1,0 +1,1 @@
+In this folder copy the huecppsdk-wrapper.jar for your target platform from the hue repo: https://github.com/PhilipsHue/HueSDK4EDK

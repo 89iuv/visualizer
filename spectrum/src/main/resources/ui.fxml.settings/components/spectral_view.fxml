@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.lazydash.audio.spectrum.ui.fxml.common.FxmlCounter?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.lazydash.audio.spectrum.ui.fxml.settings.components.SpectralViewController">
+
+    <Label styleClass="title" text="Spectral view" />
+    <Separator styleClass="separator"/>
+    <GridPane styleClass="settings-group">
+
+        <fx:define>
+            <FxmlCounter fx:id="row" />
+        </fx:define>
+
+        <Label text="Signal amplification (factor):" GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
+        <Slider fx:id="signalAmplification" min="0" max="200" majorTickUnit="25" minorTickCount="9" showTickMarks="true" showTickLabels="true"
+                GridPane.rowIndex="$row.value" GridPane.columnIndex="1" GridPane.fillWidth="true" GridPane.hgrow="ALWAYS"/>
+        <Label fx:id="signalAmplificationValue" styleClass="sliderValueLabel" GridPane.rowIndex="$row.value" GridPane.columnIndex="2"/>
+
+        <Label text="Signal Threshold (db):" GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
+        <Slider prefWidth="250" fx:id="signalThreshold" min="-90" max="0" majorTickUnit="10" minorTickCount="4" showTickMarks="true" showTickLabels="true"
+                GridPane.rowIndex="$row.value" GridPane.columnIndex="1"/>
+        <Label fx:id="signalThresholdValue" styleClass="sliderValueLabel" GridPane.rowIndex="$row.value" GridPane.columnIndex="2"/>
+
+        <Label text="Frequency start:" GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
+        <Spinner fx:id="frequencyStart" editable="true" GridPane.rowIndex="$row.value" GridPane.columnIndex="1">
+            <valueFactory>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="1" max="22000" amountToStepBy="1"/>
+            </valueFactory>
+        </Spinner>
+
+        <Label text="Frequency center:" GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
+        <Spinner fx:id="frequencyCenter" editable="true" GridPane.rowIndex="$row.value" GridPane.columnIndex="1">
+            <valueFactory>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="20" max="22000" amountToStepBy="1"/>
+            </valueFactory>
+        </Spinner>
+
+        <Label text="Frequency end:" GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
+        <Spinner fx:id="frequencyEnd" editable="true" GridPane.rowIndex="$row.value" GridPane.columnIndex="1">
+            <valueFactory>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="20" max="24000" amountToStepBy="1"/>
+            </valueFactory>
+        </Spinner>
+
+        <Label text="Octave (1/n):" GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
+        <Spinner fx:id="octave" editable="true" GridPane.rowIndex="$row.value" GridPane.columnIndex="1">
+            <valueFactory>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="1" max="6" amountToStepBy="1"/>
+            </valueFactory>
+        </Spinner>
+
+    </GridPane>
+
+</VBox>

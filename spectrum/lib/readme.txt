@@ -1,0 +1,1 @@
+Any jar library added here will be loaded into the spectrum classpath and made available to all plugins
