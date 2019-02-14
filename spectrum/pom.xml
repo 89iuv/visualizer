@@ -55,14 +55,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.philips.lighting.hue.sdk.wrapper</groupId>
-            <artifactId>sdk-4-edk</artifactId>
-            <version>1.28.49-beta</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/huecppsdk-wrapper.jar</systemPath>
-        </dependency>
-
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
@@ -73,22 +65,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.6.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <mainClass>com.lazydash.audio.spectrum.Main</mainClass>
-                </configuration>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>

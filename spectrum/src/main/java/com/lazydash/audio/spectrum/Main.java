@@ -45,7 +45,10 @@ public class Main extends Application {
             String[] list = dllPath.toFile().list();
             if (list != null) {
                 Arrays.stream(list).forEach(fileName -> {
-                    System.loadLibrary(fileName.substring(0, fileName.lastIndexOf('.')));
+                    String extension = fileName.substring(fileName.lastIndexOf('.'));
+                    if (extension.equals(".dll")) {
+                        System.loadLibrary(fileName.substring(0, fileName.lastIndexOf('.')));
+                    }
                 });
             }
         }
