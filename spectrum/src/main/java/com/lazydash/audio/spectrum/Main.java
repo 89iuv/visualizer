@@ -5,7 +5,7 @@ import com.lazydash.audio.spectrum.core.service.FrequencyBarsFFTService;
 import com.lazydash.audio.spectrum.plugin.PluginSystem;
 import com.lazydash.audio.spectrum.system.config.AppConfig;
 import com.lazydash.audio.spectrum.system.config.WindowProperty;
-import com.lazydash.audio.spectrum.system.persistance.AppConfigPersistence;
+import com.lazydash.audio.spectrum.system.persistance.ConfigFilePersistence;
 import com.lazydash.audio.spectrum.ui.code.spectral.SpectralAnimator;
 import com.lazydash.audio.spectrum.ui.code.spectral.SpectralView;
 import javafx.application.Application;
@@ -57,7 +57,8 @@ public class Main extends Application {
         PluginSystem.getInstance().startAllPlugins();
 
         // create
-        AppConfigPersistence appConfigPersistence = AppConfigPersistence.createAndReadConfiguration(AppConfig.class, "./application.properties");
+        ConfigFilePersistence configFilePersistence = new ConfigFilePersistence();
+        configFilePersistence.load(AppConfig.class, "./application.properties");
         TarsosAudioEngine tarsosAudioEngine = new TarsosAudioEngine();
 
         SpectralView spectralView = new SpectralView();
@@ -77,7 +78,7 @@ public class Main extends Application {
         PluginSystem.getInstance().registerAllFffPlugins(tarsosAudioEngine);
 
         wireSettingsStage(settingsStage, scene);
-        wirePrimaryStage(stage, appConfigPersistence, tarsosAudioEngine);
+        wirePrimaryStage(stage, configFilePersistence, tarsosAudioEngine);
 
         // run
         tarsosAudioEngine.start();
@@ -94,11 +95,11 @@ public class Main extends Application {
         });
     }
 
-    private void wirePrimaryStage(Stage primaryStage, AppConfigPersistence appConfigPersistence, TarsosAudioEngine tarsosAudioEngine) {
+    private void wirePrimaryStage(Stage primaryStage, ConfigFilePersistence configFilePersistence, TarsosAudioEngine tarsosAudioEngine) {
         primaryStage.setOnCloseRequest(event -> {
             AppConfig.setWindowHeight(primaryStage.getHeight());
             AppConfig.setWindowWidth(primaryStage.getWidth());
-            appConfigPersistence.persistConfig(AppConfig.class, "./application.properties");
+            configFilePersistence.persist(AppConfig.class, "./application.properties");
             PluginSystem.getInstance().stopAllPlugins();
             tarsosAudioEngine.stop();
             Platform.exit();

@@ -1,7 +1,7 @@
-package com.lazydash.audio.plugins.hue.callbacks;
+package com.lazydash.audio.plugins.hue.core.callbacks;
 
-import com.lazydash.audio.plugins.hue.HueIntegration;
-import com.lazydash.audio.plugins.hue.system.config.AppConfig;
+import com.lazydash.audio.plugins.hue.core.HueIntegration;
+import com.lazydash.audio.plugins.hue.system.config.UserConfig;
 import com.lazydash.audio.spectrum.system.config.SpectralColorConfig;
 import com.lazydash.audio.spectrum.system.notification.EventEnum;
 import com.lazydash.audio.spectrum.system.notification.NotificationService;
@@ -41,7 +41,7 @@ public class EntertainmentStartIntegration implements StartCallback {
             hueIntegration.setReady(true);
             NotificationService.getInstance().emit(EventEnum.HUE_INTEGRATION_STATUS, startStatus.getMessage());
 
-            AppConfig.setHueIntegrationEnabled(true);
+            UserConfig.setHueIntegrationEnabled(true);
 
         } else {
             hueIntegration.setReady(false);

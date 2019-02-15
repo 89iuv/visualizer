@@ -1,7 +1,7 @@
-package com.lazydash.audio.plugins.hue.manager;
+package com.lazydash.audio.plugins.hue.core.manager;
 
-import com.lazydash.audio.plugins.hue.HueIntegration;
-import com.lazydash.audio.plugins.hue.system.config.AppConfig;
+import com.lazydash.audio.plugins.hue.core.HueIntegration;
+import com.lazydash.audio.plugins.hue.system.config.UserConfig;
 import com.lazydash.audio.spectrum.core.algorithm.GlobalColorCalculator;
 import com.lazydash.audio.spectrum.core.model.FrequencyBar;
 import com.lazydash.audio.spectrum.core.service.FrequencyBarsFFTService;
@@ -39,7 +39,7 @@ public class HueIntegrationManager {
         });
 
         // process correction of 2 ms
-        double delayMs = (1000 / AppConfig.getHueTargetFPS()) - 2;
+        double delayMs = (1000 / UserConfig.getHueTargetFPS()) - 2;
         executorService.scheduleWithFixedDelay(
                 this::run,
                 0,
@@ -48,7 +48,7 @@ public class HueIntegrationManager {
     }
 
     private void run() {
-        if (AppConfig.isHueIntegrationEnabled()) {
+        if (UserConfig.isHueIntegrationEnabled()) {
             if (hueIntegration.isReady()) {
                 updateHueColor();
 
@@ -63,7 +63,7 @@ public class HueIntegrationManager {
     }
 
     private void updateHueColor() {
-        List<FrequencyBar> frequencyBarList = hueFFTService.getFrequencyBarList(AppConfig.getHueTargetFPS());
+        List<FrequencyBar> frequencyBarList = hueFFTService.getFrequencyBarList(UserConfig.getHueTargetFPS());
         Color color = globalColorCalculator.getGlobalColor(
                 frequencyBarList,
                 Integer.MIN_VALUE,

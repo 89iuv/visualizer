@@ -1,7 +1,7 @@
-package com.lazydash.audio.plugins.hue;
+package com.lazydash.audio.plugins.hue.core;
 
-import com.lazydash.audio.plugins.hue.callbacks.*;
-import com.lazydash.audio.plugins.hue.system.config.AppConfig;
+import com.lazydash.audio.plugins.hue.core.callbacks.*;
+import com.lazydash.audio.plugins.hue.system.config.UserConfig;
 import com.lazydash.audio.spectrum.system.notification.EventEnum;
 import com.lazydash.audio.spectrum.system.notification.NotificationService;
 import com.philips.lighting.hue.sdk.wrapper.connection.BridgeConnectionType;
@@ -57,7 +57,7 @@ public class HueIntegration {
 
     public HueIntegration() {
         // save hue status on change
-        NotificationService.getInstance().register(EventEnum.HUE_INTEGRATION_STATUS, AppConfig::setHueStatus);
+        NotificationService.getInstance().register(EventEnum.HUE_INTEGRATION_STATUS, UserConfig::setHueStatus);
     }
 
     public void start() {
@@ -73,7 +73,7 @@ public class HueIntegration {
         if (running) {
             ready = false;
             running = false;
-            AppConfig.setHueIntegrationEnabled(false);
+            UserConfig.setHueIntegrationEnabled(false);
 
             if (allAreaEffect != null && !allAreaEffect.isFinished()) {
                 allAreaEffect.finish();
@@ -140,13 +140,13 @@ public class HueIntegration {
     public void openStream() {
         List<Group> groups = bridge.getBridgeState().getGroups();
 
-        Optional<Group> group = groups.stream().filter(currentGroup -> currentGroup.getName().equals(AppConfig.getHueEntertainmentName())).findFirst();
+        Optional<Group> group = groups.stream().filter(currentGroup -> currentGroup.getName().equals(UserConfig.getHueEntertainmentName())).findFirst();
         if (group.isPresent()) {
             entertainment = new Entertainment(bridge, group.get().getIdentifier());
             entertainment.start(new EntertainmentStartIntegration(this));
 
         } else {
-            throw new RuntimeException("Group: " + AppConfig.getHueEntertainmentName() + " is not found.");
+            throw new RuntimeException("Group: " + UserConfig.getHueEntertainmentName() + " is not found.");
         }
     }
 

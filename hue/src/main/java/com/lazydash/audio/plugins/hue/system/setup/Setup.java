@@ -1,5 +1,6 @@
-package com.lazydash.audio.plugins.hue.setup;
+package com.lazydash.audio.plugins.hue.system.setup;
 
+import com.lazydash.audio.plugins.hue.system.config.AppConfig;
 import com.philips.lighting.hue.sdk.wrapper.HueLog;
 import com.philips.lighting.hue.sdk.wrapper.Persistence;
 
@@ -7,40 +8,43 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class SystemSetup {
-    private String hueDBFolder = "./data/hue/db";
-    private String hueDLLFile = "./dll/huesdk.dll";
-    private String hueJarFile = "./lib/huecppsdk-wrapper.jar";
+public class Setup {
+    private String hueDBFolder;
 
-    public void runHueConfiguration() {
-       checkForHueDll();
-       checkForHueJar();
-       checkForHueDatabase();
-
-       configureHue();
+    public void checkHueEnvironment() {
+        checkForHueDll();
+        checkForHueJar();
+        checkForHueDatabase();
     }
 
-    private void checkForHueDll(){
+    public void runHueConfig(){
+        configureHue();
+    }
+
+    private void checkForHueDll() {
+        String hueDLLFile = "./dll/huesdk.dll";
         if (Files.notExists(Paths.get(hueDLLFile))) {
-            throw new RuntimeException("Missing "+ hueDLLFile +" file");
+            throw new RuntimeException("Missing " + hueDLLFile + " file");
         }
     }
 
-    private void checkForHueJar(){
+    private void checkForHueJar() {
+        String hueJarFile = "./lib/huecppsdk-wrapper.jar";
         if (Files.notExists(Paths.get(hueJarFile))) {
             throw new RuntimeException("Missing " + hueJarFile + " file");
         }
     }
 
     private void checkForHueDatabase() {
+        hueDBFolder = "./data/" + AppConfig.getPluginId() + "/db";
         if (Files.notExists(Paths.get(hueDBFolder))) {
             createHuePersistenceFolder();
         }
     }
 
-    private void createHuePersistenceFolder(){
+    private void createHuePersistenceFolder() {
         try {
-            Files.createDirectory(Paths.get(hueDBFolder));
+            Files.createDirectories(Paths.get(hueDBFolder));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -48,7 +52,7 @@ public class SystemSetup {
         }
     }
 
-    private void configureHue(){
+    private void configureHue() {
         Persistence.setStorageLocation(hueDBFolder, "device");
         HueLog.setConsoleLogLevel(HueLog.LogLevel.INFO);
     }
