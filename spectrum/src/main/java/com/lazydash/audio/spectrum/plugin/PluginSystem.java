@@ -39,9 +39,9 @@ public class PluginSystem {
     }
 
     public void extendUiPlugin(SettingsController settingsController){
-        List<UiExtensionPoint> uiExtensionPoints = pluginManager.getExtensions(UiExtensionPoint.class);
-        for (UiExtensionPoint uiExtensionPoint : uiExtensionPoints) {
-            uiExtensionPoint.extendSettingsController(settingsController);
+        List<UiSettingsExtensionPoint> uiSettingsExtensionPoints = pluginManager.getExtensions(UiSettingsExtensionPoint.class);
+        for (UiSettingsExtensionPoint uiSettingsExtensionPoint : uiSettingsExtensionPoints) {
+            uiSettingsExtensionPoint.extendController(settingsController);
         }
     }
 

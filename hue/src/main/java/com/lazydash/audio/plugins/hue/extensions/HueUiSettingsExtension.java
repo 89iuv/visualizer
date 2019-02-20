@@ -1,6 +1,6 @@
-package com.lazydash.audio.plugins.hue.plugin.extensions;
+package com.lazydash.audio.plugins.hue.extensions;
 
-import com.lazydash.audio.spectrum.plugin.UiExtensionPoint;
+import com.lazydash.audio.spectrum.plugin.UiSettingsExtensionPoint;
 import com.lazydash.audio.spectrum.ui.fxml.settings.SettingsController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -9,10 +9,10 @@ import org.pf4j.Extension;
 import java.io.IOException;
 
 @Extension
-public class HueUiExtension implements UiExtensionPoint {
+public class HueUiSettingsExtension implements UiSettingsExtensionPoint {
 
     @Override
-    public void extendSettingsController(SettingsController settingsController) {
+    public void extendController(SettingsController settingsController) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("/ui.fxml.settings/components/hue_integration.fxml"));

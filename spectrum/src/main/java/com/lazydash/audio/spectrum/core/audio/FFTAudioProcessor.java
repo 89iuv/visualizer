@@ -69,6 +69,8 @@ public class FFTAudioProcessor implements AudioProcessor {
         // k is the position in the amplitudes vector
         int k = 0;
         for (int i = 0; i < octaveFrequencies.size(); i++) {
+            octaveBins[m] = octaveFrequencies.get(i);
+
             // the target octave frequency will be calculated
             // by grouping bins from half right to half left
             // of the target frequency value
@@ -78,7 +80,7 @@ public class FFTAudioProcessor implements AudioProcessor {
             } else {
                 frequencyHigh = octaveFrequencies.get(i);
             }
-            octaveBins[m] = octaveFrequencies.get(i);
+
 
             int p = 0;
             // p is number of bins that get grouped under a single target frequency
@@ -102,7 +104,6 @@ public class FFTAudioProcessor implements AudioProcessor {
 
             // interpolate if there is to little data
             if (p < 5) {
-                octaveBins[m] = - octaveFrequencies.get(i);
                 double value = interpolate.value(octaveFrequencies.get(i));
 
                 float amplitude = (float) (value / amplitudes.length); // normalize (n/2)
@@ -111,7 +112,7 @@ public class FFTAudioProcessor implements AudioProcessor {
             }
 
             octaveAmplitudes[m] = (float) Math.sqrt(octaveAmplitudes[m]); // square root the energy
-//            octaveAmplitudes[m] = (float) (Math.sqrt(Math.pow(octaveAmplitudes[m], 2) / 2)); // calculate the RMS of the amplitude
+            octaveAmplitudes[m] = (float) (Math.sqrt(Math.pow(octaveAmplitudes[m], 2) / 2)); // calculate the RMS of the amplitude
             octaveAmplitudes[m] = (float) (20 * Math.log10(octaveAmplitudes[m])); // convert to logarithmic scale
 
             m++;

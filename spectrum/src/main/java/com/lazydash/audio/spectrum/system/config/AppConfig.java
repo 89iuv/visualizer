@@ -18,30 +18,30 @@ public class AppConfig {
 
     private static int minBarHeight = 3;
     private static double maxBarHeight = 750;
-    private static int barGap = 2;
+    private static int barGap = 1;
 
     private static int hzLabelHeight = 20;
 
-    private static int frequencyStart = 20;
+    private static int frequencyStart = 35;
     private static int frequencyCenter = 1000;
-    private static int frequencyEnd = 22000;
+    private static int frequencyEnd = 17000;
     private static int octave = 1;
 
     // bar acceleration
-    private static int decayTime = 400;
-    private static int accelerationFactor = 20;
+    private static int decayTime = 250;
+    private static int accelerationFactor = 10;
 
     // input signal
-    private static int signalAmplification = 16;
-    private static int signalThreshold = -34;
+    private static int signalAmplification = 138;
+    private static int signalThreshold = -42;
 
     // fft
     private static int timeFilterSize = 2;
     private static int zeroPadding = 0;
 
     // window
-    private static double windowWidth = 500;
-    private static double windowHeight = 850;
+    private static double windowWidth = 1700;
+    private static double windowHeight = 400;
 
     public static int getSampleRate() {
         return sampleRate;

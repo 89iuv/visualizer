@@ -7,11 +7,16 @@ import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.layout.GridPane;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SpectralView extends GridPane {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SpectralView.class);
+
+    private final int minWidth = 25;
     private List<FrequencyView> frequencyViewList = new ArrayList<>();
 
     public void configure() {
@@ -28,7 +33,11 @@ public class SpectralView extends GridPane {
 
         WindowProperty.widthProperty.addListener((observable, oldValue, newValue) -> {
             frequencyViewList.forEach(frequencyView -> {
-                frequencyView.getRectangle().setWidth((int) (this.getWidth() / frequencyViewList.size()) - AppConfig.getBarGap());
+                int rectangleWidth = (int) (this.getWidth() / frequencyViewList.size()) - AppConfig.getBarGap();
+                if (rectangleWidth < minWidth) {
+                    rectangleWidth = minWidth;
+                }
+                frequencyView.getRectangle().setWidth(rectangleWidth);
             });
         });
     }
@@ -36,9 +45,11 @@ public class SpectralView extends GridPane {
     public void updateState(List<FrequencyBar> frequencyBarList) {
         if (frequencyBarList.size() != frequencyViewList.size()) {
             createBars(frequencyBarList);
+//            LOGGER.info("create bars");
 
         } else {
             updateBars(frequencyBarList);
+//            LOGGER.info("update bars");
         }
     }
 
@@ -55,6 +66,7 @@ public class SpectralView extends GridPane {
     private void createBars(List<FrequencyBar> frequencyBarList) {
         frequencyViewList.clear();
         this.getChildren().clear();
+        this.getColumnConstraints().clear();
 
         for (int i = 0; i < frequencyBarList.size(); i++) {
             FrequencyView frequencyView = new FrequencyView();
@@ -64,16 +76,21 @@ public class SpectralView extends GridPane {
             frequencyView.setHzValue(frequencyBar.getHz());
             frequencyView.setHzHeight(AppConfig.getHzLabelHeight());
 
-            frequencyView.getRectangle().setWidth((int) (WindowProperty.widthProperty.getValue() / frequencyBarList.size()) - AppConfig.getBarGap());
+            int width = (int) (WindowProperty.widthProperty.getValue() / frequencyBarList.size()) - AppConfig.getBarGap();
+            if (width < minWidth) {
+                width = minWidth;
+            }
+            frequencyView.getRectangle().setWidth(width);
 
             frequencyViewList.add(frequencyView);
 
             // todo encapsulate rectangle and hzLabel in FrequencyView
             this.add(frequencyView.getRectangle(), i, 0);
-            this.add(frequencyView.getHzLabel(), i, 1, 1, 1);
+            this.add(frequencyView.getHzLabel(), i, 1);
 
             GridPane.setValignment(frequencyView.getRectangle(), VPos.BOTTOM);
             GridPane.setHalignment(frequencyView.getHzLabel(), HPos.CENTER);
+
         }
     }
 }

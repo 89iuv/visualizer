@@ -1,6 +1,7 @@
 package com.lazydash.audio.spectrum.core.algorithm;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class OctaveGenerator {
     private static Map<OctaveSettings, List<Double>> cache = new HashMap<>();
@@ -14,7 +15,8 @@ public class OctaveGenerator {
             addLow(octave, centerFrequency, band, lowerLimit);
             addHigh(octave, centerFrequency, band, upperLimit);
 
-            ArrayList<Double> octaves = new ArrayList<>(octave);
+            // if center is 1000 but upper limit is 80 then we need to filter out 80 to 1000 frequencies
+            List<Double> octaves = octave.stream().filter(aDouble -> (lowerLimit <= aDouble && aDouble <= upperLimit)).collect(Collectors.toList());
             cache.put(octaveSettings, octaves);
 
             return octaves;

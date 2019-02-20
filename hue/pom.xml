@@ -37,7 +37,6 @@
                                 <configuration>
                                     <outputDirectory>${project.basedir}/../spectrum/plugins</outputDirectory>
                                     <resources>
-                                        <overwrite>true</overwrite>
                                         <resource>
                                             <directory>target</directory>
                                             <includes>
@@ -45,6 +44,7 @@
                                             </includes>
                                         </resource>
                                     </resources>
+                                    <overwrite>true</overwrite>
                                 </configuration>
                             </execution>
                         </executions>

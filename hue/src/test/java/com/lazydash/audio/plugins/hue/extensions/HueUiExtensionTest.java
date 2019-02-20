@@ -1,4 +1,4 @@
-package com.lazydash.audio.plugins.hue.plugin.extensions;
+package com.lazydash.audio.plugins.hue.extensions;
 
 import org.junit.Test;
 

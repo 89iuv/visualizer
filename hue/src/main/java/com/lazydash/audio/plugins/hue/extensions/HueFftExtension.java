@@ -1,4 +1,4 @@
-package com.lazydash.audio.plugins.hue.plugin.extensions;
+package com.lazydash.audio.plugins.hue.extensions;
 
 import com.lazydash.audio.plugins.hue.core.HueIntegration;
 import com.lazydash.audio.plugins.hue.core.manager.HueIntegrationManager;

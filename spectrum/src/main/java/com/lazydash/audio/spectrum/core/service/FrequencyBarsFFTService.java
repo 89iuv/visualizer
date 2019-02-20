@@ -5,12 +5,17 @@ import com.lazydash.audio.spectrum.core.algorithm.FFTTimeFilter;
 import com.lazydash.audio.spectrum.core.algorithm.FrequencyBarsCreator;
 import com.lazydash.audio.spectrum.core.audio.FFTListener;
 import com.lazydash.audio.spectrum.core.model.FrequencyBar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class FrequencyBarsFFTService implements FFTListener {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FrequencyBarsFFTService.class);
+    private long oldTime = System.currentTimeMillis();
+
     // the hzBins and the amplitudes come in pairs and access to them needs to be synchronized
     private ReentrantLock lock = new ReentrantLock(true);
 
@@ -35,6 +40,7 @@ public class FrequencyBarsFFTService implements FFTListener {
     }
 
     public List<FrequencyBar> getFrequencyBarList(double targetFps) {
+        long oldTime = System.currentTimeMillis();
         double[] returnBinz;
         float[] returnAmplitudes;
 
@@ -57,6 +63,13 @@ public class FrequencyBarsFFTService implements FFTListener {
             // return empty array
             frequencyBars = new ArrayList<>();
         }
+
+        long newTime = System.currentTimeMillis();
+        long deltaTime = newTime - oldTime;
+
+//        LOGGER.info(String.valueOf(deltaTime));
+
+        oldTime = newTime;
 
         return frequencyBars;
 
