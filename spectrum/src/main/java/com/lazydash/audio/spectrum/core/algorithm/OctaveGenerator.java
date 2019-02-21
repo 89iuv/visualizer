@@ -7,6 +7,19 @@ public class OctaveGenerator {
     private static Map<OctaveSettings, List<Double>> cache = new HashMap<>();
 
     public static List<Double> getOctaveFrequencies(double centerFrequency, double band, double lowerLimit, double upperLimit) {
+        // set limits
+        if (lowerLimit < 1) {
+            lowerLimit = 1;
+        }
+
+        if (upperLimit < 1) {
+            upperLimit = 1;
+        }
+
+        if (centerFrequency < 1) {
+            centerFrequency = 1;
+        }
+
         OctaveSettings octaveSettings = new OctaveSettings(centerFrequency, band, lowerLimit, upperLimit);
         List<Double> doubles = cache.get(octaveSettings);
         if (doubles == null) {
@@ -16,7 +29,9 @@ public class OctaveGenerator {
             addHigh(octave, centerFrequency, band, upperLimit);
 
             // if center is 1000 but upper limit is 80 then we need to filter out 80 to 1000 frequencies
-            List<Double> octaves = octave.stream().filter(aDouble -> (lowerLimit <= aDouble && aDouble <= upperLimit)).collect(Collectors.toList());
+            double finalLowerLimit = lowerLimit;
+            double finalUpperLimit = upperLimit;
+            List<Double> octaves = octave.stream().filter(aDouble -> (finalLowerLimit <= aDouble && aDouble <= finalUpperLimit)).collect(Collectors.toList());
             cache.put(octaveSettings, octaves);
 
             return octaves;

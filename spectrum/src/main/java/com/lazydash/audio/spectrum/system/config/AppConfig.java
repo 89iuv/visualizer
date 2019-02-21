@@ -27,6 +27,9 @@ public class AppConfig {
     private static int frequencyEnd = 17000;
     private static int octave = 1;
 
+    private static String maxLevel = "RMS";
+    private static String weight = "dB(Z)";
+
     // bar acceleration
     private static int decayTime = 250;
     private static int accelerationFactor = 10;
@@ -242,5 +245,21 @@ public class AppConfig {
 
     public static void setFrequencyCenter(int frequencyCenter) {
         AppConfig.frequencyCenter = frequencyCenter;
+    }
+
+    public static String getMaxLevel() {
+        return maxLevel;
+    }
+
+    public static void setMaxLevel(String maxLevel) {
+        AppConfig.maxLevel = maxLevel;
+    }
+
+    public static String getWeight() {
+        return weight;
+    }
+
+    public static void setWeight(String weight) {
+        AppConfig.weight = weight;
     }
 }

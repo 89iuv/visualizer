@@ -25,31 +25,37 @@
                 GridPane.rowIndex="$row.value" GridPane.columnIndex="1"/>
         <Label fx:id="signalThresholdValue" styleClass="sliderValueLabel" GridPane.rowIndex="$row.value" GridPane.columnIndex="2"/>
 
+        <Label text="Max level: " GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="maxLevel" onAction="#updateMaxLeve" GridPane.rowIndex="$row.value" GridPane.columnIndex="1"/>
+
+        <Label text="Weighting: " GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="weighting" onAction="#updateWeighting" GridPane.rowIndex="$row.value" GridPane.columnIndex="1"/>
+
         <Label text="Frequency start:" GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
         <Spinner fx:id="frequencyStart" editable="true" GridPane.rowIndex="$row.value" GridPane.columnIndex="1">
             <valueFactory>
-                <SpinnerValueFactory.IntegerSpinnerValueFactory min="1" max="22000" amountToStepBy="1"/>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="24000" amountToStepBy="1"/>
             </valueFactory>
         </Spinner>
 
         <Label text="Frequency center:" GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
         <Spinner fx:id="frequencyCenter" editable="true" GridPane.rowIndex="$row.value" GridPane.columnIndex="1">
             <valueFactory>
-                <SpinnerValueFactory.IntegerSpinnerValueFactory min="20" max="22000" amountToStepBy="1"/>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="24000" amountToStepBy="1"/>
             </valueFactory>
         </Spinner>
 
         <Label text="Frequency end:" GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
         <Spinner fx:id="frequencyEnd" editable="true" GridPane.rowIndex="$row.value" GridPane.columnIndex="1">
             <valueFactory>
-                <SpinnerValueFactory.IntegerSpinnerValueFactory min="20" max="24000" amountToStepBy="1"/>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="24000" amountToStepBy="1"/>
             </valueFactory>
         </Spinner>
 
         <Label text="Octave (1/n):" GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
         <Spinner fx:id="octave" editable="true" GridPane.rowIndex="$row.value" GridPane.columnIndex="1">
             <valueFactory>
-                <SpinnerValueFactory.IntegerSpinnerValueFactory min="1" max="6" amountToStepBy="1"/>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="6" amountToStepBy="1"/>
             </valueFactory>
         </Spinner>
 
