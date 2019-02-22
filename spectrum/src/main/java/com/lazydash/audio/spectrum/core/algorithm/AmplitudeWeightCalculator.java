@@ -2,15 +2,15 @@ package com.lazydash.audio.spectrum.core.algorithm;
 
 public class AmplitudeWeightCalculator {
 
-    public static double getDbWeight(double frequency, String weight) {
+    public static double getDbWeight(double frequency, WeightWindow weight) {
         switch (weight) {
-            case "dB(A)":
+            case dBA:
                 return getDbA(frequency);
 
-            case "dB(B)":
+            case dBB:
                 return getDbB(frequency);
 
-            case "dB(C)":
+            case dBC:
                 return getDbC(frequency);
 
             default:
@@ -65,5 +65,22 @@ public class AmplitudeWeightCalculator {
         double cf = 20 * Math.log10(rcf) + 0.06;
 
         return cf;
+    }
+
+    public enum WeightWindow {
+        dBA("dBA"),
+        dBB("dBB"),
+        dBC("dBC"),
+        dBZ("dBZ");
+
+        private final String window;
+
+        WeightWindow(String window) {
+            this.window = window;
+        }
+
+        public String getWindow() {
+            return window;
+        }
     }
 }

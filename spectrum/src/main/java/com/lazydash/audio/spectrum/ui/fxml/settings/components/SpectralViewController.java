@@ -1,5 +1,6 @@
 package com.lazydash.audio.spectrum.ui.fxml.settings.components;
 
+import com.lazydash.audio.spectrum.core.algorithm.AmplitudeWeightCalculator;
 import com.lazydash.audio.spectrum.system.config.AppConfig;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -10,6 +11,8 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.Spinner;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class SpectralViewController {
     public Slider signalAmplification;
@@ -73,7 +76,10 @@ public class SpectralViewController {
         maxLevel.getItems().addAll(Arrays.asList("RMS", "Peak"));
 
         weighting.setValue(AppConfig.getWeight());
-        weighting.getItems().addAll(Arrays.asList("dB(A)", "dB(B)", "dB(C)", "dB(Z)"));
+
+        AmplitudeWeightCalculator.WeightWindow[] weightWindows = AmplitudeWeightCalculator.WeightWindow.values();
+        List<String> collect = Arrays.stream(weightWindows).map(Enum::toString).collect(Collectors.toList());
+        weighting.getItems().addAll(collect);
     }
 
 

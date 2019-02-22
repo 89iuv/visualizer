@@ -3,14 +3,14 @@ package com.lazydash.audio.spectrum.core.algorithm;
 import com.lazydash.audio.spectrum.system.config.AppConfig;
 
 public class BarsHeightCalculator {
-    private float[] amplitudes;
+    private double[] amplitudes;
     private double[] decay;
 
     // holds state and modifies it's internal state based on the input
-    public float[] processAmplitudes(float[] newAmplitudes, double targetFPS) {
+    public double[] processAmplitudes(double[] newAmplitudes, double targetFPS) {
         // init on first run or if number of newAmplitudes has changed
         if (amplitudes == null || amplitudes.length != newAmplitudes.length) {
-            amplitudes = new float[newAmplitudes.length];
+            amplitudes = new double[newAmplitudes.length];
             System.arraycopy(newAmplitudes, 0, amplitudes, 0, newAmplitudes.length);
 
             decay = new double[amplitudes.length];
@@ -41,7 +41,7 @@ public class BarsHeightCalculator {
 
             if (newHeight > oldHeight) {
                 // use new height
-                amplitudes[i] = (float) newHeight;
+                amplitudes[i] = newHeight;
                 decay[i] = 0;
 
             } else if (newHeight < oldHeight) {

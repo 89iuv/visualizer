@@ -1,16 +1,18 @@
 package com.lazydash.audio.spectrum;
 
-import be.tarsos.dsp.util.CubicSplineFast;
+import com.lazydash.audio.spectrum.core.algorithm.AmplitudeWeightCalculator;
 
 public class MainTest {
 
     public static void main(String[] args) {
-        CubicSplineFast cubicSplineFast = new CubicSplineFast(new double[]{1, 2, 4, 5}, new double[]{1, 2, 2, 1});
-        System.out.println(cubicSplineFast.interpolate(2));
 
+        double f = 10;
+
+        double af = AmplitudeWeightCalculator.getDbB(f);
+
+        System.out.println(String.format("%.2f", af));
 
     }
-
 
 
 }

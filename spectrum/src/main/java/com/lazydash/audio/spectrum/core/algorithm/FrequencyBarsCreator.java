@@ -10,7 +10,7 @@ import java.util.List;
 
 public class FrequencyBarsCreator {
 
-    public static List<FrequencyBar> createFrequencyBars(double[] binsHz, float[] amplitudes) {
+    public static List<FrequencyBar> createFrequencyBars(double[] binsHz, double[] amplitudes) {
         List<FrequencyBar> frequencyBars = new ArrayList<>(binsHz.length);
         for (int i=0; i < binsHz.length; i++) {
             frequencyBars.add(new FrequencyBar(binsHz[i], amplitudes[i], Color.BLACK));

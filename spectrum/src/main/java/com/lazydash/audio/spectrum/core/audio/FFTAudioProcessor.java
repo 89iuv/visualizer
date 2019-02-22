@@ -10,7 +10,9 @@ import com.lazydash.audio.spectrum.core.algorithm.OctaveGenerator;
 import com.lazydash.audio.spectrum.system.config.AppConfig;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
+import org.apache.commons.math3.analysis.interpolation.NevilleInterpolator;
 import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
+import org.apache.commons.math3.analysis.polynomials.PolynomialFunctionLagrangeForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +28,7 @@ public class FFTAudioProcessor implements AudioProcessor {
 
     private List<FFTListener> listenerList;
     private AudioFormat audioFormat;
+    private NevilleInterpolator nevilleInterpolator = new NevilleInterpolator();
     private UnivariateInterpolator interpolator = new LinearInterpolator();
     private WindowFunction windowFunction = new HannWindow();
     private double windowCorrectionFactor = 2.00;
@@ -72,7 +75,7 @@ public class FFTAudioProcessor implements AudioProcessor {
         }
 
         double[] octaveBins = new double[octaveFrequencies.size()];
-        float[] octaveAmplitudes = new float[octaveFrequencies.size()];
+        double[] octaveAmplitudes = new double[octaveFrequencies.size()];
 
         // m is the position in the octaveFrequency vectors
         int m = 0;
@@ -113,10 +116,10 @@ public class FFTAudioProcessor implements AudioProcessor {
 
             // group bins together
             while (bins[k] < frequencyHigh) {
-                float amplitude = amplitudes[k];
+                double amplitude = amplitudes[k];
                 amplitude = (amplitude / amplitudes.length); // normalize (n/2)
-                amplitude = (float) (amplitude * windowCorrectionFactor); // apply window correction
-                octaveAmplitudes[m] = octaveAmplitudes[m] + (float) Math.pow(amplitude, 2); // sum up the "normalized window corrected" energy
+                amplitude = (amplitude * windowCorrectionFactor); // apply window correction
+                octaveAmplitudes[m] = octaveAmplitudes[m] + Math.pow(amplitude, 2); // sum up the "normalized window corrected" energy
 
                 k++;
                 p++;
@@ -129,20 +132,43 @@ public class FFTAudioProcessor implements AudioProcessor {
             }
 
             // interpolate if there is to little data
-            if (p < 5) {
-                octaveBins[m] = octaveFrequencies.get(i);
-                float amplitude = (float) interpolate.value(octaveFrequencies.get(i));
+            if (p < 4) {
+                double amplitude = interpolate.value(octaveFrequencies.get(i));
+
+                // if stars are aligned then use polynomial interpolation to determine the peak of the target frequency
+                if (k > 2) {
+                    PolynomialFunctionLagrangeForm univariateFunction = nevilleInterpolator.interpolate(
+                            new double[]{
+                                    bins[k - 2],
+                                    bins[k - 1],
+                                    bins[k]
+
+                            }, new double[]{
+                                    amplitudes[k - 2],
+                                    amplitudes[k - 1],
+                                    amplitudes[k]
+                            });
+
+                    // if parabola opens down use the it to estimate the peek
+                    if (univariateFunction.getCoefficients()[0] < 0) {
+                        amplitude = univariateFunction.value(octaveFrequencies.get(i));
+                    }
+
+                }
+
                 amplitude = (amplitude / amplitudes.length); // normalize (n/2)
-                amplitude = (float) (amplitude * windowCorrectionFactor); // apply window correction
-                octaveAmplitudes[m] = (float) Math.pow(amplitude, 2);
+                amplitude = (amplitude * windowCorrectionFactor); // apply window correction
+                octaveAmplitudes[m] = Math.pow(amplitude, 2);
             }
 
-            octaveAmplitudes[m] = (float) Math.sqrt(octaveAmplitudes[m]); // square root the energy
+            octaveAmplitudes[m] = Math.sqrt(octaveAmplitudes[m]); // square root the energy
             if (AppConfig.getMaxLevel().equals("RMS")) {
-                octaveAmplitudes[m] = (float) (Math.sqrt(Math.pow(octaveAmplitudes[m], 2) / 2)); // calculate the RMS of the amplitude
+                octaveAmplitudes[m] = (Math.sqrt(Math.pow(octaveAmplitudes[m], 2) / 2)); // calculate the RMS of the amplitude
             }
-            octaveAmplitudes[m] = (float) (20 * Math.log10(octaveAmplitudes[m])); // convert to logarithmic scale
-            octaveAmplitudes[m] = (float) (octaveAmplitudes[m] + AmplitudeWeightCalculator.getDbWeight(octaveBins[m], AppConfig.getWeight())); // use weight to adjust the spectrum
+            octaveAmplitudes[m] = (20 * Math.log10(octaveAmplitudes[m])); // convert to logarithmic scale
+
+            AmplitudeWeightCalculator.WeightWindow weightWindow = AmplitudeWeightCalculator.WeightWindow.valueOf(AppConfig.getWeight());
+            octaveAmplitudes[m] = (octaveAmplitudes[m] + AmplitudeWeightCalculator.getDbWeight(octaveBins[m], weightWindow)); // use weight to adjust the spectrum
 
             m++;
         }

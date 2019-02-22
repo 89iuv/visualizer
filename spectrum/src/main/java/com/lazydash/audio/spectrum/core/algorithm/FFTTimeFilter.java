@@ -6,9 +6,9 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class FFTTimeFilter {
-    private Queue<float[]> historyAmps = new LinkedList<>();
+    private Queue<double[]> historyAmps = new LinkedList<>();
 
-    public float[] filter(float[] amps) {
+    public double[] filter(double[] amps) {
         int timeFilterSize = AppConfig.getTimeFilterSize();
 
         if (timeFilterSize < 2) {
@@ -31,10 +31,10 @@ public class FFTTimeFilter {
         historyAmps.poll();
         historyAmps.offer(amps);
 
-        float[] filtered = new float[amps.length];
+        double[] filtered = new double[amps.length];
         for (int i = 0; i<amps.length; i++){
-            float sumTimeFilteredAmp = 0;
-            for (float[] currentHistoryAmps : historyAmps){
+            double sumTimeFilteredAmp = 0;
+            for (double[] currentHistoryAmps : historyAmps){
                 sumTimeFilteredAmp = sumTimeFilteredAmp + currentHistoryAmps[i];
             }
             filtered[i] = sumTimeFilteredAmp / historyAmps.size();

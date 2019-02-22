@@ -21,14 +21,14 @@ public class FrequencyBarsFFTService implements FFTListener {
 
     // all of the instances have the same input from the audio dispatcher
     private double[] hzBins = null;
-    private float[] amplitudes = null;
+    private double[] amplitudes = null;
 
     private FFTTimeFilter fftTimeFilter = new FFTTimeFilter();
     private BarsHeightCalculator barsHeightCalculator = new BarsHeightCalculator();
 
 
     @Override
-    public void frame(double[] hzBins, float[] normalizedAmplitudes) {
+    public void frame(double[] hzBins, double[] normalizedAmplitudes) {
         try {
             lock.lock();
             this.hzBins = hzBins;
@@ -42,7 +42,7 @@ public class FrequencyBarsFFTService implements FFTListener {
     public List<FrequencyBar> getFrequencyBarList(double targetFps) {
         long oldTime = System.currentTimeMillis();
         double[] returnBinz;
-        float[] returnAmplitudes;
+        double[] returnAmplitudes;
 
         try {
             lock.lock();
