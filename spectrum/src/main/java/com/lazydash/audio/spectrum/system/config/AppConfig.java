@@ -25,10 +25,15 @@ public class AppConfig {
     private static int frequencyStart = 35;
     private static int frequencyCenter = 1000;
     private static int frequencyEnd = 17000;
-    private static int octave = 1;
+    private static int octave = 3;
 
     private static String maxLevel = "RMS";
-    private static String weight = "dB(Z)";
+    private static String weight = "dBZ";
+
+    // spectral color
+    private static int spectralColorPosition = 180;
+    private static int spectralColorRange = 360;
+    private static boolean spectralColorInverted = false;
 
     // bar acceleration
     private static int decayTime = 250;
@@ -261,5 +266,29 @@ public class AppConfig {
 
     public static void setWeight(String weight) {
         AppConfig.weight = weight;
+    }
+
+    public static int getSpectralColorPosition() {
+        return spectralColorPosition;
+    }
+
+    public static void setSpectralColorPosition(int spectralColorPosition) {
+        AppConfig.spectralColorPosition = spectralColorPosition;
+    }
+
+    public static int getSpectralColorRange() {
+        return spectralColorRange;
+    }
+
+    public static void setSpectralColorRange(int spectralColorRange) {
+        AppConfig.spectralColorRange = spectralColorRange;
+    }
+
+    public static boolean isSpectralColorInverted() {
+        return spectralColorInverted;
+    }
+
+    public static void setSpectralColorInverted(boolean spectralColorInverted) {
+        AppConfig.spectralColorInverted = spectralColorInverted;
     }
 }

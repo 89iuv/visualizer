@@ -67,7 +67,7 @@ public class HueIntegrationManager {
         Color color = globalColorCalculator.getGlobalColor(
                 frequencyBarList,
                 Integer.MIN_VALUE,
-                80,
+                Integer.MAX_VALUE,
                 true);
 
         if (!previousColor.equals(color)) {
