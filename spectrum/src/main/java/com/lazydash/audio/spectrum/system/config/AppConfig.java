@@ -36,7 +36,7 @@ public class AppConfig {
     private static boolean spectralColorInverted = false;
 
     // bar acceleration
-    private static int decayTime = 250;
+    private static int dbPerSecondDecay = 250;
     private static int accelerationFactor = 10;
 
     // input signal
@@ -156,12 +156,12 @@ public class AppConfig {
     }
 
 
-    public static int getDecayTime() {
-        return decayTime;
+    public static int getDbPerSecondDecay() {
+        return dbPerSecondDecay;
     }
 
-    public static void setDecayTime(int decayTime) {
-        AppConfig.decayTime = decayTime;
+    public static void setDbPerSecondDecay(int dbPerSecondDecay) {
+        AppConfig.dbPerSecondDecay = dbPerSecondDecay;
     }
 
     public static int getHzLabelHeight() {

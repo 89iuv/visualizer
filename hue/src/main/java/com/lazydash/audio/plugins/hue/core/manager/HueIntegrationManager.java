@@ -63,7 +63,7 @@ public class HueIntegrationManager {
     }
 
     private void updateHueColor() {
-        List<FrequencyBar> frequencyBarList = hueFFTService.getFrequencyBarList(UserConfig.getHueTargetFPS());
+        List<FrequencyBar> frequencyBarList = hueFFTService.getFrequencyBarList();
         Color color = globalColorCalculator.getGlobalColor(
                 frequencyBarList,
                 Integer.MIN_VALUE,
@@ -79,6 +79,5 @@ public class HueIntegrationManager {
         long deltaTime = newTime - oldTime;
 //        System.out.println(deltaTime);
         oldTime = newTime;
-
     }
 }

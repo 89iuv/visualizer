@@ -2,7 +2,6 @@ package com.lazydash.audio.spectrum.ui.code.spectral;
 
 
 import javafx.scene.control.Label;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
 public class FrequencyView {
@@ -18,11 +17,6 @@ public class FrequencyView {
         return rectangle;
     }
 
-    public void setHzHeight(double hzHeight) {
-        this.getHzLabel().setMinHeight(hzHeight);
-
-    }
-
     public void setHzValue(double hz) {
         if (hz >= 10000) {
             this.hzLabel.setText(String.format("%.0f", hz / 1000d) + "K");
@@ -34,14 +28,5 @@ public class FrequencyView {
             this.hzLabel.setText(String.format("%.0f", hz));
         }
 
-    }
-
-    public void setBarHeight(double height) {
-        this.rectangle.setHeight(Math.round(height));
-    }
-
-
-    public void setBarColor(Paint paint){
-        this.rectangle.setFill(paint);
     }
 }

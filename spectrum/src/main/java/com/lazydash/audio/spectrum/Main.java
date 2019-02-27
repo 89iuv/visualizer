@@ -13,8 +13,6 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -153,17 +151,9 @@ public class Main extends Application {
         // setup
         settingsStage.setTitle("Settings");
         settingsStage.setScene(settingsScene);
-        settingsStage.setHeight(400);
-        settingsStage.setWidth(700);
+        settingsStage.setHeight(450);
+        settingsStage.setWidth(800);
 
         return settingsStage;
-    }
-
-    private static void displayExceptionAndClose(RuntimeException e) {
-        Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage(), ButtonType.CLOSE);
-        alert.showAndWait();
-
-        e.printStackTrace();
-        System.exit(1);
     }
 }

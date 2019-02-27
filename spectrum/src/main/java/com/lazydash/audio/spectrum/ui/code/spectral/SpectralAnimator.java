@@ -31,7 +31,7 @@ public class SpectralAnimator {
     }
 
     private void updateSpectralView(){
-        spectralView.updateState(spectralFFTService.getFrequencyBarList(AppConfig.getTargetFPS()));
+        spectralView.updateState(spectralFFTService.getFrequencyBarList());
 
         long newTime = System.currentTimeMillis();
         long deltaTime = newTime - oldTime;

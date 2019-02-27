@@ -39,7 +39,7 @@ public class FrequencyBarsFFTService implements FFTListener {
         }
     }
 
-    public List<FrequencyBar> getFrequencyBarList(double targetFps) {
+    public List<FrequencyBar> getFrequencyBarList() {
         long oldTime = System.currentTimeMillis();
         double[] returnBinz;
         double[] returnAmplitudes;
@@ -56,7 +56,7 @@ public class FrequencyBarsFFTService implements FFTListener {
         List<FrequencyBar> frequencyBars;
         if (returnAmplitudes != null) {
             returnAmplitudes = fftTimeFilter.filter(returnAmplitudes);
-            returnAmplitudes = barsHeightCalculator.processAmplitudes(returnAmplitudes, targetFps);
+            returnAmplitudes = barsHeightCalculator.processAmplitudes(returnAmplitudes);
             frequencyBars = FrequencyBarsCreator.createFrequencyBars(returnBinz, returnAmplitudes);
 
         } else {

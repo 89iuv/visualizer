@@ -16,7 +16,7 @@
         </fx:define>
 
         <Label text="Signal amplification (factor):" GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
-        <Slider fx:id="signalAmplification" min="0" max="200" majorTickUnit="25" minorTickCount="9" showTickMarks="true" showTickLabels="true"
+        <Slider fx:id="signalAmplification" min="0" max="250" majorTickUnit="25" minorTickCount="4" showTickMarks="true" showTickLabels="true"
                 GridPane.rowIndex="$row.value" GridPane.columnIndex="1" GridPane.fillWidth="true" GridPane.hgrow="ALWAYS"/>
         <Label fx:id="signalAmplificationValue" styleClass="sliderValueLabel" GridPane.rowIndex="$row.value" GridPane.columnIndex="2"/>
 
@@ -55,7 +55,21 @@
         <Label text="Octave (1/n):" GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
         <Spinner fx:id="octave" editable="true" GridPane.rowIndex="$row.value" GridPane.columnIndex="1">
             <valueFactory>
-                <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="6" amountToStepBy="1"/>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="24" amountToStepBy="1"/>
+            </valueFactory>
+        </Spinner>
+
+        <Label text="Min bar height (pixels):" GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
+        <Spinner fx:id="minBarHeight" editable="true" GridPane.rowIndex="$row.value" GridPane.columnIndex="1">
+            <valueFactory>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="999" amountToStepBy="1"/>
+            </valueFactory>
+        </Spinner>
+
+        <Label text="Bar gap (pixels):" GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
+        <Spinner fx:id="barGap" editable="true" GridPane.rowIndex="$row.value" GridPane.columnIndex="1">
+            <valueFactory>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="30" amountToStepBy="1"/>
             </valueFactory>
         </Spinner>
 

@@ -3,22 +3,19 @@ package com.lazydash.audio.spectrum.core.audio;
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.util.fft.FFT;
-import be.tarsos.dsp.util.fft.HannWindow;
+import be.tarsos.dsp.util.fft.HammingWindow;
 import be.tarsos.dsp.util.fft.WindowFunction;
 import com.lazydash.audio.spectrum.core.algorithm.AmplitudeWeightCalculator;
 import com.lazydash.audio.spectrum.core.algorithm.OctaveGenerator;
 import com.lazydash.audio.spectrum.system.config.AppConfig;
 import org.apache.commons.math3.analysis.UnivariateFunction;
-import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
-import org.apache.commons.math3.analysis.interpolation.NevilleInterpolator;
+import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
-import org.apache.commons.math3.analysis.polynomials.PolynomialFunctionLagrangeForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sound.sampled.AudioFormat;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 
@@ -28,10 +25,9 @@ public class FFTAudioProcessor implements AudioProcessor {
 
     private List<FFTListener> listenerList;
     private AudioFormat audioFormat;
-    private NevilleInterpolator nevilleInterpolator = new NevilleInterpolator();
-    private UnivariateInterpolator interpolator = new LinearInterpolator();
-    private WindowFunction windowFunction = new HannWindow();
-    private double windowCorrectionFactor = 2.00;
+    private UnivariateInterpolator linearInterpolator = new SplineInterpolator();
+    private WindowFunction windowFunction = new HammingWindow();
+    private double windowCorrectionFactor = 1.85;
 
     FFTAudioProcessor(AudioFormat audioFormat, List<FFTListener> listenerList) {
         this.audioFormat = audioFormat;
@@ -51,129 +47,107 @@ public class FFTAudioProcessor implements AudioProcessor {
         System.arraycopy(audioFloatBuffer, 0, transformBuffer, 0, audioFloatBuffer.length);
 
         float[] amplitudes = new float[transformBuffer.length / 2];
-        double[] bins = new double[transformBuffer.length / 2];
 
         FFT fft = new FFT(transformBuffer.length, windowFunction);
         fft.forwardTransform(transformBuffer);
         fft.modulus(transformBuffer, amplitudes);
 
+        double[] bins = new double[transformBuffer.length / 2];
         bins = IntStream.range(0, bins.length).mapToDouble(i -> fft.binToHz(i, audioFormat.getSampleRate())).toArray();
+        double[] doublesAmplitudes = IntStream.range(0, amplitudes.length).mapToDouble(value -> amplitudes[value]).toArray();
 
-        List<Double> octaveFrequencies;
         if (AppConfig.getOctave() > 0) {
-            octaveFrequencies = OctaveGenerator.getOctaveFrequencies(
+            List<Double> octaveFrequencies = OctaveGenerator.getOctaveFrequencies(
                     AppConfig.getFrequencyCenter(),
                     AppConfig.getOctave(),
                     AppConfig.getFrequencyStart(),
                     AppConfig.getFrequencyEnd());
-        } else {
-            octaveFrequencies = IntStream.range(0, bins.length)
-                    .mapToDouble(i -> fft.binToHz(i, audioFormat.getSampleRate()))
-                    .boxed()
-                    .filter(aDouble -> AppConfig.getFrequencyStart() <= aDouble && aDouble <= AppConfig.getFrequencyEnd())
-                    .collect(Collectors.toList());
-        }
 
-        double[] octaveBins = new double[octaveFrequencies.size()];
-        double[] octaveAmplitudes = new double[octaveFrequencies.size()];
+            double[] octaveBins = new double[octaveFrequencies.size()];
+            double[] octaveAmplitudes = new double[octaveFrequencies.size()];
 
-        // m is the position in the octaveFrequency vectors
-        int m = 0;
+            // m is the position in the octaveFrequency vectors
+            int m = 0;
 
-        // k is the position in the amplitudes vector
-        // skip first 3 bins
-        int k = 0;
+            // k is the frequency index
+            int k = (int) Math.ceil(OctaveGenerator.getLowLimit(octaveFrequencies.get(0), AppConfig.getOctave()));
 
-        // skip k values until we get to the first target frequency
-        // otherwise the first target frequency will have all the energy from the first bins
-        while (bins[k] < octaveFrequencies.get(0) - bins[1]) {
-            // if we do not use the values here make them 0
-            // also this will protect against low frequency spectral leakage due to DC offset
-            amplitudes[k] = 0f;
-            k++;
-        }
+            // setup the linearInterpolator
+            UnivariateFunction interpolateFunction = linearInterpolator.interpolate(bins, doublesAmplitudes);
 
-        // setup the interpolator
-        double[] doublesAmplitudes = IntStream.range(0, amplitudes.length).mapToDouble(value -> amplitudes[value]).toArray();
-        UnivariateFunction interpolate = interpolator.interpolate(bins, doublesAmplitudes);
+            for (int i = 0; i < octaveFrequencies.size(); i++) {
+                octaveBins[m] = octaveFrequencies.get(i);
 
-        for (int i = 0; i < octaveFrequencies.size(); i++) {
-            octaveBins[m] = octaveFrequencies.get(i);
+                // group bins together
+                while (OctaveGenerator.getLowLimit(octaveFrequencies.get(i), AppConfig.getOctave()) <= k
+                        && k < OctaveGenerator.getHighLimit(octaveFrequencies.get(i), AppConfig.getOctave())) {
 
-            // the target octave frequency will be calculated
-            // by grouping bins from half right to half left
-            // of the target frequency value
-            double frequencyHigh;
-            if (i < octaveFrequencies.size() - 1) {
-                frequencyHigh = (octaveFrequencies.get(i + 1) + octaveFrequencies.get(i)) / 2;
-            } else {
-                frequencyHigh = octaveFrequencies.get(i);
+                    double amplitude = interpolateFunction.value(k);
+                    amplitude = (amplitude / doublesAmplitudes.length); // normalize (n/2)
+                    amplitude = (amplitude * windowCorrectionFactor); // apply window correction
+                    octaveAmplitudes[m] = octaveAmplitudes[m] + Math.pow(amplitude, 2); // sum up the "normalized window corrected" energy
+
+                    k++;
+
+                    // reached upper limit
+                    if (k > AppConfig.getFrequencyEnd()) {
+                        break;
+                    }
+                }
+
+                octaveAmplitudes[m] = Math.sqrt(octaveAmplitudes[m]); // square root the energy
+
+                if (AppConfig.getMaxLevel().equals("RMS")) {
+                    octaveAmplitudes[m] = (Math.sqrt(Math.pow(octaveAmplitudes[m], 2) / 2)); // calculate the RMS of the amplitude
+                }
+                octaveAmplitudes[m] = (20 * Math.log10(octaveAmplitudes[m])); // convert to logarithmic scale
+
+                AmplitudeWeightCalculator.WeightWindow weightWindow = AmplitudeWeightCalculator.WeightWindow.valueOf(AppConfig.getWeight());
+                octaveAmplitudes[m] = (octaveAmplitudes[m] + AmplitudeWeightCalculator.getDbWeight(octaveBins[m], weightWindow)); // use weight to adjust the spectrum
+
+                m++;
             }
 
+            listenerList.forEach(listener -> listener.frame(octaveBins, octaveAmplitudes));
 
-            int p = 0;
-            // p is number of bins that get grouped under a single target frequency
-
-            // group bins together
-            while (bins[k] < frequencyHigh) {
-                double amplitude = amplitudes[k];
-                amplitude = (amplitude / amplitudes.length); // normalize (n/2)
-                amplitude = (amplitude * windowCorrectionFactor); // apply window correction
-                octaveAmplitudes[m] = octaveAmplitudes[m] + Math.pow(amplitude, 2); // sum up the "normalized window corrected" energy
-
-                k++;
-                p++;
-
-                // finish if no more bins available
-                if (k > amplitudes.length - 1) {
-                    i = octaveFrequencies.size();
+        } else {
+            int n = 0;
+            for (int i =0; i < bins.length; i++) {
+                double frequency = fft.binToHz(i, audioFormat.getSampleRate());
+                if ( AppConfig.getFrequencyStart() <= frequency && frequency <= AppConfig.getFrequencyEnd() ) {
+                    n++;
+                } else if (frequency > AppConfig.getFrequencyEnd()){
                     break;
                 }
             }
 
-            // interpolate if there is to little data
-            if (p < 4) {
-                double amplitude = interpolate.value(octaveFrequencies.get(i));
+            double[] frequencyBins = new double[n];
+            double[] frequencyAmplitudes = new double[n];
 
-                // if stars are aligned then use polynomial interpolation to determine the peak of the target frequency
-                if (k > 2) {
-                    PolynomialFunctionLagrangeForm univariateFunction = nevilleInterpolator.interpolate(
-                            new double[]{
-                                    bins[k - 2],
-                                    bins[k - 1],
-                                    bins[k]
+            int m = 0;
+            for (int i =0; i < bins.length; i++) {
+                double frequency = fft.binToHz(i, audioFormat.getSampleRate());
+                if (AppConfig.getFrequencyStart() <= frequency && frequency <= AppConfig.getFrequencyEnd()) {
+                    frequencyBins[m] = frequency;
 
-                            }, new double[]{
-                                    amplitudes[k - 2],
-                                    amplitudes[k - 1],
-                                    amplitudes[k]
-                            });
+                    frequencyAmplitudes[m] = doublesAmplitudes[i];
+                    frequencyAmplitudes[m] = (frequencyAmplitudes[m] / doublesAmplitudes.length); // normalize (n/2)
+                    frequencyAmplitudes[m] = (frequencyAmplitudes[m] * windowCorrectionFactor); // apply window correction
 
-                    // if parabola opens down use the it to estimate the peek
-                    if (univariateFunction.getCoefficients()[0] < 0) {
-                        amplitude = univariateFunction.value(octaveFrequencies.get(i));
+                    if (AppConfig.getMaxLevel().equals("RMS")) {
+                        frequencyAmplitudes[m] = (Math.sqrt(Math.pow(frequencyAmplitudes[m], 2) / 2)); // calculate the RMS of the amplitude
                     }
+                    frequencyAmplitudes[m] = (20 * Math.log10(frequencyAmplitudes[m])); // convert to logarithmic scale
 
+                    AmplitudeWeightCalculator.WeightWindow weightWindow = AmplitudeWeightCalculator.WeightWindow.valueOf(AppConfig.getWeight());
+                    frequencyAmplitudes[m] = (frequencyAmplitudes[m] + AmplitudeWeightCalculator.getDbWeight(frequencyBins[m], weightWindow)); // use weight to adjust the spectrum
+                    m++;
                 }
 
-                amplitude = (amplitude / amplitudes.length); // normalize (n/2)
-                amplitude = (amplitude * windowCorrectionFactor); // apply window correction
-                octaveAmplitudes[m] = Math.pow(amplitude, 2);
             }
 
-            octaveAmplitudes[m] = Math.sqrt(octaveAmplitudes[m]); // square root the energy
-            if (AppConfig.getMaxLevel().equals("RMS")) {
-                octaveAmplitudes[m] = (Math.sqrt(Math.pow(octaveAmplitudes[m], 2) / 2)); // calculate the RMS of the amplitude
-            }
-            octaveAmplitudes[m] = (20 * Math.log10(octaveAmplitudes[m])); // convert to logarithmic scale
-
-            AmplitudeWeightCalculator.WeightWindow weightWindow = AmplitudeWeightCalculator.WeightWindow.valueOf(AppConfig.getWeight());
-            octaveAmplitudes[m] = (octaveAmplitudes[m] + AmplitudeWeightCalculator.getDbWeight(octaveBins[m], weightWindow)); // use weight to adjust the spectrum
-
-            m++;
+            listenerList.forEach(listener -> listener.frame(frequencyBins, frequencyAmplitudes));
         }
-
-        listenerList.forEach(listener -> listener.frame(octaveBins, octaveAmplitudes));
 
         long newTime = System.currentTimeMillis();
         long deltaTime = newTime - oldTime;

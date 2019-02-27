@@ -21,13 +21,13 @@ public class FrequencyBarsCreator {
 
         if (!inverted) {
             for (int i=0; i < binsHz.length; i++) {
-                frequencyBars.get(i).setColor(Color.hsb(pos, 0.92,0.92));
+                frequencyBars.get(i).setColor(Color.hsb(pos, 1,1));
                 pos = pos + (range / binsHz.length);
             }
 
         } else {
             for (int i = binsHz.length - 1; i >= 0; i--) {
-                frequencyBars.get(i).setColor(Color.hsb(pos, 0.92,0.92));
+                frequencyBars.get(i).setColor(Color.hsb(pos, 1,1));
                 pos = pos + (range / binsHz.length);
             }
         }

@@ -3,77 +3,97 @@ package com.lazydash.audio.spectrum.core.algorithm;
 import com.lazydash.audio.spectrum.system.config.AppConfig;
 
 public class BarsHeightCalculator {
-    private double[] amplitudes;
-    private double[] decay;
+    private long oldTime = System.currentTimeMillis();
+    private double[] oldAmplitudes;
+    private double[] oldDecayFactor;
 
-    // holds state and modifies it's internal state based on the input
-    public double[] processAmplitudes(double[] newAmplitudes, double targetFPS) {
+    public double[] processAmplitudes(double[] newAmplitudes) {
         // init on first run or if number of newAmplitudes has changed
-        if (amplitudes == null || amplitudes.length != newAmplitudes.length) {
-            amplitudes = new double[newAmplitudes.length];
-            System.arraycopy(newAmplitudes, 0, amplitudes, 0, newAmplitudes.length);
+        if (oldAmplitudes == null || oldAmplitudes.length != newAmplitudes.length) {
+            oldAmplitudes = newAmplitudes;
+            oldDecayFactor = new double[newAmplitudes.length];
 
-            decay = new double[amplitudes.length];
+            return convertDbToPixels(newAmplitudes);
         }
 
-        for (int i = 0; i < newAmplitudes.length; i++) {
-            double oldHeight = amplitudes[i];
+        int dbPerSecondDecay = AppConfig.getDbPerSecondDecay();
+        double secondsPassed = getSecondsPassed();
 
-            double maxHeight = Math.abs(AppConfig.getSignalThreshold());
-            double windowHeight = AppConfig.getMaxBarHeight();
+        oldAmplitudes = decayDbAmplitudes(oldAmplitudes, newAmplitudes, dbPerSecondDecay, secondsPassed);
 
-            double newHeight = (newAmplitudes[i] + Math.abs(AppConfig.getSignalThreshold()));
-            newHeight = (windowHeight / maxHeight) * (newHeight);
-            newHeight = (newHeight * (AppConfig.getSignalAmplification() / 100d));
-            newHeight = Math.round(newHeight);
+        return convertDbToPixels(oldAmplitudes);
+    }
 
+    public double[] decayDbAmplitudes(double[] oldAmplitudes, double[] newAmplitudes, double dbPerSecond, double secondsPassed) {
+        double[] processedAmplitudes = new double[newAmplitudes.length];
 
-            // apply limits
-            if (newHeight > AppConfig.getMaxBarHeight()) {
-                // ceiling hit
-                newHeight = AppConfig.getMaxBarHeight();
+        for (int i = 0; i < processedAmplitudes.length; i++) {
+            double oldHeight = oldAmplitudes[i];
+            double newHeight = newAmplitudes[i];
 
-            } else if (newHeight < AppConfig.getMinBarHeight()) {
-                // below floor
-                newHeight = AppConfig.getMinBarHeight();
-            }
+            if (newHeight >= oldHeight) {
+                processedAmplitudes[i] = newHeight;
+                oldDecayFactor[i]=0;
 
+            } else {
+                double dbPerSecondDecay = dbPerSecond * secondsPassed;
 
-            if (newHeight > oldHeight) {
-                // use new height
-                amplitudes[i] = newHeight;
-                decay[i] = 0;
-
-            } else if (newHeight < oldHeight) {
-                // decayFrames is per bar because of acceleration variances
-                double decayFrames = 0;
-                if (AppConfig.getDecayTime() > 0) {
-                    decayFrames = (AppConfig.getMaxBarHeight() * (1000d / targetFPS) / AppConfig.getDecayTime());
+                if (AppConfig.getAccelerationFactor() > 0 && oldDecayFactor[i] < 1) {
+                    double accelerationStep = 1d / AppConfig.getAccelerationFactor();
+                    oldDecayFactor[i] = oldDecayFactor[i] + accelerationStep;
+                    dbPerSecondDecay = dbPerSecondDecay * oldDecayFactor[i];
                 }
 
-                if (AppConfig.getAccelerationFactor() > 0 && decay[i] < 1) {
-                    double accelerationStep = (decayFrames / (decayFrames * AppConfig.getAccelerationFactor()));
-                    decay[i] = decay[i] + accelerationStep;
-                    decayFrames = decayFrames * decay[i];
-                }
-
-                if (oldHeight - decayFrames < newHeight) {
-                    decay[i] = 0;
-                    amplitudes[i] = (float) newHeight;
+                if (newHeight > oldHeight - dbPerSecondDecay) {
+                    processedAmplitudes[i] = newHeight;
+                    oldDecayFactor[i]=0;
 
                 } else {
-                    amplitudes[i] = (float) (amplitudes[i] - decayFrames);
+                    processedAmplitudes[i] = oldHeight - dbPerSecondDecay;
+
                 }
-
             }
-
-            // correction for bellow min bar height
-            if (amplitudes[i] < AppConfig.getMinBarHeight()) {
-                amplitudes[i] = AppConfig.getMinBarHeight();
-            }
-
         }
 
-        return amplitudes;
+        return processedAmplitudes;
+    }
+
+    public double[] convertDbToPixels(double[] dbAmplitude) {
+        int signalThreshold = AppConfig.getSignalThreshold();
+        double maxBarHeight = AppConfig.getMaxBarHeight();
+        int signalAmplification = AppConfig.getSignalAmplification();
+        int minBarHeight = AppConfig.getMinBarHeight();
+
+        double[] pixelsAmplitude = new double[dbAmplitude.length];
+
+        for (int i = 0; i < pixelsAmplitude.length; i++) {
+            double maxHeight = Math.abs(signalThreshold);
+
+            double newHeight = dbAmplitude[i] + Math.abs(signalThreshold);
+            newHeight = (maxBarHeight / maxHeight) * newHeight;
+            newHeight = newHeight * (signalAmplification / 100d);
+            newHeight = Math.round(newHeight);
+
+            // apply limits
+            if (newHeight > maxBarHeight) {
+                // ceiling hit
+                newHeight = maxBarHeight;
+
+            } else if (newHeight < minBarHeight) {
+                // below floor
+                newHeight = minBarHeight;
+            }
+
+            pixelsAmplitude[i] = newHeight;
+        }
+
+        return pixelsAmplitude;
+    }
+
+    private double getSecondsPassed() {
+        long newTime = System.currentTimeMillis();
+        long deltaTime = newTime - oldTime;
+        oldTime = newTime;
+        return deltaTime / 1000d;
     }
 }

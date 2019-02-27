@@ -25,6 +25,8 @@ public class SpectralViewController {
     public Spinner<Integer> frequencyCenter;
     public ComboBox<String> maxLevel;
     public ComboBox<String> weighting;
+    public Spinner<Integer> minBarHeight;
+    public Spinner<Integer> barGap;
 
     public void initialize() {
         signalAmplificationValue.setText(String.valueOf(AppConfig.getSignalAmplification()));
@@ -80,6 +82,16 @@ public class SpectralViewController {
         AmplitudeWeightCalculator.WeightWindow[] weightWindows = AmplitudeWeightCalculator.WeightWindow.values();
         List<String> collect = Arrays.stream(weightWindows).map(Enum::toString).collect(Collectors.toList());
         weighting.getItems().addAll(collect);
+
+        minBarHeight.getValueFactory().setValue(AppConfig.getMinBarHeight());
+        minBarHeight.valueProperty().addListener((observable, oldValue, newValue) -> {
+            AppConfig.setMinBarHeight(newValue);
+        });
+
+        barGap.getValueFactory().setValue(AppConfig.getBarGap());
+        barGap.valueProperty().addListener((observable, oldValue, newValue) -> {
+            AppConfig.setBarGap(newValue);
+        });
     }
 
 

@@ -42,6 +42,14 @@ public class OctaveGenerator {
         }
     }
 
+    public static double getLowLimit(double center, double band){
+        return  center / (Math.pow(2, ( 1d / (2* band) )));
+    }
+
+    public static double getHighLimit(double center, double band) {
+        return center * (Math.pow(2, ( 1d / (2* band) )));
+    }
+
     private static void addLow(Set<Double> octave, double center, double band, double lowerLimit){
         if (center < lowerLimit) {
             return;
@@ -49,7 +57,7 @@ public class OctaveGenerator {
 
         octave.add(center);
 
-        double fl = center / (Math.pow(2, ( 1d / (2*band) )));
+        double fl = center / (Math.pow(2, ( 1d / (band) )));
         addLow(octave, fl, band, lowerLimit);
     }
 
@@ -60,7 +68,7 @@ public class OctaveGenerator {
 
         octave.add(center);
 
-        double fh = center * (Math.pow(2, ( 1d / (2*band) )));
+        double fh = center * (Math.pow(2, ( 1d / (band) )));
         addHigh(octave, fh, band, upperLimit);
     }
 
