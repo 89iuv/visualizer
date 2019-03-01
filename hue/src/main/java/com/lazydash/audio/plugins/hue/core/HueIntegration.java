@@ -1,6 +1,8 @@
 package com.lazydash.audio.plugins.hue.core;
 
 import com.lazydash.audio.plugins.hue.core.callbacks.*;
+import com.lazydash.audio.plugins.hue.model.HueAreaMap;
+import com.lazydash.audio.plugins.hue.model.Location;
 import com.lazydash.audio.plugins.hue.system.config.UserConfig;
 import com.lazydash.audio.spectrum.system.notification.EventEnum;
 import com.lazydash.audio.spectrum.system.notification.NotificationService;
@@ -14,22 +16,27 @@ import com.philips.lighting.hue.sdk.wrapper.domain.resource.Group;
 import com.philips.lighting.hue.sdk.wrapper.entertainment.Entertainment;
 import com.philips.lighting.hue.sdk.wrapper.entertainment.animation.ConstantAnimation;
 import com.philips.lighting.hue.sdk.wrapper.entertainment.effect.AreaEffect;
+import com.philips.lighting.hue.sdk.wrapper.entertainment.effect.Effect;
 import com.philips.lighting.hue.sdk.wrapper.knownbridges.KnownBridge;
 import com.philips.lighting.hue.sdk.wrapper.knownbridges.KnownBridges;
 import javafx.scene.paint.Color;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class HueIntegration {
     private Bridge bridge;
     private BridgeDiscovery bridgeDiscovery;
     private Entertainment entertainment;
-    private AreaEffect allAreaEffect;
 
     private boolean running = false;
     private boolean ready = false;
 
+    public HueIntegration() {
+        // save hue status on change
+        NotificationService.getInstance().register(EventEnum.HUE_INTEGRATION_STATUS, UserConfig::setHueStatus);
+    }
 
     public void setBridge(Bridge bridge) {
         this.bridge = bridge;
@@ -47,19 +54,6 @@ public class HueIntegration {
         this.ready = ready;
     }
 
-    public AreaEffect getAllAreaEffect() {
-        return allAreaEffect;
-    }
-
-    public void setAllAreaEffect(AreaEffect allAreaEffect) {
-        this.allAreaEffect = allAreaEffect;
-    }
-
-    public HueIntegration() {
-        // save hue status on change
-        NotificationService.getInstance().register(EventEnum.HUE_INTEGRATION_STATUS, UserConfig::setHueStatus);
-    }
-
     public void start() {
         if (!running) {
             running = true;
@@ -75,9 +69,18 @@ public class HueIntegration {
             running = false;
             UserConfig.setHueIntegrationEnabled(false);
 
-            if (allAreaEffect != null && !allAreaEffect.isFinished()) {
-                allAreaEffect.finish();
+           /* for (AreaEffect effect : areaEffectList) {
+                if (effect != null && !effect.isFinished()) {
+                    effect.finish();
+                }
             }
+
+            for (Map.Entry<String, Area> entry : nameToArea.entrySet()) {
+                Area effect = entry.getValue();
+                if (effect != null && !effect.isFinished()) {
+                    effect.finish();
+                }
+            }*/
 
             if (entertainment != null) {
                 entertainment.stop(() -> {
@@ -150,11 +153,45 @@ public class HueIntegration {
         }
     }
 
-    public void setColor(Color color) {
-        allAreaEffect.setColorAnimation(
-                new ConstantAnimation(color.getRed()),
-                new ConstantAnimation(color.getGreen()),
-                new ConstantAnimation(color.getBlue()));
+    public void updateHueEntertainment(Map<Location, Color> locationColorMap) {
+        if (locationColorMap.isEmpty()) {
+            return;
+        }
+
+        entertainment.lockMixer();
+
+        for (String locationName : HueAreaMap.getNameToArea().keySet()) {
+            Effect effectByName = entertainment.getEffectByName(locationName);
+            if (effectByName != null && effectByName.isEnabled()) {
+                effectByName.finish();
+                effectByName.disable();
+            }
+        }
+
+        for (Map.Entry<Location, Color> entry: locationColorMap.entrySet()) {
+            Location location = entry.getKey();
+            Color color = entry.getValue();
+
+            AreaEffect effect = (AreaEffect) entertainment.getEffectByName(location.getName());
+            if (effect == null) {
+                effect = new AreaEffect(location.getName(), 0);
+                effect.setArea(HueAreaMap.getNameToArea().get(location.getName()));
+                entertainment.addEffect(effect);
+            }
+
+            effect.setColorAnimation(
+                    new ConstantAnimation(color.getRed()),
+                    new ConstantAnimation(color.getGreen()),
+                    new ConstantAnimation(color.getBlue())
+            );
+
+            if (effect.isDisabled()) {
+                effect.enable();
+            }
+        }
+
+        entertainment.unlockMixer();
+
     }
 }
 

@@ -1,11 +1,7 @@
 package com.lazydash.audio.spectrum.ui.code.spectral;
 
 import com.lazydash.audio.spectrum.core.service.FrequencyBarsFFTService;
-import com.lazydash.audio.spectrum.system.config.AppConfig;
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.util.Duration;
+import javafx.animation.AnimationTimer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,9 +12,12 @@ public class SpectralAnimator {
     private FrequencyBarsFFTService spectralFFTService;
     private SpectralView spectralView;
 
-    private Timeline timeline = new Timeline(new KeyFrame(
-            Duration.millis(1000d / AppConfig.getTargetFPS()),
-            ae -> updateSpectralView()));
+    private AnimationTimer animationTimer = new AnimationTimer() {
+        @Override
+        public void handle(long now) {
+            updateSpectralView();
+        }
+    };
 
     public SpectralAnimator(FrequencyBarsFFTService spectralFFTService, SpectralView spectralView) {
         this.spectralFFTService = spectralFFTService;
@@ -26,8 +25,7 @@ public class SpectralAnimator {
     }
 
     public void play(){
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play();
+        animationTimer.start();
     }
 
     private void updateSpectralView(){

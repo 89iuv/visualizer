@@ -35,7 +35,7 @@
     -fx-max-width: Infinity;
     -fx-border-width: 0 0 0 2;
     -fx-border-color: WHITE;
-    -fx-padding: 5 10 5 10;
+    -fx-padding: 5 10 5 20;
 }
 
 .selected {
@@ -51,4 +51,18 @@
 
 .separator {
     -fx-padding: 10 0 10 0;
+}
+
+.settings-title {
+    -fx-font-size: 18pt;
+    -fx-padding: 10 10 5 10;
+}
+
+.settings-subtitle {
+    -fx-font-size: 14pt;
+    -fx-padding: 10 10 2 10;
+}
+
+.scroll-pane {
+    -fx-background-color:transparent;
 }

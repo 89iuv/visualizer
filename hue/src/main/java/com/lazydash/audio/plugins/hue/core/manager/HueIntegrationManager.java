@@ -1,19 +1,20 @@
 package com.lazydash.audio.plugins.hue.core.manager;
 
 import com.lazydash.audio.plugins.hue.core.HueIntegration;
+import com.lazydash.audio.plugins.hue.model.Location;
+import com.lazydash.audio.plugins.hue.system.config.LocationConfig;
 import com.lazydash.audio.plugins.hue.system.config.UserConfig;
 import com.lazydash.audio.spectrum.core.algorithm.GlobalColorCalculator;
 import com.lazydash.audio.spectrum.core.model.FrequencyBar;
 import com.lazydash.audio.spectrum.core.service.FrequencyBarsFFTService;
-import com.lazydash.audio.spectrum.system.config.SpectralColorConfig;
+import com.lazydash.audio.spectrum.system.worker.VariableFpsLoopWorker;
 import javafx.scene.paint.Color;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.Map;
 
 public class HueIntegrationManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(HueIntegrationManager.class);
@@ -21,8 +22,6 @@ public class HueIntegrationManager {
 
     private HueIntegration hueIntegration;
     private FrequencyBarsFFTService hueFFTService;
-
-    private Color previousColor = SpectralColorConfig.baseColor;
 
     private GlobalColorCalculator globalColorCalculator = new GlobalColorCalculator();
 
@@ -32,48 +31,52 @@ public class HueIntegrationManager {
     }
 
     public void start() {
-        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(r -> {
-            Thread thread = new Thread(r);
-            thread.setDaemon(true);
-            return thread;
-        });
+        VariableFpsLoopWorker variableFpsLoopWorker = new VariableFpsLoopWorker(){
 
-        // process correction of 2 ms
-        double delayMs = (1000 / UserConfig.getHueTargetFPS()) - 2;
-        executorService.scheduleWithFixedDelay(
-                this::run,
-                0,
-                (int) delayMs, TimeUnit.MILLISECONDS);
-
-    }
-
-    private void run() {
-        if (UserConfig.isHueIntegrationEnabled()) {
-            if (hueIntegration.isReady()) {
-                updateHueColor();
-
-            } else {
-                hueIntegration.start();
+            @Override
+            public int getTargetFps() {
+                return (int) UserConfig.getHueTargetFPS();
             }
 
-        } else {
-            hueIntegration.stop();
+            @Override
+            public void run() {
+                if (UserConfig.isHueIntegrationEnabled()) {
+                    if (hueIntegration.isReady()) {
+                        updateHueColor();
 
-        }
+                    } else {
+                        hueIntegration.start();
+                    }
+
+                } else {
+                    hueIntegration.stop();
+                }
+            }
+        };
+
+        variableFpsLoopWorker.start();
+
     }
 
     private void updateHueColor() {
         List<FrequencyBar> frequencyBarList = hueFFTService.getFrequencyBarList();
-        Color color = globalColorCalculator.getGlobalColor(
-                frequencyBarList,
-                Integer.MIN_VALUE,
-                Integer.MAX_VALUE,
-                true);
 
-        if (!previousColor.equals(color)) {
-            hueIntegration.setColor(color);
-            previousColor = color;
+        Map<Location, Color> locationColorMap = new LinkedHashMap<>();
+        for (Location location: LocationConfig.getLocationList()) {
+            if (location.getName().equals("")) {
+                continue;
+            }
+
+            Color color = globalColorCalculator.getGlobalColor(
+                    frequencyBarList,
+                    location.getFrequencyStart(),
+                    location.getFrequencyEnd(),
+                    true);
+
+            locationColorMap.put(location, color);
         }
+
+        hueIntegration.updateHueEntertainment(locationColorMap);
 
         long newTime = System.currentTimeMillis();
         long deltaTime = newTime - oldTime;

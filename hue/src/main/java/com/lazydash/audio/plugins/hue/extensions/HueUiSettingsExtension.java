@@ -24,7 +24,7 @@ public class HueUiSettingsExtension implements UiSettingsExtensionPoint {
             fxmlLoader.setClassLoader(getClass().getClassLoader());
 
             Parent parent = fxmlLoader.load();
-            settingsController.addTitleToFMXL("Hue integration", parent);
+            settingsController.addTitleToPluginsFMXL("Hue integration", parent);
 
         } catch (IOException e) {
             e.printStackTrace();

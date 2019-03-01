@@ -25,17 +25,6 @@
                 GridPane.rowIndex="$row.value" GridPane.columnIndex="1" GridPane.fillWidth="true" GridPane.hgrow="ALWAYS"/>
         <Label fx:id="rangeValue" styleClass="sliderValueLabel" GridPane.rowIndex="$row.value" GridPane.columnIndex="2"/>
 
-       <!-- <Label text="Saturation (degrees): " GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
-        <Slider fx:id="saturation" min="0" max="1" majorTickUnit="10" minorTickCount="5" showTickLabels="true"
-                GridPane.rowIndex="$row.value" GridPane.columnIndex="1" GridPane.fillWidth="true" GridPane.hgrow="ALWAYS"/>
-        <Label fx:id="saturationValue" styleClass="sliderValueLabel" GridPane.rowIndex="$row.value" GridPane.columnIndex="2"/>
-
-        <Label text="Brightness (degrees): " GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
-        <Slider fx:id="brightness" min="0" max="1" majorTickUnit="10" minorTickCount="5" showTickLabels="true"
-                GridPane.rowIndex="$row.value" GridPane.columnIndex="1" GridPane.fillWidth="true" GridPane.hgrow="ALWAYS"/>
-        <Label fx:id="brightnessValue" styleClass="sliderValueLabel" GridPane.rowIndex="$row.value" GridPane.columnIndex="2"/>-->
-
-
     </GridPane>
 
 </VBox>

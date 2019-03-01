@@ -25,11 +25,15 @@
                 GridPane.rowIndex="$row.value" GridPane.columnIndex="1"/>
         <Label fx:id="signalThresholdValue" styleClass="sliderValueLabel" GridPane.rowIndex="$row.value" GridPane.columnIndex="2"/>
 
+        <Separator styleClass="separator" GridPane.rowIndex="$row.increment" GridPane.columnSpan="3"/>
+
         <Label text="Max level: " GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
         <ComboBox fx:id="maxLevel" onAction="#updateMaxLeve" GridPane.rowIndex="$row.value" GridPane.columnIndex="1"/>
 
         <Label text="Weighting: " GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
         <ComboBox fx:id="weighting" onAction="#updateWeighting" GridPane.rowIndex="$row.value" GridPane.columnIndex="1"/>
+
+        <Separator styleClass="separator" GridPane.rowIndex="$row.increment" GridPane.columnSpan="3"/>
 
         <Label text="Frequency start:" GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
         <Spinner fx:id="frequencyStart" editable="true" GridPane.rowIndex="$row.value" GridPane.columnIndex="1">
@@ -52,12 +56,16 @@
             </valueFactory>
         </Spinner>
 
+        <Separator styleClass="separator" GridPane.rowIndex="$row.increment" GridPane.columnSpan="3"/>
+
         <Label text="Octave (1/n):" GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
         <Spinner fx:id="octave" editable="true" GridPane.rowIndex="$row.value" GridPane.columnIndex="1">
             <valueFactory>
                 <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="24" amountToStepBy="1"/>
             </valueFactory>
         </Spinner>
+
+        <Separator styleClass="separator" GridPane.rowIndex="$row.increment" GridPane.columnSpan="3"/>
 
         <Label text="Min bar height (pixels):" GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
         <Spinner fx:id="minBarHeight" editable="true" GridPane.rowIndex="$row.value" GridPane.columnIndex="1">

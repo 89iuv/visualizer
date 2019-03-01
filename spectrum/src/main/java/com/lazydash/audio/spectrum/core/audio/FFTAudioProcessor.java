@@ -56,6 +56,9 @@ public class FFTAudioProcessor implements AudioProcessor {
         bins = IntStream.range(0, bins.length).mapToDouble(i -> fft.binToHz(i, audioFormat.getSampleRate())).toArray();
         double[] doublesAmplitudes = IntStream.range(0, amplitudes.length).mapToDouble(value -> amplitudes[value]).toArray();
 
+        double[] frequencyBins;
+        double[] frequencyAmplitudes;
+
         if (AppConfig.getOctave() > 0) {
             List<Double> octaveFrequencies = OctaveGenerator.getOctaveFrequencies(
                     AppConfig.getFrequencyCenter(),
@@ -63,20 +66,19 @@ public class FFTAudioProcessor implements AudioProcessor {
                     AppConfig.getFrequencyStart(),
                     AppConfig.getFrequencyEnd());
 
-            double[] octaveBins = new double[octaveFrequencies.size()];
-            double[] octaveAmplitudes = new double[octaveFrequencies.size()];
-
-            // m is the position in the octaveFrequency vectors
-            int m = 0;
-
-            // k is the frequency index
-            int k = (int) Math.ceil(OctaveGenerator.getLowLimit(octaveFrequencies.get(0), AppConfig.getOctave()));
+            frequencyBins = new double[octaveFrequencies.size()];
+            frequencyAmplitudes = new double[octaveFrequencies.size()];
 
             // setup the linearInterpolator
             UnivariateFunction interpolateFunction = linearInterpolator.interpolate(bins, doublesAmplitudes);
 
+            // k is the frequency index
+            int k = (int) Math.ceil(OctaveGenerator.getLowLimit(octaveFrequencies.get(0), AppConfig.getOctave()));
+
+            // m is the position in the frequency vectors
+            int m = 0;
             for (int i = 0; i < octaveFrequencies.size(); i++) {
-                octaveBins[m] = octaveFrequencies.get(i);
+                frequencyBins[m] = octaveFrequencies.get(i);
 
                 // group bins together
                 while (OctaveGenerator.getLowLimit(octaveFrequencies.get(i), AppConfig.getOctave()) <= k
@@ -85,7 +87,7 @@ public class FFTAudioProcessor implements AudioProcessor {
                     double amplitude = interpolateFunction.value(k);
                     amplitude = (amplitude / doublesAmplitudes.length); // normalize (n/2)
                     amplitude = (amplitude * windowCorrectionFactor); // apply window correction
-                    octaveAmplitudes[m] = octaveAmplitudes[m] + Math.pow(amplitude, 2); // sum up the "normalized window corrected" energy
+                    frequencyAmplitudes[m] = frequencyAmplitudes[m] + Math.pow(amplitude, 2); // sum up the "normalized window corrected" energy
 
                     k++;
 
@@ -95,24 +97,22 @@ public class FFTAudioProcessor implements AudioProcessor {
                     }
                 }
 
-                octaveAmplitudes[m] = Math.sqrt(octaveAmplitudes[m]); // square root the energy
+                frequencyAmplitudes[m] = Math.sqrt(frequencyAmplitudes[m]); // square root the energy
 
                 if (AppConfig.getMaxLevel().equals("RMS")) {
-                    octaveAmplitudes[m] = (Math.sqrt(Math.pow(octaveAmplitudes[m], 2) / 2)); // calculate the RMS of the amplitude
+                    frequencyAmplitudes[m] = (Math.sqrt(Math.pow(frequencyAmplitudes[m], 2) / 2)); // calculate the RMS of the amplitude
                 }
-                octaveAmplitudes[m] = (20 * Math.log10(octaveAmplitudes[m])); // convert to logarithmic scale
+                frequencyAmplitudes[m] = (20 * Math.log10(frequencyAmplitudes[m])); // convert to logarithmic scale
 
                 AmplitudeWeightCalculator.WeightWindow weightWindow = AmplitudeWeightCalculator.WeightWindow.valueOf(AppConfig.getWeight());
-                octaveAmplitudes[m] = (octaveAmplitudes[m] + AmplitudeWeightCalculator.getDbWeight(octaveBins[m], weightWindow)); // use weight to adjust the spectrum
+                frequencyAmplitudes[m] = (frequencyAmplitudes[m] + AmplitudeWeightCalculator.getDbWeight(frequencyBins[m], weightWindow)); // use weight to adjust the spectrum
 
                 m++;
             }
 
-            listenerList.forEach(listener -> listener.frame(octaveBins, octaveAmplitudes));
-
         } else {
             int n = 0;
-            for (int i =0; i < bins.length; i++) {
+            for (int i = 0; i < bins.length; i++) {
                 double frequency = fft.binToHz(i, audioFormat.getSampleRate());
                 if ( AppConfig.getFrequencyStart() <= frequency && frequency <= AppConfig.getFrequencyEnd() ) {
                     n++;
@@ -121,11 +121,11 @@ public class FFTAudioProcessor implements AudioProcessor {
                 }
             }
 
-            double[] frequencyBins = new double[n];
-            double[] frequencyAmplitudes = new double[n];
+            frequencyBins = new double[n];
+            frequencyAmplitudes = new double[n];
 
             int m = 0;
-            for (int i =0; i < bins.length; i++) {
+            for (int i = 0; i < bins.length; i++) {
                 double frequency = fft.binToHz(i, audioFormat.getSampleRate());
                 if (AppConfig.getFrequencyStart() <= frequency && frequency <= AppConfig.getFrequencyEnd()) {
                     frequencyBins[m] = frequency;
@@ -141,13 +141,13 @@ public class FFTAudioProcessor implements AudioProcessor {
 
                     AmplitudeWeightCalculator.WeightWindow weightWindow = AmplitudeWeightCalculator.WeightWindow.valueOf(AppConfig.getWeight());
                     frequencyAmplitudes[m] = (frequencyAmplitudes[m] + AmplitudeWeightCalculator.getDbWeight(frequencyBins[m], weightWindow)); // use weight to adjust the spectrum
+
                     m++;
                 }
-
             }
-
-            listenerList.forEach(listener -> listener.frame(frequencyBins, frequencyAmplitudes));
         }
+
+        listenerList.forEach(listener -> listener.frame(frequencyBins, frequencyAmplitudes));
 
         long newTime = System.currentTimeMillis();
         long deltaTime = newTime - oldTime;

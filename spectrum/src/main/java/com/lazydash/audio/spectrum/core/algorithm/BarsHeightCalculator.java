@@ -3,7 +3,7 @@ package com.lazydash.audio.spectrum.core.algorithm;
 import com.lazydash.audio.spectrum.system.config.AppConfig;
 
 public class BarsHeightCalculator {
-    private long oldTime = System.currentTimeMillis();
+    private long oldTime = System.nanoTime();
     private double[] oldAmplitudes;
     private double[] oldDecayFactor;
 
@@ -91,9 +91,10 @@ public class BarsHeightCalculator {
     }
 
     private double getSecondsPassed() {
-        long newTime = System.currentTimeMillis();
+        long newTime = System.nanoTime();
         long deltaTime = newTime - oldTime;
         oldTime = newTime;
-        return deltaTime / 1000d;
+        // convert nano to ms to seconds
+        return (deltaTime / 1000000d) / 1000d;
     }
 }

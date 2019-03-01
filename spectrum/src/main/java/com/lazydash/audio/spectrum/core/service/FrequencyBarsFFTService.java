@@ -12,6 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * This class holds state information regarding to:
+ *  - timeFiltering a.k.a smoothness
+ *  - previous bar heights that are used in bad decay calculation
+ */
 public class FrequencyBarsFFTService implements FFTListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(FrequencyBarsFFTService.class);
     private long oldTime = System.currentTimeMillis();

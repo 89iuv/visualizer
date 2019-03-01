@@ -5,7 +5,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
@@ -13,10 +12,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class SettingsController {
+    public VBox sideBarSettings;
+    public VBox sideBarPlugins;
     private Map<String, Parent> titleToFXML = new LinkedHashMap<>();
 
-    public VBox sideBar;
-    public Pane centerPane;
+    public VBox centerPane;
 
     public void initialize() {
         Map<String, Parent> map = new LinkedHashMap<>();
@@ -26,10 +26,10 @@ public class SettingsController {
         map.put("Bar decay", loadFxml("/ui.fxml.settings/components/bar_decay.fxml"));
 
         map.keySet().forEach((title) -> {
-            addTitleToFMXL(title, map.get(title));
+            addTitleToSettingsFMXL(title, map.get(title));
         });
 
-        select((Label) sideBar.getChildren().get(0));
+        select((Label) sideBarSettings.getChildren().get(0));
 
         PluginSystem.getInstance().extendUiPlugin(this);
 
@@ -49,7 +49,15 @@ public class SettingsController {
         return parent;
     }
 
-    public void addTitleToFMXL(String title, Parent parent) {
+    private void addTitleToSettingsFMXL(String title, Parent parent) {
+        addParentToSideBar(title, parent, sideBarSettings);
+    }
+
+    public void addTitleToPluginsFMXL(String title, Parent parent) {
+        addParentToSideBar(title, parent, sideBarPlugins);
+    }
+
+    private void addParentToSideBar(String title, Parent parent, VBox sideBar) {
         titleToFXML.put(title, parent);
 
         Label label = new Label(title);
@@ -71,10 +79,16 @@ public class SettingsController {
         centerPane.getChildren().clear();
         centerPane.getChildren().add(root);
 
-        sideBar.getChildren().forEach(node -> {
+        sideBarSettings.getChildren().forEach(node -> {
             node.getStyleClass().clear();
             node.getStyleClass().add("side-bar-text");
         });
+
+        sideBarPlugins.getChildren().forEach(node -> {
+            node.getStyleClass().clear();
+            node.getStyleClass().add("side-bar-text");
+        });
+
         label.getStyleClass().add("selected");
 
     }
