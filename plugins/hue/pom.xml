@@ -3,58 +3,30 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>visualizer</artifactId>
-        <groupId>com.lazydash.audio</groupId>
+        <artifactId>plugins</artifactId>
+        <groupId>com.lazydash.audio.visualizer.plugins</groupId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.lazydash.audio.plugins</groupId>
     <artifactId>hue</artifactId>
 
     <properties>
         <spectrum.version>1.0.0-SNAPSHOT</spectrum.version>
     </properties>
 
-    <profiles>
-        <profile>
-            <id>install-plugins</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-resources-plugin</artifactId>
-                        <version>3.1.0</version>
-                        <executions>
-                            <execution>
-                                <id>copy-resources</id>
-                                <phase>install</phase>
-                                <goals>
-                                    <goal>copy-resources</goal>
-                                </goals>
-                                <configuration>
-                                    <outputDirectory>${project.basedir}/../spectrum/plugins</outputDirectory>
-                                    <resources>
-                                        <resource>
-                                            <directory>target</directory>
-                                            <includes>
-                                                <include>*-plugin.jar</include>
-                                            </includes>
-                                        </resource>
-                                    </resources>
-                                    <overwrite>true</overwrite>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
     <dependencies>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.lazydash.audio</groupId>
             <artifactId>spectrum</artifactId>

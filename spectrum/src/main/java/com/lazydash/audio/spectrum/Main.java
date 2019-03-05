@@ -2,6 +2,7 @@ package com.lazydash.audio.spectrum;
 
 import com.lazydash.audio.spectrum.core.audio.TarsosAudioEngine;
 import com.lazydash.audio.spectrum.core.service.FrequencyBarsFFTService;
+import com.lazydash.audio.spectrum.experimental.Arduino;
 import com.lazydash.audio.spectrum.plugin.PluginSystem;
 import com.lazydash.audio.spectrum.system.config.AppConfig;
 import com.lazydash.audio.spectrum.system.config.WindowProperty;
@@ -23,6 +24,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
+/*
+Intellij settings:
+    - vm options: -Djava.library.path=./dll --module-path "C:\Program Files\Java\javafx-sdk-11.0.2\lib" --add-modules=javafx.controls,javafx.fxml
+    - working directory: $MODULE_WORKING_DIR$
+*/
 public class Main extends Application {
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
@@ -64,8 +70,10 @@ public class Main extends Application {
         Stage settingsStage = createSettingsStage();
 
         FrequencyBarsFFTService spectralFFTService = new FrequencyBarsFFTService();
+        FrequencyBarsFFTService arduinoFFTService = new FrequencyBarsFFTService();
 
         SpectralAnimator spectralAnimator = new SpectralAnimator(spectralFFTService, spectralView);
+        Arduino arduino = new Arduino(arduinoFFTService);
 
         // setup
         spectralView.configure();
@@ -73,6 +81,7 @@ public class Main extends Application {
 
         // wire
         tarsosAudioEngine.getFttListenerList().add(spectralFFTService);
+        tarsosAudioEngine.getFttListenerList().add(arduinoFFTService);
         PluginSystem.getInstance().registerAllFffPlugins(tarsosAudioEngine);
 
         wireSettingsStage(settingsStage, scene);
@@ -83,6 +92,7 @@ public class Main extends Application {
         stage.show();
 
         spectralAnimator.play();
+        arduino.play();
     }
 
     private void wireSettingsStage(Stage settingsStage, Scene rootScene) {

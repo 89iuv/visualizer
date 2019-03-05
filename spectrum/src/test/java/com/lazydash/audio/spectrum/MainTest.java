@@ -14,13 +14,10 @@ double min = 15;
 public class MainTest {
 
     public static void main(String[] args) {
-//        List<Double> octaveFrequencies = OctaveGenerator.getOctaveFrequencies(1000, 3, 31, 17000);
-//        octaveFrequencies.forEach(System.out::println);
 
-        int center = 1000;
-        int band = 3;
-        double fl = center / (Math.pow(2, ( 1d / (2* band) )));
-        System.out.println(fl);
+
+
+        System.out.println((char) 255);
 
 
     }
