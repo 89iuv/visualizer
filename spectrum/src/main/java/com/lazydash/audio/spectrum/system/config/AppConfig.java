@@ -33,10 +33,12 @@ public class AppConfig {
     // spectral color
     private static int spectralColorPosition = 180;
     private static int spectralColorRange = 360;
+    private static int saturation = 100;
+    private static int brightness = 100;
     private static boolean spectralColorInverted = false;
 
     // bar acceleration
-    private static int dbPerSecondDecay = 250;
+    private static int pixelsPerSecondDecay = 250;
     private static int accelerationFactor = 10;
 
     // input signal
@@ -45,11 +47,13 @@ public class AppConfig {
 
     // fft
     private static int timeFilterSize = 2;
+    private static double interpolationResolution = 6;
     private static int zeroPadding = 0;
 
     // window
     private static double windowWidth = 1700;
     private static double windowHeight = 400;
+
 
     public static int getSampleRate() {
         return sampleRate;
@@ -156,12 +160,12 @@ public class AppConfig {
     }
 
 
-    public static int getDbPerSecondDecay() {
-        return dbPerSecondDecay;
+    public static int getPixelsPerSecondDecay() {
+        return pixelsPerSecondDecay;
     }
 
-    public static void setDbPerSecondDecay(int dbPerSecondDecay) {
-        AppConfig.dbPerSecondDecay = dbPerSecondDecay;
+    public static void setPixelsPerSecondDecay(int pixelsPerSecondDecay) {
+        AppConfig.pixelsPerSecondDecay = pixelsPerSecondDecay;
     }
 
     public static int getHzLabelHeight() {
@@ -290,5 +294,30 @@ public class AppConfig {
 
     public static void setSpectralColorInverted(boolean spectralColorInverted) {
         AppConfig.spectralColorInverted = spectralColorInverted;
+    }
+
+    public static int getSaturation() {
+        return saturation;
+    }
+
+    public static void setSaturation(int saturation) {
+        AppConfig.saturation = saturation;
+    }
+
+    public static int getBrightness() {
+        return brightness;
+    }
+
+    public static void setBrightness(int brightness) {
+        AppConfig.brightness = brightness;
+    }
+
+
+    public static double getInterpolationResolution() {
+        return interpolationResolution;
+    }
+
+    public static void setInterpolationResolution(double interpolationResolution) {
+        AppConfig.interpolationResolution = interpolationResolution;
     }
 }

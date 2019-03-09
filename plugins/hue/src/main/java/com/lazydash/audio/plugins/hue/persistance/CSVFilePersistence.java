@@ -31,6 +31,7 @@ public class CSVFilePersistence {
                 location.setFrequencyStart(Integer.valueOf(lineArray[0]));
                 location.setFrequencyEnd(Integer.valueOf(lineArray[1]));
                 location.setName(lineArray[2]);
+                location.setPeak(lineArray[3]);
 
                 locations.add(location);
             }
@@ -51,7 +52,8 @@ public class CSVFilePersistence {
             locations.forEach(location -> {
                 String locationLine = location.getFrequencyStart() + cvsSplitBy
                         + location.getFrequencyEnd() + cvsSplitBy
-                        + location.getName()
+                        + location.getName() + cvsSplitBy
+                        + location.getPeak()
                         + System.lineSeparator();
                 try {
                     bufferedWriter.write(locationLine);

@@ -161,8 +161,8 @@ public class Main extends Application {
         // setup
         settingsStage.setTitle("Settings");
         settingsStage.setScene(settingsScene);
-        settingsStage.setHeight(450);
-        settingsStage.setWidth(800);
+        settingsStage.setHeight(560);
+        settingsStage.setWidth(840);
 
         return settingsStage;
     }

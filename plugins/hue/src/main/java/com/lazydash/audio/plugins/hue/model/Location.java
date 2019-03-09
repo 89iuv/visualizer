@@ -1,11 +1,10 @@
 package com.lazydash.audio.plugins.hue.model;
 
-import java.util.Objects;
-
 public class Location {
-    private String name = ""; // default name to show up in interface and to be ignored when processing
+    private String name = "";
     private int frequencyStart;
     private int frequencyEnd;
+    private String peak = "";
 
     public Location() {
     }
@@ -34,18 +33,11 @@ public class Location {
         this.frequencyEnd = frequencyEnd;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Location location = (Location) o;
-        return frequencyStart == location.frequencyStart &&
-                frequencyEnd == location.frequencyEnd &&
-                Objects.equals(name, location.name);
+    public String getPeak() {
+        return peak;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, frequencyStart, frequencyEnd);
+    public void setPeak(String peak) {
+        this.peak = peak;
     }
 }

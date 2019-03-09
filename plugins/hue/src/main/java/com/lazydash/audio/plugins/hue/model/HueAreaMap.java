@@ -11,12 +11,12 @@ public class HueAreaMap {
     static {
         nameToArea.put("All", Area.Predefine.All);
         nameToArea.put("Front", Area.Predefine.Front);
-        nameToArea.put("FrontHalfLeft", Area.Predefine.FrontHalfLeft);
-        nameToArea.put("FrontHalfRight", Area.Predefine.FrontHalfRight);
+        nameToArea.put("Front Half Left", Area.Predefine.FrontHalfLeft);
+        nameToArea.put("Front Half Right", Area.Predefine.FrontHalfRight);
         nameToArea.put("Right", Area.Predefine.Right);
         nameToArea.put("Back", Area.Predefine.Back);
-        nameToArea.put("BackHalfLeft", Area.Predefine.BackHalfLeft);
-        nameToArea.put("BackHalfRight", Area.Predefine.BackHalfRight);
+        nameToArea.put("Back Half Left", Area.Predefine.BackHalfLeft);
+        nameToArea.put("Back Half Right", Area.Predefine.BackHalfRight);
         nameToArea.put("Left", Area.Predefine.Left);
 
     }

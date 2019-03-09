@@ -3,6 +3,7 @@ package com.lazydash.audio.spectrum.ui.fxml.settings.components;
 import com.lazydash.audio.spectrum.system.config.AppConfig;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 
@@ -12,6 +13,13 @@ public class SpectralColorController {
 
     public Slider range;
     public Label rangeValue;
+
+    public Slider saturation;
+    public Label saturationValue;
+
+    public Slider brightness;
+    public Label brightnessValue;
+    public CheckBox invert;
 
 
     public void initialize() {
@@ -33,6 +41,33 @@ public class SpectralColorController {
                 AppConfig.setSpectralColorRange(newValue.intValue());
                 rangeValue.setText(String.valueOf(Math.round(newValue.intValue())));
             }
+        });
+
+        saturationValue.setText(String.valueOf(AppConfig.getSaturation()));
+        saturation.setValue(AppConfig.getSaturation());
+        saturation.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                AppConfig.setSaturation(newValue.intValue());
+                saturationValue.setText(String.valueOf(Math.round(newValue.intValue())));
+            }
+        });
+
+        brightnessValue.setText(String.valueOf(AppConfig.getBrightness()));
+        brightness.setValue(AppConfig.getBrightness());
+        brightness.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                AppConfig.setBrightness(newValue.intValue());
+                brightnessValue.setText(String.valueOf(Math.round(newValue.intValue())));
+            }
+        });
+
+        invert.setSelected(AppConfig.isSpectralColorInverted());
+        invert.setText(AppConfig.isSpectralColorInverted()? "yes" : "no");
+        invert.setOnAction(actionEvent -> {
+            AppConfig.setSpectralColorInverted(invert.isSelected());
+            invert.setText(AppConfig.isSpectralColorInverted()? "yes" : "no");
         });
 
     }

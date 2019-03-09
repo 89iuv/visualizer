@@ -63,7 +63,7 @@ public class HueIntegrationManager {
 
         Map<Location, Color> locationColorMap = new LinkedHashMap<>();
         for (Location location: LocationConfig.getLocationList()) {
-            if (location.getName().equals("")) {
+            if (location.getName().equals("") || location.getPeak().equals("")) {
                 continue;
             }
 
@@ -71,7 +71,7 @@ public class HueIntegrationManager {
                     frequencyBarList,
                     location.getFrequencyStart(),
                     location.getFrequencyEnd(),
-                    true);
+                    GlobalColorCalculator.Peak.fromString(location.getPeak()));
 
             locationColorMap.put(location, color);
         }

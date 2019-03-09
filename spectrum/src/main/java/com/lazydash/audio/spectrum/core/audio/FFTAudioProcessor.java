@@ -3,7 +3,7 @@ package com.lazydash.audio.spectrum.core.audio;
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.util.fft.FFT;
-import be.tarsos.dsp.util.fft.HammingWindow;
+import be.tarsos.dsp.util.fft.HannWindow;
 import be.tarsos.dsp.util.fft.WindowFunction;
 import com.lazydash.audio.spectrum.core.algorithm.AmplitudeWeightCalculator;
 import com.lazydash.audio.spectrum.core.algorithm.OctaveGenerator;
@@ -25,9 +25,9 @@ public class FFTAudioProcessor implements AudioProcessor {
 
     private List<FFTListener> listenerList;
     private AudioFormat audioFormat;
-    private UnivariateInterpolator linearInterpolator = new SplineInterpolator();
-    private WindowFunction windowFunction = new HammingWindow();
-    private double windowCorrectionFactor = 1.85;
+    private UnivariateInterpolator interpolator = new SplineInterpolator();
+    private WindowFunction windowFunction = new HannWindow();
+    private double windowCorrectionFactor = 2.00;
 
     FFTAudioProcessor(AudioFormat audioFormat, List<FFTListener> listenerList) {
         this.audioFormat = audioFormat;
@@ -52,8 +52,7 @@ public class FFTAudioProcessor implements AudioProcessor {
         fft.forwardTransform(transformBuffer);
         fft.modulus(transformBuffer, amplitudes);
 
-        double[] bins = new double[transformBuffer.length / 2];
-        bins = IntStream.range(0, bins.length).mapToDouble(i -> fft.binToHz(i, audioFormat.getSampleRate())).toArray();
+        double[] bins = IntStream.range(0, transformBuffer.length / 2).mapToDouble(i -> fft.binToHz(i, audioFormat.getSampleRate())).toArray();
         double[] doublesAmplitudes = IntStream.range(0, amplitudes.length).mapToDouble(value -> amplitudes[value]).toArray();
 
         double[] frequencyBins;
@@ -69,30 +68,41 @@ public class FFTAudioProcessor implements AudioProcessor {
             frequencyBins = new double[octaveFrequencies.size()];
             frequencyAmplitudes = new double[octaveFrequencies.size()];
 
-            // setup the linearInterpolator
-            UnivariateFunction interpolateFunction = linearInterpolator.interpolate(bins, doublesAmplitudes);
+            // calculate the frequency step
+            // this is the resolution for interpolating and summing bins
+            double highLimit = OctaveGenerator.getHighLimit(octaveFrequencies.get(0), AppConfig.getOctave());
+            double lowLimit = OctaveGenerator.getLowLimit(octaveFrequencies.get(0), AppConfig.getOctave());
+            double step = Math.pow(2, ( 1d / (AppConfig.getOctave()) ));
+
+            // improve resolution at the cost of performance
+            // step = step / (AppConfig.getOctave() / 2d);
 
             // k is the frequency index
-            int k = (int) Math.ceil(OctaveGenerator.getLowLimit(octaveFrequencies.get(0), AppConfig.getOctave()));
+            double k = lowLimit;
 
             // m is the position in the frequency vectors
             int m = 0;
+
+            // setup the interpolator
+            UnivariateFunction interpolateFunction = interpolator.interpolate(bins, doublesAmplitudes);
+
             for (int i = 0; i < octaveFrequencies.size(); i++) {
                 frequencyBins[m] = octaveFrequencies.get(i);
 
+                highLimit = OctaveGenerator.getHighLimit(octaveFrequencies.get(i), AppConfig.getOctave());
+
                 // group bins together
-                while (OctaveGenerator.getLowLimit(octaveFrequencies.get(i), AppConfig.getOctave()) <= k
-                        && k < OctaveGenerator.getHighLimit(octaveFrequencies.get(i), AppConfig.getOctave())) {
+                while (k < highLimit) {
 
                     double amplitude = interpolateFunction.value(k);
                     amplitude = (amplitude / doublesAmplitudes.length); // normalize (n/2)
                     amplitude = (amplitude * windowCorrectionFactor); // apply window correction
                     frequencyAmplitudes[m] = frequencyAmplitudes[m] + Math.pow(amplitude, 2); // sum up the "normalized window corrected" energy
 
-                    k++;
+                    k = k + step;
 
                     // reached upper limit
-                    if (k > AppConfig.getFrequencyEnd()) {
+                    if (k > AppConfig.getFrequencyEnd() || k > bins[bins.length-1]) {
                         break;
                     }
                 }

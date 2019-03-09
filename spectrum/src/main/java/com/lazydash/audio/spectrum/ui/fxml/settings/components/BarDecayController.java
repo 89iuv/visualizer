@@ -8,19 +8,19 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.Spinner;
 
 public class BarDecayController {
-    public Slider dbPerSecondDecay;
+    public Slider pixelsPerSecondDecay;
     public Slider decayAcceleration;
     public Label decayTimeValue;
     public Label decayAccelerationValue;
     public Spinner<Integer> timeFilter;
 
     public void initialize() {
-        decayTimeValue.setText(String.valueOf(AppConfig.getDbPerSecondDecay()));
-        dbPerSecondDecay.setValue(AppConfig.getDbPerSecondDecay());
-        dbPerSecondDecay.valueProperty().addListener(new ChangeListener<Number>() {
+        decayTimeValue.setText(String.valueOf(AppConfig.getPixelsPerSecondDecay()));
+        pixelsPerSecondDecay.setValue(AppConfig.getPixelsPerSecondDecay());
+        pixelsPerSecondDecay.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                AppConfig.setDbPerSecondDecay(newValue.intValue());
+                AppConfig.setPixelsPerSecondDecay(newValue.intValue());
                 decayTimeValue.setText(String.valueOf(newValue.intValue()));
             }
         });

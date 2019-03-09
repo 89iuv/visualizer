@@ -14,7 +14,6 @@ public class Main {
         });*/
 
 
-
         SerialPort com3 = SerialPort.getCommPort("COM3");
         com3.setComPortTimeouts(SerialPort.TIMEOUT_NONBLOCKING, 0, 0);
         com3.setBaudRate(9600);

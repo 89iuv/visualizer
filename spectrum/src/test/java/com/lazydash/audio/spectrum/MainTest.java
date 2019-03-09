@@ -14,12 +14,15 @@ double min = 15;
 public class MainTest {
 
     public static void main(String[] args) {
+        double min = 35;
+        double max = 17000;
 
+        int bands = 45;
+        for (int i = 0; i < bands; i++) {
 
+            System.out.println(min * Math.pow((max / min), i/(double) bands));
 
-        System.out.println((char) 255);
-
-
+        }
     }
 
 

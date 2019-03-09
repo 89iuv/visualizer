@@ -28,7 +28,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.lazydash.audio</groupId>
+            <groupId>com.lazydash.audio.visualizer</groupId>
             <artifactId>spectrum</artifactId>
             <version>${spectrum.version}</version>
             <scope>provided</scope>

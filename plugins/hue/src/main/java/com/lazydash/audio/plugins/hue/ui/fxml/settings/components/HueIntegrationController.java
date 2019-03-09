@@ -4,6 +4,7 @@ import com.lazydash.audio.plugins.hue.model.HueAreaMap;
 import com.lazydash.audio.plugins.hue.model.Location;
 import com.lazydash.audio.plugins.hue.system.config.LocationConfig;
 import com.lazydash.audio.plugins.hue.system.config.UserConfig;
+import com.lazydash.audio.spectrum.core.algorithm.GlobalColorCalculator;
 import com.lazydash.audio.spectrum.system.config.AppConfig;
 import com.lazydash.audio.spectrum.system.notification.EventEnum;
 import com.lazydash.audio.spectrum.system.notification.NotificationService;
@@ -15,7 +16,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class HueIntegrationController {
     public Label hueStatus;
@@ -93,12 +96,21 @@ public class HueIntegrationController {
 
         Label effectAreaStartLabel = new Label("Area: ");
         ComboBox<String> effectAreaComboBox = new ComboBox<>();
-        effectAreaComboBox.setPrefWidth(160);
+        effectAreaComboBox.setPrefWidth(120);
         effectAreaComboBox.getItems().addAll(HueAreaMap.getNameToArea().keySet());
         effectAreaComboBox.valueProperty().addListener((observableValue, oldValue, newValue) -> {
             location.setName(newValue);
         });
         effectAreaComboBox.setValue(location.getName());
+
+        Label peakLabel = new Label("Peak: ");
+        ComboBox<String> peakComboBox = new ComboBox<>();
+        peakComboBox.setPrefWidth(80);
+        peakComboBox.getItems().addAll(Arrays.stream(GlobalColorCalculator.Peak.values()).map(GlobalColorCalculator.Peak::getValue).collect(Collectors.toList()));
+        peakComboBox.valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            location.setPeak(newValue);
+        });
+        peakComboBox.setValue(location.getPeak());
 
         hBox.getChildren().addAll(
                 frequencyStartLabel,
@@ -106,7 +118,9 @@ public class HueIntegrationController {
                 frequencyEndLabel,
                 spinnerEnd,
                 effectAreaStartLabel,
-                effectAreaComboBox
+                effectAreaComboBox,
+                peakLabel,
+                peakComboBox
         );
 
         return hBox;

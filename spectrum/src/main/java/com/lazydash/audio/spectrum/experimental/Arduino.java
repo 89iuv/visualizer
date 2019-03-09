@@ -4,6 +4,7 @@ import com.fazecast.jSerialComm.SerialPort;
 import com.lazydash.audio.spectrum.core.model.FrequencyBar;
 import com.lazydash.audio.spectrum.core.service.FrequencyBarsFFTService;
 import com.lazydash.audio.spectrum.system.config.AppConfig;
+import com.lazydash.audio.spectrum.system.config.SpectralColorConfig;
 import javafx.scene.paint.Color;
 
 import java.util.List;
@@ -36,30 +37,32 @@ public class Arduino {
             String messageReceived = new String(readBytes);
 
             if (messageReceived.equals("refresh\r\n")) {
-                int ledNumber = 48;
+                int ledNumber = 45;
                 byte[] bytes = new byte[ledNumber * 3];
 
                 int k = 0;
+
                 List<FrequencyBar> frequencyBarList = frequencyBarsFFTService.getFrequencyBarList();
                 for (int i = 0; i < frequencyBarList.size(); i++) {
                     FrequencyBar frequencyBar = frequencyBarList.get(i);
 
                     double height = frequencyBar.getHeight();
                     double intensity = height / AppConfig.getMaxBarHeight();
+                    intensity = intensity * (AppConfig.getBrightness() / 100d);
 
-                    Color baseColor = Color.color(0.24, 0.24, 0.24);
-
+                    Color baseColor = SpectralColorConfig.baseColor;
                     Color color = frequencyBar.getColor();
                     color = baseColor.interpolate(color, intensity);
-                    color = Color.color(
-                            color.getRed() * intensity,
-                            color.getGreen() * intensity,
-                            color.getBlue() * intensity
+                    color = Color.hsb(
+                            color.getHue(),
+                            color.getSaturation(),
+                            intensity
                     );
 
                     bytes[k++] = (byte) ((char) Math.round(color.getRed() * 255));
                     bytes[k++] = (byte) ((char) Math.round(color.getGreen() * 255));
                     bytes[k++] = (byte) ((char) Math.round(color.getBlue() * 255));
+
 
                     if (!(k < ledNumber * 3)) {
                         break;

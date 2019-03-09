@@ -9,14 +9,9 @@ import java.util.List;
 
 public class GlobalColorCalculator {
 
-    public Color getGlobalColor(List<FrequencyBar> frequencyBars, int startHz, int endHz, boolean darkMode) {
+    public Color getGlobalColor(List<FrequencyBar> frequencyBars, int startHz, int endHz, Peak peak) {
         if (frequencyBars.size() == 0) {
-            if (darkMode) {
-                return Color.BLACK;
-
-            } else {
-                return Color.WHITE;
-            }
+            return Color.BLACK;
         }
 
         double sumIntensity = 0;
@@ -29,7 +24,8 @@ public class GlobalColorCalculator {
         int nrBars = 0;
 
         for (FrequencyBar frequencyBar : frequencyBars) {
-            if (startHz <= frequencyBar.getHz() && frequencyBar.getHz() <= endHz) {
+            if (startHz <= frequencyBar.getHz()
+                    && frequencyBar.getHz() <= endHz) {
                 double barHeight = frequencyBar.getHeight();
                 double barIntensity = barHeight / AppConfig.getMaxBarHeight();
 
@@ -54,18 +50,47 @@ public class GlobalColorCalculator {
 
         double avgIntensity = sumIntensity / nrBars;
 
-        Color baseColor = SpectralColorConfig.baseColor;
-        Color mixColor = baseColor.interpolate(Color.color(avgRed, avgGreen, avgBlue, 1), maxIntensity);
-
-        Color hsb;
-        if (darkMode) {
-            hsb = Color.hsb(mixColor.getHue(), mixColor.getSaturation(), avgIntensity);
-
-        } else {
-            hsb = Color.hsb(mixColor.getHue(), avgIntensity, 1);
+        double intensity = 0;
+        if (peak.equals(Peak.AVG)) {
+            intensity = avgIntensity;
+        } else if (peak.equals(Peak.MAX)) {
+            intensity = maxIntensity;
         }
+        intensity = intensity * (AppConfig.getBrightness() / 100d);
 
-        return hsb;
+        Color baseColor = SpectralColorConfig.baseColor;
+        Color color = Color.color(avgRed, avgGreen, avgBlue);
+        color = baseColor.interpolate(color, maxIntensity);
+        color = Color.hsb(color.getHue(), color.getSaturation(), intensity);
+        return color;
     }
 
+    public enum Peak {
+        AVG("Avg"),
+        MAX("Max");
+
+        private String value;
+
+        Peak(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+
+        public static Peak fromString(String value){
+            for (Peak peak: Peak.values()) {
+                if (peak.getValue().equals(value)) {
+                    return peak;
+                }
+            }
+
+            return null;
+        }
+    }
 }
