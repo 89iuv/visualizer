@@ -15,7 +15,7 @@ public class HueUiSettingsExtension implements UiSettingsExtensionPoint {
     public void extendController(SettingsController settingsController) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("/ui.fxml.settings/components/hue_integration.fxml"));
+            fxmlLoader.setLocation(getClass().getResource("/fxml/hue_integration.fxml"));
 
             // here something interesting happens
             // the code gets initialized using the classpath of the parent

@@ -17,10 +17,13 @@
         <module>hue</module>
         <module>arduino</module>
     </modules>
+    <properties>
+        <spectrum.root.path>../../spectrum</spectrum.root.path>
+    </properties>
 
     <profiles>
         <profile>
-            <id>plugins-install</id>
+            <id>plugins-jar-copy</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
@@ -31,13 +34,13 @@
                         <version>3.1.0</version>
                         <executions>
                             <execution>
-                                <id>copy-resources</id>
+                                <id>copy-plugin-jar-resource</id>
                                 <phase>install</phase>
                                 <goals>
                                     <goal>copy-resources</goal>
                                 </goals>
                                 <configuration>
-                                    <outputDirectory>../../spectrum/plugins</outputDirectory>
+                                    <outputDirectory>${spectrum.root.path}/plugins</outputDirectory>
                                     <resources>
                                         <resource>
                                             <directory>target</directory>

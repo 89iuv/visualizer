@@ -15,6 +15,63 @@
         <spectrum.version>1.0.0-SNAPSHOT</spectrum.version>
     </properties>
 
+    <profiles>
+        <profile>
+            <id>plugin-hue-resource-copy</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>copy-hue-lib-resources</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${spectrum.root.path}/lib</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>lib</directory>
+                                            <includes>
+                                                <include>*.jar</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                    <overwrite>true</overwrite>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>copy-hue-dll-resources</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${spectrum.root.path}/dll</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>dll</directory>
+                                            <includes>
+                                                <include>*.dll</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                    <overwrite>true</overwrite>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <dependencies>
 
         <dependency>

@@ -152,9 +152,9 @@ public class Main extends Application {
 
     private Stage createSettingsStage() throws IOException {
         // create
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ui.fxml.settings/settings.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/settings.fxml"));
         Parent root = fxmlLoader.load();
-        root.getStylesheets().add(getClass().getResource("/ui.fxml.settings/settings.css").toExternalForm());
+        root.getStylesheets().add(getClass().getResource("/fxml/settings.css").toExternalForm());
         Scene settingsScene = new Scene(root);
         Stage settingsStage = new Stage();
 

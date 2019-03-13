@@ -20,10 +20,10 @@ public class SettingsController {
 
     public void initialize() {
         Map<String, Parent> map = new LinkedHashMap<>();
-        map.put("Audio input", loadFxml("/ui.fxml.settings/components/audio_input.fxml"));
-        map.put("Spectral view", loadFxml("/ui.fxml.settings/components/spectral_view.fxml"));
-        map.put("Spectral color", loadFxml("/ui.fxml.settings/components/spectral_color.fxml"));
-        map.put("Bar decay", loadFxml("/ui.fxml.settings/components/bar_decay.fxml"));
+        map.put("Audio input", loadFxml("/fxml/components/audio_input.fxml"));
+        map.put("Spectral view", loadFxml("/fxml/components/spectral_view.fxml"));
+        map.put("Spectral color", loadFxml("/fxml/components/spectral_color.fxml"));
+        map.put("Bar decay", loadFxml("/fxml/components/bar_decay.fxml"));
 
         map.keySet().forEach((title) -> {
             addTitleToSettingsFMXL(title, map.get(title));
@@ -74,7 +74,7 @@ public class SettingsController {
     public void select(Label label) {
         String title = label.getText();
         Parent root = titleToFXML.get(title);
-        root.getStylesheets().add(getClass().getResource("/ui.fxml.settings/settings.css").toExternalForm());
+        root.getStylesheets().add(getClass().getResource("/fxml/settings.css").toExternalForm());
 
         centerPane.getChildren().clear();
         centerPane.getChildren().add(root);
