@@ -1,4 +1,4 @@
-package com.lazydash.audio.plugins.arduino;
+package com.lazydash.audio.visualizer.plugins.arduino;
 
 import com.fazecast.jSerialComm.SerialPort;
 

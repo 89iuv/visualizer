@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.lazydash.audio.visualizer.spectrum.ui.fxml.settings.components.AudioInputController">
+      fx:controller="com.lazydash.audio.visualizer.spectrum.ui.fxml.spectrum.settings.AudioInputController">
 
     <Label styleClass="title" text="Audio format and buffer size" />
     <Separator styleClass="separator"/>

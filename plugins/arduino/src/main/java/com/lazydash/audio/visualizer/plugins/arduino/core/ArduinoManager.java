@@ -1,4 +1,4 @@
-package com.lazydash.audio.visualizer.spectrum.experimental;
+package com.lazydash.audio.visualizer.plugins.arduino.core;
 
 import com.fazecast.jSerialComm.SerialPort;
 import com.lazydash.audio.visualizer.spectrum.core.model.FrequencyBar;
@@ -9,10 +9,10 @@ import javafx.scene.paint.Color;
 
 import java.util.List;
 
-public class Arduino {
+public class ArduinoManager {
     private FrequencyBarsFFTService frequencyBarsFFTService;
 
-    public Arduino(FrequencyBarsFFTService frequencyBarsFFTService) {
+    public ArduinoManager(FrequencyBarsFFTService frequencyBarsFFTService) {
         this.frequencyBarsFFTService = frequencyBarsFFTService;
     }
 
@@ -77,5 +77,4 @@ public class Arduino {
 
         com3.closePort();
     }
-
 }

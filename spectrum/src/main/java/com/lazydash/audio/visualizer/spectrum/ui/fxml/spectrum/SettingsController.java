@@ -1,4 +1,4 @@
-package com.lazydash.audio.visualizer.spectrum.ui.fxml.settings;
+package com.lazydash.audio.visualizer.spectrum.ui.fxml.spectrum;
 
 import com.lazydash.audio.visualizer.spectrum.plugin.PluginSystem;
 import javafx.fxml.FXMLLoader;
@@ -20,10 +20,10 @@ public class SettingsController {
 
     public void initialize() {
         Map<String, Parent> map = new LinkedHashMap<>();
-        map.put("Audio input", loadFxml("/fxml/settings/components/audio_input.fxml"));
-        map.put("Spectral view", loadFxml("/fxml/settings/components/spectral_view.fxml"));
-        map.put("Spectral color", loadFxml("/fxml/settings/components/spectral_color.fxml"));
-        map.put("Bar decay", loadFxml("/fxml/settings/components/bar_decay.fxml"));
+        map.put("Audio input", loadFxml("/ui/fxml/spectrum/settings/audio_input.fxml"));
+        map.put("Spectral view", loadFxml("/ui/fxml/spectrum/settings/spectral_view.fxml"));
+        map.put("Spectral color", loadFxml("/ui/fxml/spectrum/settings/spectral_color.fxml"));
+        map.put("Bar decay", loadFxml("/ui/fxml/spectrum/settings/bar_decay.fxml"));
 
         map.keySet().forEach((title) -> {
             addTitleToSettingsFMXL(title, map.get(title));
@@ -74,7 +74,7 @@ public class SettingsController {
     public void select(Label label) {
         String title = label.getText();
         Parent root = titleToFXML.get(title);
-        root.getStylesheets().add(getClass().getResource("/fxml/settings/settings.css").toExternalForm());
+        root.getStylesheets().add(getClass().getResource("/ui/fxml/spectrum/style.css").toExternalForm());
 
         centerPane.getChildren().clear();
         centerPane.getChildren().add(root);

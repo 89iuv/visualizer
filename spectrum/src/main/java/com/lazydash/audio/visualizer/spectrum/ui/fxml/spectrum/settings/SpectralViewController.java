@@ -1,4 +1,4 @@
-package com.lazydash.audio.visualizer.spectrum.ui.fxml.settings.components;
+package com.lazydash.audio.visualizer.spectrum.ui.fxml.spectrum.settings;
 
 import com.lazydash.audio.visualizer.spectrum.core.algorithm.AmplitudeWeightCalculator;
 import com.lazydash.audio.visualizer.spectrum.system.config.AppConfig;

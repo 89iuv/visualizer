@@ -2,7 +2,6 @@ package com.lazydash.audio.visualizer.spectrum;
 
 import com.lazydash.audio.visualizer.spectrum.core.audio.TarsosAudioEngine;
 import com.lazydash.audio.visualizer.spectrum.core.service.FrequencyBarsFFTService;
-import com.lazydash.audio.visualizer.spectrum.experimental.Arduino;
 import com.lazydash.audio.visualizer.spectrum.plugin.PluginSystem;
 import com.lazydash.audio.visualizer.spectrum.system.config.AppConfig;
 import com.lazydash.audio.visualizer.spectrum.system.config.WindowProperty;
@@ -73,7 +72,6 @@ public class Main extends Application {
         FrequencyBarsFFTService arduinoFFTService = new FrequencyBarsFFTService();
 
         SpectralAnimator spectralAnimator = new SpectralAnimator(spectralFFTService, spectralView);
-        Arduino arduino = new Arduino(arduinoFFTService);
 
         // setup
         spectralView.configure();
@@ -92,7 +90,6 @@ public class Main extends Application {
         stage.show();
 
         spectralAnimator.play();
-        arduino.play();
     }
 
     private void wireSettingsStage(Stage settingsStage, Scene rootScene) {
@@ -152,9 +149,9 @@ public class Main extends Application {
 
     private Stage createSettingsStage() throws IOException {
         // create
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/settings/settings.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ui/fxml/spectrum/spectrum.fxml"));
         Parent root = fxmlLoader.load();
-        root.getStylesheets().add(getClass().getResource("/fxml/settings/settings.css").toExternalForm());
+        root.getStylesheets().add(getClass().getResource("/ui/fxml/spectrum/style.css").toExternalForm());
         Scene settingsScene = new Scene(root);
         Stage settingsStage = new Stage();
 
