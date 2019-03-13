@@ -138,7 +138,7 @@
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>
                         <manifestEntries>
-                            <Plugin-Class>com.lazydash.audio.plugins.hue.HuePlugin</Plugin-Class>
+                            <Plugin-Class>com.lazydash.audio.visualizer.plugins.hue.HuePlugin</Plugin-Class>
                             <Plugin-Id>${project.artifactId}-${project.version}</Plugin-Id>
                             <Plugin-Version>${project.version}</Plugin-Version>
                             <Plugin-Requires>${spectrum.version}</Plugin-Requires>

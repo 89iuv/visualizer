@@ -38,7 +38,7 @@ Please follow the steps bellow in order to get access to the hue libraries and p
 Copy hue/target/hue-1.0.0-SNAPSHOT-plugin.jar to spectrum/plugins
 
 ## Run
-`java -Djava.library.path=./dll --module-path "C:\Program Files\Java\javafx-sdk-11.0.2\lib" --add-modules=javafx.controls,javafx.fxml -cp ./target/spectrum-1.0.0-SNAPSHOT-jar-with-dependencies.jar com.lazydash.audio.spectrum.Main`
+`java -Djava.library.path=./dll --module-path "C:\Program Files\Java\javafx-sdk-11.0.2\lib" --add-modules=javafx.controls,javafx.fxml -cp ./target/spectrum-1.0.0-SNAPSHOT-jar-with-dependencies.jar Main`
 
 ## Configure
 Create an entertainment group called "bass" from the Official Philips Hue App: https://play.google.com/store/apps/details?id=com.philips.lighting.hue2&hl=en

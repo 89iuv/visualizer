@@ -80,7 +80,7 @@
                             <archive>
                                 <manifest>
                                     <mainClass>
-                                        com.lazydash.audio.spectrum.Main
+                                        com.lazydash.audio.visualizer.spectrum.Main
                                     </mainClass>
                                 </manifest>
                             </archive>
