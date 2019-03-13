@@ -13,7 +13,7 @@
     <version>1.0.0-SNAPSHOT</version>
 
     <properties>
-        <main.class>com.lazydash.audio.visualizer.plugins.hue.HuePlugin</main.class>
+        <plugin.main.class>com.lazydash.audio.visualizer.plugins.hue.HuePlugin</plugin.main.class>
     </properties>
 
     <dependencies>
