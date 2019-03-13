@@ -1,7 +1,6 @@
 package com.lazydash.audio.visualizer.plugins.hue.extensions;
 
 import com.lazydash.audio.visualizer.spectrum.plugin.UiSettingsExtensionPoint;
-import com.lazydash.audio.visualizer.spectrum.ui.fxml.settings.SettingsController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import org.pf4j.Extension;
@@ -12,7 +11,12 @@ import java.io.IOException;
 public class HueUiSettingsExtension implements UiSettingsExtensionPoint {
 
     @Override
-    public void extendController(SettingsController settingsController) {
+    public String getPluginTitle() {
+        return "Hue integration";
+    }
+
+    @Override
+    public Parent getPluginParent() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("/fxml/hue/hue_integration.fxml"));
@@ -23,12 +27,18 @@ public class HueUiSettingsExtension implements UiSettingsExtensionPoint {
             // in order to detect and initialize the plugin controller
             fxmlLoader.setClassLoader(getClass().getClassLoader());
 
-            Parent parent = fxmlLoader.load();
-            settingsController.addTitleToPluginsFMXL("Hue integration", parent);
+            Parent parent = null;
+
+            parent = fxmlLoader.load();
+            return parent;
 
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
 
+            //fixme always return a pane with the encountered errors
+            throw new RuntimeException(e);
+
+        }
+
+    }
 }

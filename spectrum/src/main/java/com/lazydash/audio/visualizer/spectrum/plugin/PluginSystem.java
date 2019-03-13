@@ -3,6 +3,7 @@ package com.lazydash.audio.visualizer.spectrum.plugin;
 import com.lazydash.audio.visualizer.spectrum.core.audio.TarsosAudioEngine;
 import com.lazydash.audio.visualizer.spectrum.core.service.FrequencyBarsFFTService;
 import com.lazydash.audio.visualizer.spectrum.ui.fxml.settings.SettingsController;
+import javafx.scene.Parent;
 import org.pf4j.DefaultPluginManager;
 import org.pf4j.PluginManager;
 
@@ -41,7 +42,9 @@ public class PluginSystem {
     public void extendUiPlugin(SettingsController settingsController){
         List<UiSettingsExtensionPoint> uiSettingsExtensionPoints = pluginManager.getExtensions(UiSettingsExtensionPoint.class);
         for (UiSettingsExtensionPoint uiSettingsExtensionPoint : uiSettingsExtensionPoints) {
-            uiSettingsExtensionPoint.extendController(settingsController);
+            String pluginTitle = uiSettingsExtensionPoint.getPluginTitle();
+            Parent pluginParent = uiSettingsExtensionPoint.getPluginParent();
+            settingsController.addTitleToPluginsFMXL(pluginTitle, pluginParent);
         }
     }
 

@@ -1,10 +1,11 @@
 package com.lazydash.audio.visualizer.spectrum.plugin;
 
-import com.lazydash.audio.visualizer.spectrum.ui.fxml.settings.SettingsController;
+import javafx.scene.Parent;
 import org.pf4j.ExtensionPoint;
 
 public interface UiSettingsExtensionPoint extends ExtensionPoint {
+    String getPluginTitle();
 
-    void extendController(SettingsController settingsController);
+    Parent getPluginParent();
 
 }
