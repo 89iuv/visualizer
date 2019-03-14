@@ -13,7 +13,7 @@
     <version>1.0.0-SNAPSHOT</version>
 
     <properties>
-        <plugin.main.class>com.lazydash.audio.visualizer.plugins.arduino.Main</plugin.main.class>
+        <plugin.main.class>com.lazydash.audio.visualizer.plugins.arduino.ArduinoPlugin</plugin.main.class>
     </properties>
 
     <dependencies>
