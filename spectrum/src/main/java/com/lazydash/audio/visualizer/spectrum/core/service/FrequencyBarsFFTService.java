@@ -9,7 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -28,6 +30,9 @@ public class FrequencyBarsFFTService implements FFTListener {
     private double[] hzBins = null;
     private double[] amplitudes = null;
 
+    private Queue<double[]> hzBinsQue = new LinkedList<>();
+    private Queue<double[]> amplitudesQue = new LinkedList<>();
+
     private FFTTimeFilter fftTimeFilter = new FFTTimeFilter();
     private BarsHeightCalculator barsHeightCalculator = new BarsHeightCalculator();
 
@@ -38,6 +43,9 @@ public class FrequencyBarsFFTService implements FFTListener {
             lock.lock();
             this.hzBins = hzBins;
             this.amplitudes = normalizedAmplitudes;
+
+            hzBinsQue.add(hzBins);
+            amplitudesQue.add(normalizedAmplitudes);
 
         } finally {
             lock.unlock();
@@ -51,8 +59,16 @@ public class FrequencyBarsFFTService implements FFTListener {
 
         try {
             lock.lock();
-            returnBinz = this.hzBins;
-            returnAmplitudes = this.amplitudes;
+
+            returnBinz = hzBinsQue.poll();
+            if (returnBinz == null) {
+                returnBinz = this.hzBins;
+            }
+
+            returnAmplitudes = amplitudesQue.poll();
+            if (returnAmplitudes == null) {
+                returnAmplitudes = this.amplitudes;
+            }
 
         } finally {
             lock.unlock();

@@ -3,6 +3,7 @@ package com.lazydash.audio.visualizer.spectrum.core.audio;
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.util.fft.FFT;
+import be.tarsos.dsp.util.fft.HammingWindow;
 import be.tarsos.dsp.util.fft.HannWindow;
 import be.tarsos.dsp.util.fft.WindowFunction;
 import com.lazydash.audio.visualizer.spectrum.core.algorithm.AmplitudeWeightCalculator;
@@ -26,8 +27,8 @@ public class FFTAudioProcessor implements AudioProcessor {
     private List<FFTListener> listenerList;
     private AudioFormat audioFormat;
     private UnivariateInterpolator interpolator = new SplineInterpolator();
-    private WindowFunction windowFunction = new HannWindow();
-    private double windowCorrectionFactor = 2.00;
+    private WindowFunction windowFunction = new HammingWindow();
+    private double windowCorrectionFactor = 1.85;
 
     FFTAudioProcessor(AudioFormat audioFormat, List<FFTListener> listenerList) {
         this.audioFormat = audioFormat;

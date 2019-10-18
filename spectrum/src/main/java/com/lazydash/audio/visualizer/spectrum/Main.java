@@ -1,5 +1,7 @@
 package com.lazydash.audio.visualizer.spectrum;
 
+import com.lazydash.audio.visualizer.spectrum.core.audio.AudioEngine;
+import com.lazydash.audio.visualizer.spectrum.core.audio.JvmNativeAudioEngine;
 import com.lazydash.audio.visualizer.spectrum.core.audio.TarsosAudioEngine;
 import com.lazydash.audio.visualizer.spectrum.core.service.FrequencyBarsFFTService;
 import com.lazydash.audio.visualizer.spectrum.plugin.PluginSystem;
@@ -62,14 +64,14 @@ public class Main extends Application {
         // create
         ConfigFilePersistence configFilePersistence = new ConfigFilePersistence();
         configFilePersistence.load(AppConfig.class, "./application.properties");
-        TarsosAudioEngine tarsosAudioEngine = new TarsosAudioEngine();
+        AudioEngine audioEngine = new JvmNativeAudioEngine();
+//        AudioEngine audioEngine = new TarsosAudioEngine();
 
         SpectralView spectralView = new SpectralView();
         Scene scene = createScene(spectralView);
         Stage settingsStage = createSettingsStage();
 
         FrequencyBarsFFTService spectralFFTService = new FrequencyBarsFFTService();
-        FrequencyBarsFFTService arduinoFFTService = new FrequencyBarsFFTService();
 
         SpectralAnimator spectralAnimator = new SpectralAnimator(spectralFFTService, spectralView);
 
@@ -78,15 +80,14 @@ public class Main extends Application {
         configureStage(stage, scene);
 
         // wire
-        tarsosAudioEngine.getFttListenerList().add(spectralFFTService);
-        tarsosAudioEngine.getFttListenerList().add(arduinoFFTService);
-        PluginSystem.getInstance().registerAllFffPlugins(tarsosAudioEngine);
+        audioEngine.getFttListenerList().add(spectralFFTService);
+        PluginSystem.getInstance().registerAllFffPlugins(audioEngine);
 
         wireSettingsStage(settingsStage, scene);
-        wirePrimaryStage(stage, configFilePersistence, tarsosAudioEngine);
+        wirePrimaryStage(stage, configFilePersistence, audioEngine);
 
         // run
-        tarsosAudioEngine.start();
+        audioEngine.start();
         stage.show();
 
         spectralAnimator.play();
@@ -100,7 +101,7 @@ public class Main extends Application {
         });
     }
 
-    private void wirePrimaryStage(Stage primaryStage, ConfigFilePersistence configFilePersistence, TarsosAudioEngine tarsosAudioEngine) {
+    private void wirePrimaryStage(Stage primaryStage, ConfigFilePersistence configFilePersistence, AudioEngine tarsosAudioEngine) {
         primaryStage.setOnCloseRequest(event -> {
             AppConfig.setWindowHeight(primaryStage.getHeight());
             AppConfig.setWindowWidth(primaryStage.getWidth());

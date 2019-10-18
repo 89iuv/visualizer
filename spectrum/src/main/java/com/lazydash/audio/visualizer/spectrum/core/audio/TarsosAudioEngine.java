@@ -1,6 +1,7 @@
 package com.lazydash.audio.visualizer.spectrum.core.audio;
 
 import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.MultichannelToMono;
 import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
 import com.lazydash.audio.visualizer.spectrum.system.config.AppConfig;
 import org.slf4j.Logger;
@@ -11,7 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class TarsosAudioEngine {
+public class TarsosAudioEngine implements AudioEngine {
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     private AudioDispatcher dispatcher;
@@ -19,10 +20,12 @@ public class TarsosAudioEngine {
 
     private List<FFTListener> fttListenerList = new LinkedList<>();
 
+    @Override
     public List<FFTListener> getFttListenerList() {
         return fttListenerList;
     }
 
+    @Override
     public void start() {
         try {
             Mixer mixer = getMixer();
@@ -37,6 +40,7 @@ public class TarsosAudioEngine {
 
     }
 
+    @Override
     public void stop() {
         try {
             dispatcher.stop();
@@ -48,6 +52,7 @@ public class TarsosAudioEngine {
         }
     }
 
+    @Override
     public void restart() {
         stop();
         start();
@@ -67,7 +72,7 @@ public class TarsosAudioEngine {
         //noinspection OptionalGetWithoutIsPresent
         Line.Info lineInfo = Stream.of(mixer.getTargetLineInfo()).findFirst().get();
         TargetDataLine line = (TargetDataLine) mixer.getLine(lineInfo);
-        line.open(audioFormat, lineBuffer);
+        line.open(audioFormat, lineBuffer * audioFormat.getFrameSize());
         line.start();
 
         LOGGER.info("line format: " + line.getFormat());
@@ -93,6 +98,7 @@ public class TarsosAudioEngine {
 
         dispatcher = new AudioDispatcher(audioStream, bufferSize, bufferOverlay);
         dispatcher.addAudioProcessor(new AudioEngineRestartProcessor(this));
+        dispatcher.addAudioProcessor(new MultichannelToMono(audioFormat.getChannels(), true));
         dispatcher.addAudioProcessor(new FFTAudioProcessor(audioFormat, fttListenerList));
 
         // run the dispatcher (on a new thread).

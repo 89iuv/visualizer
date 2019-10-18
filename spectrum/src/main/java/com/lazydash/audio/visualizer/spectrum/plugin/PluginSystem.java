@@ -1,5 +1,6 @@
 package com.lazydash.audio.visualizer.spectrum.plugin;
 
+import com.lazydash.audio.visualizer.spectrum.core.audio.AudioEngine;
 import com.lazydash.audio.visualizer.spectrum.core.audio.TarsosAudioEngine;
 import com.lazydash.audio.visualizer.spectrum.core.service.FrequencyBarsFFTService;
 import com.lazydash.audio.visualizer.spectrum.ui.fxml.spectrum.SettingsController;
@@ -29,7 +30,7 @@ public class PluginSystem {
         pluginManager.stopPlugins();
     }
 
-    public void registerAllFffPlugins(TarsosAudioEngine tarsosAudioEngine){
+    public void registerAllFffPlugins(AudioEngine tarsosAudioEngine){
         List<SpectralExtensionPoint> fftRegisters = pluginManager.getExtensions(SpectralExtensionPoint.class);
         for (SpectralExtensionPoint fftRegister : fftRegisters) {
             FrequencyBarsFFTService frequencyBarsFFTService = new FrequencyBarsFFTService();

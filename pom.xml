@@ -17,9 +17,13 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <javafx-controls.version>11.0.2</javafx-controls.version>
+        <java.version>13</java.version>
+        <javafx.version>13</javafx.version>
+
         <pf4j.version>2.6.0</pf4j.version>
+
         <junit.version>4.12</junit.version>
+
     </properties>
 
     <dependencyManagement>
@@ -27,14 +31,14 @@
             <dependency>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-controls</artifactId>
-                <version>${javafx-controls.version}</version>
+                <version>${javafx.version}</version>
                 <scope>provided</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-fxml</artifactId>
-                <version>${javafx-controls.version}</version>
+                <version>${javafx.version}</version>
                 <scope>provided</scope>
             </dependency>
 
@@ -71,8 +75,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.0</version>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
             </plugin>
         </plugins>
