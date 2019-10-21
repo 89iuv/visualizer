@@ -27,8 +27,8 @@ public class FFTAudioProcessor implements AudioProcessor {
     private List<FFTListener> listenerList;
     private AudioFormat audioFormat;
     private UnivariateInterpolator interpolator = new SplineInterpolator();
-    private WindowFunction windowFunction = new HammingWindow();
-    private double windowCorrectionFactor = 1.85;
+    private WindowFunction windowFunction = new HannWindow();
+    private double windowCorrectionFactor = 2.00;
 
     FFTAudioProcessor(AudioFormat audioFormat, List<FFTListener> listenerList) {
         this.audioFormat = audioFormat;
@@ -37,14 +37,12 @@ public class FFTAudioProcessor implements AudioProcessor {
 
     @Override
     public boolean process(AudioEvent audioEvent) {
-        int interpolation = AppConfig.getZeroPadding();
-
         float[] audioFloatBuffer = audioEvent.getFloatBuffer();
 
         // the buffer must be copied into another array for processing otherwise strange behaviour
         // the audioFloatBuffer buffer is reused because of the offset
         // modifying it will create strange issues
-        float[] transformBuffer = new float[audioFloatBuffer.length + interpolation];
+        float[] transformBuffer = new float[audioFloatBuffer.length];
         System.arraycopy(audioFloatBuffer, 0, transformBuffer, 0, audioFloatBuffer.length);
 
         float[] amplitudes = new float[transformBuffer.length / 2];

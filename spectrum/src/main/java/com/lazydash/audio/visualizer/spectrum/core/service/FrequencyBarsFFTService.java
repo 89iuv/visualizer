@@ -44,6 +44,16 @@ public class FrequencyBarsFFTService implements FFTListener {
             this.hzBins = hzBins;
             this.amplitudes = normalizedAmplitudes;
 
+            if (hzBinsQue.size() > 2) {
+                System.err.println("hzBinsQue overflow");
+                hzBinsQue.poll();
+            }
+
+            if (amplitudesQue.size() > 2) {
+                System.err.println("amplitudesQue overflow");
+                amplitudesQue.poll();
+            }
+
             hzBinsQue.add(hzBins);
             amplitudesQue.add(normalizedAmplitudes);
 

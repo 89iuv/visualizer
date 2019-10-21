@@ -30,8 +30,8 @@ public class TarsosAudioEngine implements AudioEngine {
         try {
             Mixer mixer = getMixer();
             AudioFormat audioFormat = getAudioFormat();
-            TargetDataLine line = getLine(mixer, audioFormat, AppConfig.getBufferSize());
-            run(line, audioFormat, AppConfig.getBufferSize(), AppConfig.getBufferOverlap());
+            TargetDataLine line = getLine(mixer, audioFormat, AppConfig.getBufferPadding());
+            run(line, audioFormat, AppConfig.getBufferPadding(), AppConfig.getBufferSize());
 
         } catch (LineUnavailableException e) {
             e.printStackTrace();

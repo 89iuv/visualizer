@@ -21,7 +21,7 @@ public class MainTest {
         int bufferSize = 6144;
 
         String primarySoundCaptureDriver = "Primary Sound Capture Driver";
-        String primarySoundDriver = "Speakers (Realtek High Definition Audio)";
+        String primarySoundDriver = "Speakers (2- USB Audio CODEC )";
 
         // print all mixers
         Stream.of(AudioSystem.getMixerInfo())
@@ -32,7 +32,7 @@ public class MainTest {
 
         // read audio
         Mixer.Info outputMixerInfo = Stream.of(AudioSystem.getMixerInfo())
-                .filter(curentMixerInfo -> curentMixerInfo.getName().contains(primarySoundCaptureDriver))
+                .filter(curentMixerInfo -> curentMixerInfo.getName().equals(primarySoundCaptureDriver))
                 .findFirst()
                 .get();
         System.out.println("output mixer info: " + outputMixerInfo);
@@ -51,7 +51,7 @@ public class MainTest {
 
         // write audio
         Mixer.Info inputMixerInfo = Stream.of(AudioSystem.getMixerInfo())
-                .filter(curentMixerInfo -> curentMixerInfo.getName().contains(primarySoundDriver))
+                .filter(curentMixerInfo -> curentMixerInfo.getName().equals(primarySoundDriver))
                 .findFirst()
                 .get();
         System.out.println("input mixer info: " + inputMixerInfo);
@@ -74,7 +74,7 @@ public class MainTest {
 
             long newTime = System.currentTimeMillis();
             long delta = newTime - oldTime;
-            System.out.println(delta);
+//            System.out.println(delta);
             oldTime = newTime;
         }
     }

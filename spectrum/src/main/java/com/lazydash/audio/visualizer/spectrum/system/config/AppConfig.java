@@ -5,16 +5,17 @@ public class AppConfig {
     private static double targetFPS = 60;
 
     // Audio format
-    private static String inputDevice = "Primary Sound Capture";
+    private static String inputDevice = "Primary Sound Capture Driver";
+    private static String outputDevice = "Primary Sound Driver";
     private static int sampleRate = 48000;
     private static int sampleSizeInBits = 16;
-    private static int channels = 1;
+    private static int channels = 2;
     private static boolean signed = true;
-    private static boolean bigEndian = false;
+    private static boolean bigEndian = true;
 
     // audio buffer settings
-    private static int bufferSize = 6000;
-    private static int bufferOverlap = 4976;
+    private static int bufferPadding = 24576;
+    private static int bufferSize = 6144;
 
     private static int minBarHeight = 3;
     private static double maxBarHeight = 750;
@@ -22,33 +23,32 @@ public class AppConfig {
 
     private static int hzLabelHeight = 20;
 
-    private static int frequencyStart = 35;
+    private static int frequencyStart = 39;
     private static int frequencyCenter = 1000;
     private static int frequencyEnd = 17000;
-    private static int octave = 3;
+    private static int octave = 6;
 
     private static String maxLevel = "RMS";
     private static String weight = "dBZ";
 
     // spectral color
-    private static int spectralColorPosition = 180;
-    private static int spectralColorRange = 360;
+    private static int spectralColorPosition = 0;
+    private static int spectralColorRange = 330;
     private static int saturation = 100;
     private static int brightness = 100;
     private static boolean spectralColorInverted = false;
 
     // bar acceleration
-    private static int pixelsPerSecondDecay = 250;
+    private static int pixelsPerSecondDecay = 1200;
     private static int accelerationFactor = 10;
 
     // input signal
-    private static int signalAmplification = 138;
-    private static int signalThreshold = -42;
+    private static int signalAmplification = 130;
+    private static int signalThreshold = -40;
 
     // fft
     private static int timeFilterSize = 2;
     private static double interpolationResolution = 6;
-    private static int zeroPadding = 0;
 
     // window
     private static double windowWidth = 1700;
@@ -95,20 +95,20 @@ public class AppConfig {
         AppConfig.bigEndian = bigEndian;
     }
 
+    public static int getBufferPadding() {
+        return bufferPadding;
+    }
+
+    public static void setBufferPadding(int bufferPadding) {
+        AppConfig.bufferPadding = bufferPadding;
+    }
+
     public static int getBufferSize() {
         return bufferSize;
     }
 
     public static void setBufferSize(int bufferSize) {
         AppConfig.bufferSize = bufferSize;
-    }
-
-    public static int getBufferOverlap() {
-        return bufferOverlap;
-    }
-
-    public static void setBufferOverlap(int bufferOverlap) {
-        AppConfig.bufferOverlap = bufferOverlap;
     }
 
     public static int getTimeFilterSize() {
@@ -216,14 +216,6 @@ public class AppConfig {
         AppConfig.accelerationFactor = accelerationFactor;
     }
 
-    public static int getZeroPadding() {
-        return zeroPadding;
-    }
-
-    public static void setZeroPadding(int zeroPadding) {
-        AppConfig.zeroPadding = zeroPadding;
-    }
-
     public static int getFrequencyStart() {
         return frequencyStart;
     }
@@ -319,5 +311,13 @@ public class AppConfig {
 
     public static void setInterpolationResolution(double interpolationResolution) {
         AppConfig.interpolationResolution = interpolationResolution;
+    }
+
+    public static String getOutputDevice() {
+        return outputDevice;
+    }
+
+    public static void setOutputDevice(String outputDevice) {
+        AppConfig.outputDevice = outputDevice;
     }
 }

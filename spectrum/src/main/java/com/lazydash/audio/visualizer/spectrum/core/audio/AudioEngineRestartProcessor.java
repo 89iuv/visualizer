@@ -6,22 +6,23 @@ import com.lazydash.audio.visualizer.spectrum.system.config.AppConfig;
 
 public class AudioEngineRestartProcessor implements AudioProcessor {
     private String inputDevice = AppConfig.getInputDevice();
+    private String outputDevice = AppConfig.getOutputDevice();
     private int sampleRate = AppConfig.getSampleRate();
-    private int bufferSize = AppConfig.getBufferSize();
-    private int bufferOverlap = AppConfig.getBufferOverlap();
+    private int bufferSize = AppConfig.getBufferPadding();
+    private int bufferOverlap = AppConfig.getBufferSize();
 
-    private TarsosAudioEngine tarsosAudioEngine;
+    private AudioEngine audioEngine;
 
 
-    public AudioEngineRestartProcessor(TarsosAudioEngine tarsosAudioEngine) {
-        this.tarsosAudioEngine = tarsosAudioEngine;
+    public AudioEngineRestartProcessor(AudioEngine audioEngine) {
+        this.audioEngine = audioEngine;
     }
 
     @Override
     public boolean process(AudioEvent audioEvent) {
         if (isChangeDetected()) {
             // use another thread to restart the audio engine
-            Thread thread = new Thread(() -> tarsosAudioEngine.restart());
+            Thread thread = new Thread(() -> audioEngine.restart());
             thread.setDaemon(true);
             thread.start();
         }
@@ -41,18 +42,23 @@ public class AudioEngineRestartProcessor implements AudioProcessor {
             isChanged = true;
         }
 
+        if (!outputDevice.equals(AppConfig.getOutputDevice())){
+            inputDevice = AppConfig.getOutputDevice();
+            isChanged = true;
+        }
+
         if (sampleRate != AppConfig.getSampleRate()) {
             sampleRate = AppConfig.getSampleRate();
             isChanged = true;
         }
 
-        if (bufferSize != AppConfig.getBufferSize()) {
-            bufferSize = AppConfig.getBufferSize();
+        if (bufferSize != AppConfig.getBufferPadding()) {
+            bufferSize = AppConfig.getBufferPadding();
             isChanged = true;
         }
 
-        if (bufferOverlap != AppConfig.getBufferOverlap()) {
-            bufferOverlap = AppConfig.getBufferOverlap();
+        if (bufferOverlap != AppConfig.getBufferSize()) {
+            bufferOverlap = AppConfig.getBufferSize();
             isChanged = true;
         }
 
