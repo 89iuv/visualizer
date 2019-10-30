@@ -13,8 +13,8 @@ import java.util.stream.Stream;
 public class AudioInputController {
     public ComboBox<String> inputDevice;
     public ComboBox<String> outputDevice;
-    public Spinner<Integer> bufferPadding;
-    public Spinner<Integer> bufferSize;
+    public Spinner<Integer> fftWindowFrames;
+    public Spinner<Integer> fftWindowMs;
 
     public void initialize() {
         List<String> inputDeviceList = new ArrayList<>(0);
@@ -35,31 +35,17 @@ public class AudioInputController {
         outputDevice.getItems().addAll(outputDeviceList);
         outputDevice.setValue(AppConfig.getOutputDevice());
 
-        bufferPadding.getValueFactory().setValue(AppConfig.getBufferPadding());
-        bufferPadding.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (bufferSize.getValue() > newValue - 256) {
-                bufferSize.getValueFactory().setValue(newValue - 256);
-                AppConfig.setBufferSize(newValue - 256);
-            }
-
-            bufferPadding.getValueFactory().setValue(newValue);
-            AppConfig.setBufferPadding(newValue);
+        fftWindowFrames.getValueFactory().setValue(AppConfig.getFftWindowFrames());
+        fftWindowFrames.valueProperty().addListener((observable, oldValue, newValue) -> {
+            fftWindowFrames.getValueFactory().setValue(newValue);
+            AppConfig.setFftWindowFrames(newValue);
         });
 
-        bufferSize.getValueFactory().setValue(AppConfig.getBufferSize());
-        bufferSize.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue > bufferPadding.getValue() - 256) {
-                newValue = newValue - 256;
-            }
-
-            if (bufferPadding.getValue() - 256 < 0) {
-                newValue = 0;
-            }
-
-            bufferSize.getValueFactory().setValue(newValue);
-            AppConfig.setBufferSize(newValue);
+        fftWindowMs.getValueFactory().setValue(AppConfig.getFftWindowMs());
+        fftWindowMs.valueProperty().addListener((observable, oldValue, newValue) -> {
+          fftWindowMs.getValueFactory().setValue(newValue);
+            AppConfig.setFftWindowMs(newValue);
         });
-
     }
 
     public void updateInputDevice(ActionEvent actionEvent) {

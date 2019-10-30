@@ -4,9 +4,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class OctaveGenerator {
-    private static Map<OctaveSettings, List<Double>> cache = new HashMap<>();
+    private static Map<OctaveSettings, List<Integer>> cache = new HashMap<>();
 
-    public static List<Double> getOctaveFrequencies(double centerFrequency, double band, double lowerLimit, double upperLimit) {
+    public static List<Integer> getOctaveFrequencies(double centerFrequency, double band, double lowerLimit, double upperLimit) {
         // set limits
         if (lowerLimit < 1) {
             lowerLimit = 1;
@@ -21,7 +21,7 @@ public class OctaveGenerator {
         }
 
         OctaveSettings octaveSettings = new OctaveSettings(centerFrequency, band, lowerLimit, upperLimit);
-        List<Double> doubles = cache.get(octaveSettings);
+        List<Integer> doubles = cache.get(octaveSettings);
         if (doubles == null) {
             Set<Double> octave = new TreeSet<>();
 
@@ -31,7 +31,7 @@ public class OctaveGenerator {
             // if center is 1000 but upper limit is 80 then we need to filter out 80 to 1000 frequencies
             double finalLowerLimit = lowerLimit;
             double finalUpperLimit = upperLimit;
-            List<Double> octaves = octave.stream().filter(aDouble -> (finalLowerLimit <= aDouble && aDouble <= finalUpperLimit)).collect(Collectors.toList());
+            List<Integer> octaves = octave.stream().filter(aDouble -> (finalLowerLimit <= aDouble && aDouble <= finalUpperLimit)).map(value -> (int) Math.round(value)).collect(Collectors.toList());
             cache.put(octaveSettings, octaves);
 
             return octaves;
@@ -42,12 +42,12 @@ public class OctaveGenerator {
         }
     }
 
-    public static double getLowLimit(double center, double band){
-        return  center / (Math.pow(2, ( 1d / (2* band) )));
+    public static int getLowLimit(double center, double band){
+        return (int) Math.round(center / (Math.pow(2, ( 1d / (2* band) ))));
     }
 
-    public static double getHighLimit(double center, double band) {
-        return center * (Math.pow(2, ( 1d / (2* band) )));
+    public static Integer getHighLimit(double center, double band) {
+        return (int) Math.round(center * (Math.pow(2, ( 1d / (2* band) ))));
     }
 
     private static void addLow(Set<Double> octave, double center, double band, double lowerLimit){

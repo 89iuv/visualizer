@@ -21,17 +21,17 @@
         <Label text="Output device: " GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
         <ComboBox fx:id="outputDevice" onAction="#updateOutputDevice" GridPane.rowIndex="$row.value" GridPane.columnIndex="1"/>
 
-        <Label text="Buffer size:" GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
-        <Spinner fx:id="bufferSize" editable="true" GridPane.rowIndex="$row.value" GridPane.columnIndex="1">
+        <Label text="FFT Window Size (ms):" GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
+        <Spinner fx:id="fftWindowMs" editable="true" GridPane.rowIndex="$row.value" GridPane.columnIndex="1">
             <valueFactory>
-                <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="32000" amountToStepBy="256"/>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="16" max="1000" amountToStepBy="256"/>
             </valueFactory>
         </Spinner>
 
-        <Label text="Buffer padding:" GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
-        <Spinner fx:id="bufferPadding" editable="true" GridPane.rowIndex="$row.value" GridPane.columnIndex="1">
+        <Label text="FFT Window Frames:" GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
+        <Spinner fx:id="fftWindowFrames" editable="true" GridPane.rowIndex="$row.value" GridPane.columnIndex="1">
             <valueFactory>
-                <SpinnerValueFactory.IntegerSpinnerValueFactory min="32" max="32000" amountToStepBy="256"/>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="100" amountToStepBy="256"/>
             </valueFactory>
         </Spinner>
 

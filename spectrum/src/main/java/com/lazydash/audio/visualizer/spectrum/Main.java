@@ -1,8 +1,7 @@
 package com.lazydash.audio.visualizer.spectrum;
 
-import com.lazydash.audio.visualizer.spectrum.core.audio.AudioEngine;
-import com.lazydash.audio.visualizer.spectrum.core.audio.JvmNativeAudioEngine;
-import com.lazydash.audio.visualizer.spectrum.core.audio.TarsosAudioEngine;
+import com.lazydash.audio.visualizer.spectrum.core.audio.engine.AudioEngine;
+import com.lazydash.audio.visualizer.spectrum.core.audio.engine.JvmAudioEngine;
 import com.lazydash.audio.visualizer.spectrum.core.service.FrequencyBarsFFTService;
 import com.lazydash.audio.visualizer.spectrum.plugin.PluginSystem;
 import com.lazydash.audio.visualizer.spectrum.system.config.AppConfig;
@@ -64,7 +63,7 @@ public class Main extends Application {
         // create
         ConfigFilePersistence configFilePersistence = new ConfigFilePersistence();
         configFilePersistence.load(AppConfig.class, "./application.properties");
-        AudioEngine audioEngine = new JvmNativeAudioEngine();
+        AudioEngine audioEngine = new JvmAudioEngine();
 //        AudioEngine audioEngine = new TarsosAudioEngine();
 
         SpectralView spectralView = new SpectralView();

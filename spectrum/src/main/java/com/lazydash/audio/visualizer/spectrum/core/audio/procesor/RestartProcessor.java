@@ -1,20 +1,21 @@
-package com.lazydash.audio.visualizer.spectrum.core.audio;
+package com.lazydash.audio.visualizer.spectrum.core.audio.procesor;
 
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
+import com.lazydash.audio.visualizer.spectrum.core.audio.engine.AudioEngine;
 import com.lazydash.audio.visualizer.spectrum.system.config.AppConfig;
 
-public class AudioEngineRestartProcessor implements AudioProcessor {
+public class RestartProcessor implements AudioProcessor {
     private String inputDevice = AppConfig.getInputDevice();
     private String outputDevice = AppConfig.getOutputDevice();
     private int sampleRate = AppConfig.getSampleRate();
-    private int bufferSize = AppConfig.getBufferPadding();
-    private int bufferOverlap = AppConfig.getBufferSize();
+    private int bufferSize = AppConfig.getFftWindowFrames();
+    private int bufferOverlap = AppConfig.getFftWindowMs();
 
     private AudioEngine audioEngine;
 
 
-    public AudioEngineRestartProcessor(AudioEngine audioEngine) {
+    public RestartProcessor(AudioEngine audioEngine) {
         this.audioEngine = audioEngine;
     }
 
@@ -52,13 +53,13 @@ public class AudioEngineRestartProcessor implements AudioProcessor {
             isChanged = true;
         }
 
-        if (bufferSize != AppConfig.getBufferPadding()) {
-            bufferSize = AppConfig.getBufferPadding();
+        if (bufferSize != AppConfig.getFftWindowFrames()) {
+            bufferSize = AppConfig.getFftWindowFrames();
             isChanged = true;
         }
 
-        if (bufferOverlap != AppConfig.getBufferSize()) {
-            bufferOverlap = AppConfig.getBufferSize();
+        if (bufferOverlap != AppConfig.getFftWindowMs()) {
+            bufferOverlap = AppConfig.getFftWindowMs();
             isChanged = true;
         }
 

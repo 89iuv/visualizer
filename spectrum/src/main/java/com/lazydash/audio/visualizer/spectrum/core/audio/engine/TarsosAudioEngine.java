@@ -1,8 +1,11 @@
-package com.lazydash.audio.visualizer.spectrum.core.audio;
+package com.lazydash.audio.visualizer.spectrum.core.audio.engine;
 
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.MultichannelToMono;
 import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
+import com.lazydash.audio.visualizer.spectrum.core.audio.procesor.FFTAudioProcessor;
+import com.lazydash.audio.visualizer.spectrum.core.audio.procesor.FFTListener;
+import com.lazydash.audio.visualizer.spectrum.core.audio.procesor.RestartProcessor;
 import com.lazydash.audio.visualizer.spectrum.system.config.AppConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +33,8 @@ public class TarsosAudioEngine implements AudioEngine {
         try {
             Mixer mixer = getMixer();
             AudioFormat audioFormat = getAudioFormat();
-            TargetDataLine line = getLine(mixer, audioFormat, AppConfig.getBufferPadding());
-            run(line, audioFormat, AppConfig.getBufferPadding(), AppConfig.getBufferSize());
+            TargetDataLine line = getLine(mixer, audioFormat, AppConfig.getFftWindowFrames());
+            run(line, audioFormat, AppConfig.getFftWindowFrames(), AppConfig.getFftWindowMs());
 
         } catch (LineUnavailableException e) {
             e.printStackTrace();
@@ -97,7 +100,7 @@ public class TarsosAudioEngine implements AudioEngine {
         JVMAudioInputStream audioStream = new JVMAudioInputStream(stream);
 
         dispatcher = new AudioDispatcher(audioStream, bufferSize, bufferOverlay);
-        dispatcher.addAudioProcessor(new AudioEngineRestartProcessor(this));
+        dispatcher.addAudioProcessor(new RestartProcessor(this));
         dispatcher.addAudioProcessor(new MultichannelToMono(audioFormat.getChannels(), true));
         dispatcher.addAudioProcessor(new FFTAudioProcessor(audioFormat, fttListenerList));
 

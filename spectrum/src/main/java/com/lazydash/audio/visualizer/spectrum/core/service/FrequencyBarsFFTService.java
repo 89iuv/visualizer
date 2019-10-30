@@ -3,7 +3,7 @@ package com.lazydash.audio.visualizer.spectrum.core.service;
 import com.lazydash.audio.visualizer.spectrum.core.algorithm.BarsHeightCalculator;
 import com.lazydash.audio.visualizer.spectrum.core.algorithm.FFTTimeFilter;
 import com.lazydash.audio.visualizer.spectrum.core.algorithm.FrequencyBarsCreator;
-import com.lazydash.audio.visualizer.spectrum.core.audio.FFTListener;
+import com.lazydash.audio.visualizer.spectrum.core.audio.procesor.FFTListener;
 import com.lazydash.audio.visualizer.spectrum.core.model.FrequencyBar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,12 +45,10 @@ public class FrequencyBarsFFTService implements FFTListener {
             this.amplitudes = normalizedAmplitudes;
 
             if (hzBinsQue.size() > 2) {
-                System.err.println("hzBinsQue overflow");
                 hzBinsQue.poll();
             }
 
             if (amplitudesQue.size() > 2) {
-                System.err.println("amplitudesQue overflow");
                 amplitudesQue.poll();
             }
 

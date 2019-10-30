@@ -14,8 +14,8 @@ public class AppConfig {
     private static boolean bigEndian = true;
 
     // audio buffer settings
-    private static int bufferPadding = 24576;
-    private static int bufferSize = 6144;
+    private static int fftWindowFrames = 4;
+    private static int fftWindowMs = 32;
 
     private static int minBarHeight = 3;
     private static double maxBarHeight = 750;
@@ -28,7 +28,6 @@ public class AppConfig {
     private static int frequencyEnd = 17000;
     private static int octave = 6;
 
-    private static String maxLevel = "RMS";
     private static String weight = "dBZ";
 
     // spectral color
@@ -40,11 +39,11 @@ public class AppConfig {
 
     // bar acceleration
     private static int pixelsPerSecondDecay = 1200;
-    private static int accelerationFactor = 10;
+    private static int accelerationFactor = 12;
 
     // input signal
-    private static int signalAmplification = 130;
-    private static int signalThreshold = -40;
+    private static int signalAmplification = 120;
+    private static int signalThreshold = -34;
 
     // fft
     private static int timeFilterSize = 2;
@@ -95,20 +94,20 @@ public class AppConfig {
         AppConfig.bigEndian = bigEndian;
     }
 
-    public static int getBufferPadding() {
-        return bufferPadding;
+    public static int getFftWindowFrames() {
+        return fftWindowFrames;
     }
 
-    public static void setBufferPadding(int bufferPadding) {
-        AppConfig.bufferPadding = bufferPadding;
+    public static void setFftWindowFrames(int fftWindowFrames) {
+        AppConfig.fftWindowFrames = fftWindowFrames;
     }
 
-    public static int getBufferSize() {
-        return bufferSize;
+    public static int getFftWindowMs() {
+        return fftWindowMs;
     }
 
-    public static void setBufferSize(int bufferSize) {
-        AppConfig.bufferSize = bufferSize;
+    public static void setFftWindowMs(int fftWindowMs) {
+        AppConfig.fftWindowMs = fftWindowMs;
     }
 
     public static int getTimeFilterSize() {
@@ -246,14 +245,6 @@ public class AppConfig {
 
     public static void setFrequencyCenter(int frequencyCenter) {
         AppConfig.frequencyCenter = frequencyCenter;
-    }
-
-    public static String getMaxLevel() {
-        return maxLevel;
-    }
-
-    public static void setMaxLevel(String maxLevel) {
-        AppConfig.maxLevel = maxLevel;
     }
 
     public static String getWeight() {

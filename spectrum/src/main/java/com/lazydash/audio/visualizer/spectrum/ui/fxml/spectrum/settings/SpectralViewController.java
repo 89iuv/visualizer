@@ -23,7 +23,6 @@ public class SpectralViewController {
     public Spinner<Integer> frequencyEnd;
     public Spinner<Integer> octave;
     public Spinner<Integer> frequencyCenter;
-    public ComboBox<String> maxLevel;
     public ComboBox<String> weighting;
     public Spinner<Integer> minBarHeight;
     public Spinner<Integer> barGap;
@@ -74,9 +73,6 @@ public class SpectralViewController {
             AppConfig.setOctave(newValue);
         });
 
-        maxLevel.setValue(AppConfig.getMaxLevel());
-        maxLevel.getItems().addAll(Arrays.asList("RMS", "Peak"));
-
         weighting.setValue(AppConfig.getWeight());
 
         AmplitudeWeightCalculator.WeightWindow[] weightWindows = AmplitudeWeightCalculator.WeightWindow.values();
@@ -94,10 +90,6 @@ public class SpectralViewController {
         });
     }
 
-
-    public void updateMaxLeve(ActionEvent actionEvent) {
-        AppConfig.setMaxLevel(maxLevel.getValue());
-    }
 
     public void updateWeighting(ActionEvent actionEvent) {
         AppConfig.setWeight(weighting.getValue());

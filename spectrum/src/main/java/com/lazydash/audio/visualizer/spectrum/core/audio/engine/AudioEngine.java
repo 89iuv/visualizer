@@ -1,4 +1,6 @@
-package com.lazydash.audio.visualizer.spectrum.core.audio;
+package com.lazydash.audio.visualizer.spectrum.core.audio.engine;
+
+import com.lazydash.audio.visualizer.spectrum.core.audio.procesor.FFTListener;
 
 import java.util.List;
 
