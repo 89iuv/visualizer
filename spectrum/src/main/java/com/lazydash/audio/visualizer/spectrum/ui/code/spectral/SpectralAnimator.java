@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 public class SpectralAnimator {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpectralAnimator.class);
-    private long oldTime = System.currentTimeMillis();
 
     private FrequencyBarsFFTService spectralFFTService;
     private SpectralView spectralView;
@@ -30,12 +29,6 @@ public class SpectralAnimator {
 
     private void updateSpectralView(){
         spectralView.updateState(spectralFFTService.getFrequencyBarList());
-
-        long newTime = System.currentTimeMillis();
-        long deltaTime = newTime - oldTime;
-
-//        LOGGER.info(String.valueOf(deltaTime));
-        oldTime = newTime;
     }
 
 }

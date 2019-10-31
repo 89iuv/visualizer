@@ -44,7 +44,7 @@ public class RestartProcessor implements AudioProcessor {
         }
 
         if (!outputDevice.equals(AppConfig.getOutputDevice())){
-            inputDevice = AppConfig.getOutputDevice();
+            outputDevice = AppConfig.getOutputDevice();
             isChanged = true;
         }
 

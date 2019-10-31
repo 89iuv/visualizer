@@ -21,7 +21,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class FrequencyBarsFFTService implements FFTListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(FrequencyBarsFFTService.class);
-    private long oldTime = System.currentTimeMillis();
+    private int framesDropped = 0;
 
     // the hzBins and the amplitudes come in pairs and access to them needs to be synchronized
     private ReentrantLock lock = new ReentrantLock(true);
@@ -50,6 +50,7 @@ public class FrequencyBarsFFTService implements FFTListener {
 
             if (amplitudesQue.size() > 2) {
                 amplitudesQue.poll();
+                LOGGER.info("Dropped Frames: " + ++framesDropped);
             }
 
             hzBinsQue.add(hzBins);
@@ -61,12 +62,12 @@ public class FrequencyBarsFFTService implements FFTListener {
     }
 
     public List<FrequencyBar> getFrequencyBarList() {
-        long oldTime = System.currentTimeMillis();
         double[] returnBinz;
         double[] returnAmplitudes;
 
         try {
             lock.lock();
+
 
             returnBinz = hzBinsQue.poll();
             if (returnBinz == null) {
@@ -93,15 +94,7 @@ public class FrequencyBarsFFTService implements FFTListener {
             frequencyBars = new ArrayList<>();
         }
 
-        long newTime = System.currentTimeMillis();
-        long deltaTime = newTime - oldTime;
-
-//        LOGGER.info(String.valueOf(deltaTime));
-
-        oldTime = newTime;
-
         return frequencyBars;
-
     }
 
 }

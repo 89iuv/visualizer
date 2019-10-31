@@ -64,7 +64,6 @@ public class Main extends Application {
         ConfigFilePersistence configFilePersistence = new ConfigFilePersistence();
         configFilePersistence.load(AppConfig.class, "./application.properties");
         AudioEngine audioEngine = new JvmAudioEngine();
-//        AudioEngine audioEngine = new TarsosAudioEngine();
 
         SpectralView spectralView = new SpectralView();
         Scene scene = createScene(spectralView);
@@ -100,13 +99,13 @@ public class Main extends Application {
         });
     }
 
-    private void wirePrimaryStage(Stage primaryStage, ConfigFilePersistence configFilePersistence, AudioEngine tarsosAudioEngine) {
+    private void wirePrimaryStage(Stage primaryStage, ConfigFilePersistence configFilePersistence, AudioEngine audioEngine) {
         primaryStage.setOnCloseRequest(event -> {
             AppConfig.setWindowHeight(primaryStage.getHeight());
             AppConfig.setWindowWidth(primaryStage.getWidth());
             configFilePersistence.persist(AppConfig.class, "./application.properties");
             PluginSystem.getInstance().stopAllPlugins();
-            tarsosAudioEngine.stop();
+            audioEngine.stop();
             Platform.exit();
 
             // force exit in 5 seconds if application does not finish

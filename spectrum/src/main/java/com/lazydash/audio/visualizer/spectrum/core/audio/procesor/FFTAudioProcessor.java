@@ -21,14 +21,15 @@ import java.util.stream.IntStream;
 
 public class FFTAudioProcessor implements AudioProcessor {
     private static final Logger LOGGER = LoggerFactory.getLogger(FFTAudioProcessor.class);
-    long oldTime = System.currentTimeMillis();
+    private long oldTime = System.currentTimeMillis();
 
     private List<FFTListener> listenerList;
     private AudioFormat audioFormat;
+    private  FFT fft;
+
     private UnivariateInterpolator interpolator = new LinearInterpolator();
     private WindowFunction windowFunction = new HannWindow();
     private double windowCorrectionFactor = 2.00;
-    private  FFT fft = null;
 
     public FFTAudioProcessor(AudioFormat audioFormat, List<FFTListener> listenerList) {
         this.audioFormat = audioFormat;
@@ -50,13 +51,28 @@ public class FFTAudioProcessor implements AudioProcessor {
         fft.modulus(transformBuffer, amplitudes);
 
         double[] bins = IntStream.range(0, transformBuffer.length / 2).mapToDouble(i -> fft.binToHz(i, audioFormat.getSampleRate())).toArray();
-        double[] doublesAmplitudes = IntStream.range(0, amplitudes.length).mapToDouble(value -> amplitudes[value]).toArray();
+        double[] doublesAmplitudes = IntStream.range(0, amplitudes.length).mapToDouble(value -> {
+            // make the dc component equal to 0 to improve interpolator performance
+            if (value < 1) {
+                return 0;
+            } else {
+                return amplitudes[value];
+            }
+        }).toArray();
+        double[] doublesEnergy = IntStream.range(0, amplitudes.length).mapToDouble(value -> {
+            // make the dc component equal to 0 to improve interpolator performance
+            if (value < 1) {
+                return 0;
+            } else {
+                return Math.pow(amplitudes[value], 2);
+            }
+        }).toArray();
 
         double[] frequencyBins;
         double[] frequencyAmplitudes;
 
         if (AppConfig.getOctave() > 0) {
-            List<Integer> octaveFrequencies = OctaveGenerator.getOctaveFrequencies(
+            List<Double> octaveFrequencies = OctaveGenerator.getOctaveFrequencies(
                     AppConfig.getFrequencyCenter(),
                     AppConfig.getOctave(),
                     AppConfig.getFrequencyStart(),
@@ -65,47 +81,29 @@ public class FFTAudioProcessor implements AudioProcessor {
             frequencyBins = new double[octaveFrequencies.size()];
             frequencyAmplitudes = new double[octaveFrequencies.size()];
 
-            // calculate the frequency step
-            // this is the resolution for interpolating and summing bins
-            double highLimit = OctaveGenerator.getHighLimit(octaveFrequencies.get(0), AppConfig.getOctave());
-            double lowLimit = OctaveGenerator.getLowLimit(octaveFrequencies.get(0), AppConfig.getOctave());
-//            double step = Math.pow(2, ( 1d / (AppConfig.getOctave()) ));
-            double step = 1;
-
-            // improve resolution at the cost of performance
-            // step = step / (AppConfig.getOctave() / 2d);
-
-            // k is the frequency index
-            double k = lowLimit;
-
-            // m is the position in the frequency vectors
+            double k = OctaveGenerator.getLowLimit(octaveFrequencies.get(0), AppConfig.getOctave());
+            double step = 6d / AppConfig.getOctave(); // higher octave require higher precision
             int m = 0;
 
-            // setup the interpolator
-            UnivariateFunction interpolateFunction = interpolator.interpolate(bins, doublesAmplitudes);
+            UnivariateFunction interpolateFunction = interpolator.interpolate(bins, doublesEnergy);
 
             for (int i = 0; i < octaveFrequencies.size(); i++) {
                 frequencyBins[m] = octaveFrequencies.get(i);
-
-                highLimit = OctaveGenerator.getHighLimit(octaveFrequencies.get(i), AppConfig.getOctave());
+                double highLimit = OctaveGenerator.getHighLimit(octaveFrequencies.get(i), AppConfig.getOctave());
 
                 // group bins together
                 while (k < highLimit) {
-
-                    double amplitude = interpolateFunction.value(k);
-                    amplitude = (amplitude / doublesAmplitudes.length); // normalize (n/2)
-                    amplitude = (amplitude * windowCorrectionFactor); // apply window correction
-                    frequencyAmplitudes[m] = frequencyAmplitudes[m] + Math.pow(amplitude, 2); // sum up the "normalized window corrected" energy
-
+                    frequencyAmplitudes[m] = frequencyAmplitudes[m] + interpolateFunction.value(k); // sum up the energy
                     k = k + step;
 
-                    // reached upper limit
                     if (k > AppConfig.getFrequencyEnd() || k > bins[bins.length-1]) {
                         break;
                     }
                 }
 
                 frequencyAmplitudes[m] = Math.sqrt(frequencyAmplitudes[m]); // square root the energy
+                frequencyAmplitudes[m] = (frequencyAmplitudes[m] / doublesAmplitudes.length); // normalize (n/2)
+                frequencyAmplitudes[m] = (frequencyAmplitudes[m] * windowCorrectionFactor); // apply window correction
                 frequencyAmplitudes[m] = (20 * Math.log10(frequencyAmplitudes[m])); // convert to logarithmic scale
 
                 AmplitudeWeightCalculator.WeightWindow weightWindow = AmplitudeWeightCalculator.WeightWindow.valueOf(AppConfig.getWeight());

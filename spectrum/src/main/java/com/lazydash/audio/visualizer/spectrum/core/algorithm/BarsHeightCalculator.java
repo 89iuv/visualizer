@@ -70,7 +70,6 @@ public class BarsHeightCalculator {
                 oldDecayFactor[i] = 0;
 
             } else {
-//                double dbPerSecondDecay = (pixelsPerSecond + (0.01 * Math.pow(1.15, i) - 0.01)) * secondsPassed; // experiment with logarithmic function
                 double dbPerSecondDecay = pixelsPerSecond * secondsPassed;
 
                 if (AppConfig.getAccelerationFactor() > 0 && oldDecayFactor[i] < 1) {

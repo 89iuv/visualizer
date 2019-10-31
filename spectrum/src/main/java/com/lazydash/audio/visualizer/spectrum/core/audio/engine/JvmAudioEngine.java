@@ -55,22 +55,26 @@ public class JvmAudioEngine implements AudioEngine {
 
     @Override
     public void stop() {
+        run = false;
+
+        // wait for thread to finish
         try {
-            run = false;
-            thread.join(50000);
-
-            sourceLine.drain();
-            sourceLine.stop();
-            sourceLine.close();
-
-            targetLine.drain();
-            targetLine.stop();
-            targetLine.close();
-
+            thread.join(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
+        if (sourceLine != null) {
+            sourceLine.drain();
+            sourceLine.stop();
+            sourceLine.close();
+        }
+
+        if (targetLine != null) {
+            targetLine.drain();
+            targetLine.stop();
+            targetLine.close();
+        }
     }
 
     @Override
@@ -100,23 +104,6 @@ public class JvmAudioEngine implements AudioEngine {
                 RestartProcessor restartProcessor = new RestartProcessor(getThis());
                 MultichannelToMono multichannelToMono = new MultichannelToMono(format.getChannels(), true);
 
-                //todo a good idea to filter frequencies that will not be displayed
-
-                /* IIRFilter filter = new IIRFilter(60, format.getSampleRate()) {
-                    @Override
-                    protected void calcCoeff() {
-                        float fracFreq = getFrequency()/getSampleRate();
-                        float x = (float) (Math.exp(-2 * Math.PI * fracFreq));
-                        a = new float[] {
-                                (1+x)/2,
-                                -(1+x)/2
-                        };
-                        b = new float[] {
-                                x
-                        };
-                    }
-                };*/
-
                 byte[] bytes = new byte[bufferPadding];
                 byte[] readBytes = new byte[bufferSize];
                 float[] floats = new float[bufferPadding / getAudioFormat().getChannels()];
@@ -131,17 +118,20 @@ public class JvmAudioEngine implements AudioEngine {
                     audioEvent.setFloatBuffer(floats);
 
                     multichannelToMono.process(audioEvent);
-//                    filter.process(audioEvent);
                     fftAudioProcessor.process(audioEvent);
                     restartProcessor.process(audioEvent);
 
-                    sourceDataLine.write(readBytes, 0, readBytes.length);
+                    if (sourceDataLine != null) {
+                        sourceDataLine.write(readBytes, 0, readBytes.length);
+                    }
+
                 }
             }
         });
 
         thread.setDaemon(true);
         thread.setPriority(Thread.MAX_PRIORITY);
+        thread.setName("JVM Audio Thread");
         thread.start();
     }
 
@@ -167,7 +157,7 @@ public class JvmAudioEngine implements AudioEngine {
         //noinspection OptionalGetWithoutIsPresent
         Line.Info lineInfo = Stream.of(mixer.getTargetLineInfo()).findFirst().get();
         TargetDataLine line = (TargetDataLine) mixer.getLine(lineInfo);
-        line.open(audioFormat, bufferSize * 3);
+        line.open(audioFormat, bufferSize * 2);
         line.start();
 
         LOGGER.info("line format: " + line.getFormat());
@@ -178,6 +168,10 @@ public class JvmAudioEngine implements AudioEngine {
     }
 
     private SourceDataLine getSourceLine(AudioFormat audioFormat, int bufferSize) throws LineUnavailableException {
+        if ("None".equals(AppConfig.getOutputDevice())) {
+            return null;
+        }
+
         //noinspection OptionalGetWithoutIsPresent
         Mixer.Info mixerInfo = Stream.of(AudioSystem.getMixerInfo())
                 .filter(curentMixerInfo -> curentMixerInfo.getName().equals(AppConfig.getOutputDevice()))
@@ -189,7 +183,7 @@ public class JvmAudioEngine implements AudioEngine {
         //noinspection OptionalGetWithoutIsPresent
         Line.Info lineInfo = Stream.of(mixer.getSourceLineInfo()).findFirst().get();
         SourceDataLine line = (SourceDataLine) mixer.getLine(lineInfo);
-        line.open(audioFormat, bufferSize * 3);
+        line.open(audioFormat, bufferSize * 2);
         line.start();
 
         LOGGER.info("line format: " + line.getFormat());

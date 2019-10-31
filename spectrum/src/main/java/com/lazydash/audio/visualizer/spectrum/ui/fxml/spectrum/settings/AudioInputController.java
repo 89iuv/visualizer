@@ -27,6 +27,7 @@ public class AudioInputController {
         inputDevice.setValue(AppConfig.getInputDevice());
 
         List<String> outputDeviceList = new ArrayList<>(0);
+        outputDeviceList.add("None");
         Stream.of(AudioSystem.getMixerInfo()).forEach(mixerInfo -> {
             if (mixerInfo.getDescription().contains("Playback")) {
                 outputDeviceList.add(mixerInfo.getName());

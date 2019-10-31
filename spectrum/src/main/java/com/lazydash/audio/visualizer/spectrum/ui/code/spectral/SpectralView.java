@@ -39,11 +39,9 @@ public class SpectralView extends GridPane {
         if (frequencyBarList.size() != frequencyViewList.size()) {
             createBars(frequencyBarList);
             updateBars(frequencyBarList);
-//            LOGGER.info("create bars");
 
         } else {
             updateBars(frequencyBarList);
-//            LOGGER.info("update bars");
         }
     }
 

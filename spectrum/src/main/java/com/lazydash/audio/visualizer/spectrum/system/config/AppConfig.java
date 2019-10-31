@@ -1,19 +1,18 @@
 package com.lazydash.audio.visualizer.spectrum.system.config;
 
 public class AppConfig {
-    // ui
-    private static double targetFPS = 60;
 
     // Audio format
     private static String inputDevice = "Primary Sound Capture Driver";
-    private static String outputDevice = "Primary Sound Driver";
+    private static String outputDevice = "None";
+
     private static int sampleRate = 48000;
     private static int sampleSizeInBits = 16;
     private static int channels = 2;
     private static boolean signed = true;
-    private static boolean bigEndian = true;
+    private static boolean bigEndian = false;
 
-    // audio buffer settings
+    // audio fft settings
     private static int fftWindowFrames = 4;
     private static int fftWindowMs = 32;
 
@@ -47,7 +46,6 @@ public class AppConfig {
 
     // fft
     private static int timeFilterSize = 2;
-    private static double interpolationResolution = 6;
 
     // window
     private static double windowWidth = 1700;
@@ -199,14 +197,6 @@ public class AppConfig {
         AppConfig.inputDevice = inputDevice;
     }
 
-    public static double getTargetFPS() {
-        return targetFPS;
-    }
-
-    public static void setTargetFPS(double targetFPS) {
-        AppConfig.targetFPS = targetFPS;
-    }
-
     public static int getAccelerationFactor() {
         return accelerationFactor;
     }
@@ -295,14 +285,6 @@ public class AppConfig {
         AppConfig.brightness = brightness;
     }
 
-
-    public static double getInterpolationResolution() {
-        return interpolationResolution;
-    }
-
-    public static void setInterpolationResolution(double interpolationResolution) {
-        AppConfig.interpolationResolution = interpolationResolution;
-    }
 
     public static String getOutputDevice() {
         return outputDevice;
