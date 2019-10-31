@@ -50,7 +50,7 @@ public class FrequencyBarsFFTService implements FFTListener {
 
             if (amplitudesQue.size() > 2) {
                 amplitudesQue.poll();
-                LOGGER.info("Dropped Frames: " + ++framesDropped);
+                //LOGGER.info("Dropped Frames: " + ++framesDropped);
             }
 
             hzBinsQue.add(hzBins);

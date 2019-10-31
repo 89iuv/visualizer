@@ -29,11 +29,11 @@ public class PluginSystem {
         pluginManager.stopPlugins();
     }
 
-    public void registerAllFffPlugins(AudioEngine tarsosAudioEngine){
+    public void registerAllFffPlugins(AudioEngine audioEngine){
         List<SpectralExtensionPoint> fftRegisters = pluginManager.getExtensions(SpectralExtensionPoint.class);
         for (SpectralExtensionPoint fftRegister : fftRegisters) {
             FrequencyBarsFFTService frequencyBarsFFTService = new FrequencyBarsFFTService();
-            tarsosAudioEngine.getFttListenerList().add(frequencyBarsFFTService);
+            audioEngine.getFttListenerList().add(frequencyBarsFFTService);
             fftRegister.register(frequencyBarsFFTService);
         }
 

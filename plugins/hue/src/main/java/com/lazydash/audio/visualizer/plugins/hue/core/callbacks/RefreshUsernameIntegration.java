@@ -27,6 +27,7 @@ public class RefreshUsernameIntegration extends BridgeResponseCallback {
         } else {
             hueIntegration.setReady(false);
             NotificationService.getInstance().emit(EventEnum.HUE_INTEGRATION_STATUS, returnCode.toString());
+            hueIntegration.openStream();
 
         }
     }
