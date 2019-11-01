@@ -3,6 +3,7 @@ package com.lazydash.audio.visualizer.spectrum.core.audio.procesor;
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.util.fft.FFT;
+import be.tarsos.dsp.util.fft.HammingWindow;
 import be.tarsos.dsp.util.fft.HannWindow;
 import be.tarsos.dsp.util.fft.WindowFunction;
 import com.lazydash.audio.visualizer.spectrum.core.algorithm.AmplitudeWeightCalculator;
@@ -29,7 +30,7 @@ public class FFTAudioProcessor implements AudioProcessor {
 
     private UnivariateInterpolator interpolator = new LinearInterpolator();
     private WindowFunction windowFunction = new HannWindow();
-    private double windowCorrectionFactor = 2.00;
+    private float windowCorrectionFactor = 2.00f;
 
     public FFTAudioProcessor(AudioFormat audioFormat, List<FFTListener> listenerList) {
         this.audioFormat = audioFormat;
@@ -52,21 +53,12 @@ public class FFTAudioProcessor implements AudioProcessor {
 
         double[] bins = IntStream.range(0, transformBuffer.length / 2).mapToDouble(i -> fft.binToHz(i, audioFormat.getSampleRate())).toArray();
         double[] doublesAmplitudes = IntStream.range(0, amplitudes.length).mapToDouble(value -> {
-            // make the dc component equal to 0 to improve interpolator performance
-            if (value < 1) {
-                return 0;
-            } else {
-                return amplitudes[value];
-            }
+            float amplitude = amplitudes[value];
+            amplitude = (amplitude / bins.length); // normalize (n/2)
+            amplitude = (amplitude * windowCorrectionFactor); // apply window correction
+            return amplitude;
         }).toArray();
-        double[] doublesEnergy = IntStream.range(0, amplitudes.length).mapToDouble(value -> {
-            // make the dc component equal to 0 to improve interpolator performance
-            if (value < 1) {
-                return 0;
-            } else {
-                return Math.pow(amplitudes[value], 2);
-            }
-        }).toArray();
+
 
         double[] frequencyBins;
         double[] frequencyAmplitudes;
@@ -82,10 +74,12 @@ public class FFTAudioProcessor implements AudioProcessor {
             frequencyAmplitudes = new double[octaveFrequencies.size()];
 
             double k = OctaveGenerator.getLowLimit(octaveFrequencies.get(0), AppConfig.getOctave());
-            double step = 6d / AppConfig.getOctave(); // higher octave require higher precision
+            double step = (OctaveGenerator.getHighLimit(octaveFrequencies.get(0), AppConfig.getOctave()) -
+                    OctaveGenerator.getLowLimit(octaveFrequencies.get(0), AppConfig.getOctave())) / AppConfig.getOctave();
             int m = 0;
 
-            UnivariateFunction interpolateFunction = interpolator.interpolate(bins, doublesEnergy);
+            // interpolate amplitudes
+            UnivariateFunction interpolateFunction = interpolator.interpolate(bins, doublesAmplitudes);
 
             for (int i = 0; i < octaveFrequencies.size(); i++) {
                 frequencyBins[m] = octaveFrequencies.get(i);
@@ -93,7 +87,8 @@ public class FFTAudioProcessor implements AudioProcessor {
 
                 // group bins together
                 while (k < highLimit) {
-                    frequencyAmplitudes[m] = frequencyAmplitudes[m] + interpolateFunction.value(k); // sum up the energy
+                    frequencyAmplitudes[m] = frequencyAmplitudes[m] + Math.pow(interpolateFunction.value(k), 2); // sum up the energy
+
                     k = k + step;
 
                     if (k > AppConfig.getFrequencyEnd() || k > bins[bins.length-1]) {
@@ -102,8 +97,6 @@ public class FFTAudioProcessor implements AudioProcessor {
                 }
 
                 frequencyAmplitudes[m] = Math.sqrt(frequencyAmplitudes[m]); // square root the energy
-                frequencyAmplitudes[m] = (frequencyAmplitudes[m] / doublesAmplitudes.length); // normalize (n/2)
-                frequencyAmplitudes[m] = (frequencyAmplitudes[m] * windowCorrectionFactor); // apply window correction
                 frequencyAmplitudes[m] = (20 * Math.log10(frequencyAmplitudes[m])); // convert to logarithmic scale
 
                 AmplitudeWeightCalculator.WeightWindow weightWindow = AmplitudeWeightCalculator.WeightWindow.valueOf(AppConfig.getWeight());
@@ -128,18 +121,13 @@ public class FFTAudioProcessor implements AudioProcessor {
 
             int m = 0;
             for (int i = 0; i < bins.length; i++) {
-                double frequency = fft.binToHz(i, audioFormat.getSampleRate());
+                double frequency = bins[i];
                 if (AppConfig.getFrequencyStart() <= frequency && frequency <= AppConfig.getFrequencyEnd()) {
                     frequencyBins[m] = frequency;
-
-                    frequencyAmplitudes[m] = doublesAmplitudes[i];
-                    frequencyAmplitudes[m] = (frequencyAmplitudes[m] / doublesAmplitudes.length); // normalize (n/2)
-                    frequencyAmplitudes[m] = (frequencyAmplitudes[m] * windowCorrectionFactor); // apply window correction
-                    frequencyAmplitudes[m] = (20 * Math.log10(frequencyAmplitudes[m])); // convert to logarithmic scale
+                    frequencyAmplitudes[m] = (20 * Math.log10(doublesAmplitudes[i])); // convert to logarithmic scale
 
                     AmplitudeWeightCalculator.WeightWindow weightWindow = AmplitudeWeightCalculator.WeightWindow.valueOf(AppConfig.getWeight());
                     frequencyAmplitudes[m] = (frequencyAmplitudes[m] + AmplitudeWeightCalculator.getDbWeight(frequencyBins[m], weightWindow)); // use weight to adjust the spectrum
-
                     m++;
                 }
             }
