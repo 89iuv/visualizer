@@ -100,9 +100,9 @@ public class JvmAudioEngine implements AudioEngine {
                 TarsosDSPAudioFloatConverter converter = TarsosDSPAudioFloatConverter.getConverter(format);
 
                 AudioEvent audioEvent = new AudioEvent(format);
+                MultichannelToMono multichannelToMono = new MultichannelToMono(format.getChannels(), true);
                 FFTAudioProcessor fftAudioProcessor = new FFTAudioProcessor(getAudioFormat(), fttListenerList);
                 RestartProcessor restartProcessor = new RestartProcessor(getThis());
-                MultichannelToMono multichannelToMono = new MultichannelToMono(format.getChannels(), true);
 
                 byte[] bytes = new byte[bufferPadding];
                 byte[] readBytes = new byte[bufferSize];
@@ -129,7 +129,6 @@ public class JvmAudioEngine implements AudioEngine {
             }
         });
 
-        thread.setDaemon(true);
         thread.setPriority(Thread.MAX_PRIORITY);
         thread.setName("JVM Audio Thread");
         thread.start();
@@ -157,7 +156,7 @@ public class JvmAudioEngine implements AudioEngine {
         //noinspection OptionalGetWithoutIsPresent
         Line.Info lineInfo = Stream.of(mixer.getTargetLineInfo()).findFirst().get();
         TargetDataLine line = (TargetDataLine) mixer.getLine(lineInfo);
-        line.open(audioFormat, bufferSize * 2);
+        line.open(audioFormat, bufferSize * 3);
         line.start();
 
         LOGGER.info("line format: " + line.getFormat());
@@ -183,7 +182,7 @@ public class JvmAudioEngine implements AudioEngine {
         //noinspection OptionalGetWithoutIsPresent
         Line.Info lineInfo = Stream.of(mixer.getSourceLineInfo()).findFirst().get();
         SourceDataLine line = (SourceDataLine) mixer.getLine(lineInfo);
-        line.open(audioFormat, bufferSize * 2);
+        line.open(audioFormat, bufferSize * 3);
         line.start();
 
         LOGGER.info("line format: " + line.getFormat());

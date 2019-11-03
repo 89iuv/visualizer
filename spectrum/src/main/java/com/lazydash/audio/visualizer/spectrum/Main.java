@@ -85,10 +85,12 @@ public class Main extends Application {
         wirePrimaryStage(stage, configFilePersistence, audioEngine);
 
         // run
-        audioEngine.start();
         stage.show();
-
         spectralAnimator.play();
+
+        // wait for everything to be ready before starting the audio thread
+        Thread.sleep(10 * 33);
+        audioEngine.start();
     }
 
     private void wireSettingsStage(Stage settingsStage, Scene rootScene) {

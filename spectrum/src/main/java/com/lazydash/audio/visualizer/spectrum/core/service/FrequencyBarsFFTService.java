@@ -27,10 +27,10 @@ public class FrequencyBarsFFTService implements FFTListener {
     private ReentrantLock lock = new ReentrantLock(true);
 
     // all of the instances have the same input from the audio dispatcher
-    private double[] hzBins = null;
+    private int[] hzBins = null;
     private double[] amplitudes = null;
 
-    private Queue<double[]> hzBinsQue = new LinkedList<>();
+    private Queue<int[]> hzBinsQue = new LinkedList<>();
     private Queue<double[]> amplitudesQue = new LinkedList<>();
 
     private FFTTimeFilter fftTimeFilter = new FFTTimeFilter();
@@ -38,7 +38,7 @@ public class FrequencyBarsFFTService implements FFTListener {
 
 
     @Override
-    public void frame(double[] hzBins, double[] normalizedAmplitudes) {
+    public void frame(int[] hzBins, double[] normalizedAmplitudes) {
         try {
             lock.lock();
             this.hzBins = hzBins;
@@ -62,12 +62,11 @@ public class FrequencyBarsFFTService implements FFTListener {
     }
 
     public List<FrequencyBar> getFrequencyBarList() {
-        double[] returnBinz;
+        int[] returnBinz;
         double[] returnAmplitudes;
 
         try {
             lock.lock();
-
 
             returnBinz = hzBinsQue.poll();
             if (returnBinz == null) {

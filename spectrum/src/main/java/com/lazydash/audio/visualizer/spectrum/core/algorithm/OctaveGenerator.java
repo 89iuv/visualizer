@@ -1,12 +1,11 @@
 package com.lazydash.audio.visualizer.spectrum.core.algorithm;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class OctaveGenerator {
-    private static Map<OctaveSettings, List<Double>> cache = new HashMap<>();
+    private static Map<OctaveSettings, int[]> cache = new HashMap<>();
 
-    public static List<Double> getOctaveFrequencies(double centerFrequency, double band, double lowerLimit, double upperLimit) {
+    public static int[] getOctaveFrequencies(int centerFrequency, int band, int lowerLimit, int upperLimit) {
         // set limits
         if (lowerLimit < 1) {
             lowerLimit = 1;
@@ -21,64 +20,68 @@ public class OctaveGenerator {
         }
 
         OctaveSettings octaveSettings = new OctaveSettings(centerFrequency, band, lowerLimit, upperLimit);
-        List<Double> doubles = cache.get(octaveSettings);
-        if (doubles == null) {
-            Set<Double> octave = new TreeSet<>();
+        int[] octaveCache = cache.get(octaveSettings);
+        if (octaveCache == null) {
+            Set<Integer> octave = new TreeSet<>();
 
             addLow(octave, centerFrequency, band, lowerLimit);
             addHigh(octave, centerFrequency, band, upperLimit);
 
             // if center is 1000 but upper limit is 80 then we need to filter out 80 to 1000 frequencies
-            double finalLowerLimit = lowerLimit;
-            double finalUpperLimit = upperLimit;
-            List<Double> octaves = octave.stream().filter(aDouble -> (finalLowerLimit <= aDouble && aDouble <= finalUpperLimit)).collect(Collectors.toList());
+            int finalLowerLimit = lowerLimit;
+            int finalUpperLimit = upperLimit;
+            int[] octaves = octave.stream()
+                    .filter(aDouble -> (finalLowerLimit <= aDouble && aDouble <= finalUpperLimit))
+                    .mapToInt(value -> value)
+                    .toArray();
+
             cache.put(octaveSettings, octaves);
 
             return octaves;
 
         } else {
-            return doubles;
+            return octaveCache;
 
         }
     }
 
-    public static double getLowLimit(double center, double band){
-        return  center / (Math.pow(2, ( 1d / (2* band) )));
+    public static int getLowLimit(int center, int band){
+        return (int)  Math.round(center / (Math.pow(2, ( 1d / (2* band) ))));
     }
 
-    public static double getHighLimit(double center, double band) {
-        return center * (Math.pow(2, ( 1d / (2* band) )));
+    public static int getHighLimit(int center, int band) {
+        return (int) Math.round(center * (Math.pow(2, ( 1d / (2* band) ))));
     }
 
-    private static void addLow(Set<Double> octave, double center, double band, double lowerLimit){
+    private static void addLow(Set<Integer> octave, int center, int band, int lowerLimit){
         if (center < lowerLimit) {
             return;
         }
 
         octave.add(center);
 
-        double fl = center / (Math.pow(2, ( 1d / (band) )));
+        int fl = (int) Math.round(center / (Math.pow(2, ( 1d / (band) ))));
         addLow(octave, fl, band, lowerLimit);
     }
 
-    private static void addHigh(Set<Double> octave, double center, double band, double upperLimit){
+    private static void addHigh(Set<Integer> octave, int center, int band, int upperLimit){
         if (center > upperLimit) {
             return;
         }
 
         octave.add(center);
 
-        double fh = center * (Math.pow(2, ( 1d / (band) )));
+        int fh = (int) Math.round(center * (Math.pow(2, ( 1d / (band) ))));
         addHigh(octave, fh, band, upperLimit);
     }
 
     private static class OctaveSettings {
-        private double centerFrequency;
-        private double band;
-        private double lowerLimit;
-        private double upperLimit;
+        private int centerFrequency;
+        private int band;
+        private int lowerLimit;
+        private int upperLimit;
 
-        OctaveSettings(double centerFrequency, double band, double lowerLimit, double upperLimit) {
+        OctaveSettings(int centerFrequency, int band, int lowerLimit, int upperLimit) {
             this.centerFrequency = centerFrequency;
             this.band = band;
             this.lowerLimit = lowerLimit;
@@ -90,10 +93,10 @@ public class OctaveGenerator {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             OctaveSettings that = (OctaveSettings) o;
-            return Double.compare(that.centerFrequency, centerFrequency) == 0 &&
-                    Double.compare(that.band, band) == 0 &&
-                    Double.compare(that.lowerLimit, lowerLimit) == 0 &&
-                    Double.compare(that.upperLimit, upperLimit) == 0;
+            return centerFrequency == that.centerFrequency &&
+                    band == that.band &&
+                    lowerLimit == that.lowerLimit &&
+                    upperLimit == that.upperLimit;
         }
 
         @Override
