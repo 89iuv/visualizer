@@ -19,7 +19,7 @@
 
         <javafx-controls.version>11.0.2</javafx-controls.version>
         <pf4j.version>2.6.0</pf4j.version>
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13.1</junit.version>
     </properties>
 
     <dependencyManagement>
