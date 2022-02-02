@@ -14,6 +14,7 @@ import java.util.Map;
 public class SettingsController {
     public VBox sideBarSettings;
     public VBox sideBarPlugins;
+    public Label pluginsLabel;
     private Map<String, Parent> titleToFXML = new LinkedHashMap<>();
 
     public VBox centerPane;
@@ -55,6 +56,7 @@ public class SettingsController {
 
     public void addTitleToPluginsFMXL(String title, Parent parent) {
         addParentToSideBar(title, parent, sideBarPlugins);
+        pluginsLabel.setVisible(true);
     }
 
     private void addParentToSideBar(String title, Parent parent, VBox sideBar) {

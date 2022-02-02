@@ -3,12 +3,14 @@ package com.lazydash.audio.visualizer.spectrum.core.audio;
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.util.fft.FFT;
+import be.tarsos.dsp.util.fft.HammingWindow;
 import be.tarsos.dsp.util.fft.HannWindow;
 import be.tarsos.dsp.util.fft.WindowFunction;
 import com.lazydash.audio.visualizer.spectrum.core.algorithm.AmplitudeWeightCalculator;
 import com.lazydash.audio.visualizer.spectrum.core.algorithm.OctaveGenerator;
 import com.lazydash.audio.visualizer.spectrum.system.config.AppConfig;
 import org.apache.commons.math3.analysis.UnivariateFunction;
+import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 import org.slf4j.Logger;
@@ -36,14 +38,12 @@ public class FFTAudioProcessor implements AudioProcessor {
 
     @Override
     public boolean process(AudioEvent audioEvent) {
-        int interpolation = AppConfig.getZeroPadding();
-
         float[] audioFloatBuffer = audioEvent.getFloatBuffer();
 
         // the buffer must be copied into another array for processing otherwise strange behaviour
         // the audioFloatBuffer buffer is reused because of the offset
         // modifying it will create strange issues
-        float[] transformBuffer = new float[audioFloatBuffer.length + interpolation];
+        float[] transformBuffer = new float[audioFloatBuffer.length];
         System.arraycopy(audioFloatBuffer, 0, transformBuffer, 0, audioFloatBuffer.length);
 
         float[] amplitudes = new float[transformBuffer.length / 2];
@@ -53,108 +53,50 @@ public class FFTAudioProcessor implements AudioProcessor {
         fft.modulus(transformBuffer, amplitudes);
 
         double[] bins = IntStream.range(0, transformBuffer.length / 2).mapToDouble(i -> fft.binToHz(i, audioFormat.getSampleRate())).toArray();
-        double[] doublesAmplitudes = IntStream.range(0, amplitudes.length).mapToDouble(value -> amplitudes[value]).toArray();
+        double[] doublesAmplitudes = IntStream.range(0, amplitudes.length).mapToDouble(value -> {
+            float amplitude = amplitudes[value];
+            amplitude = (amplitude / amplitudes.length); // normalize (n/2)
+            amplitude = (amplitude * (float) windowCorrectionFactor); // apply window correction
+            return amplitude;
+        }).toArray();
 
-        double[] frequencyBins;
-        double[] frequencyAmplitudes;
+        List<Double> octaveFrequencies = OctaveGenerator.getOctaveFrequencies(
+                AppConfig.frequencyCenter,
+                AppConfig.octave,
+                AppConfig.frequencyStart,
+                AppConfig.frequencyEnd);
 
-        if (AppConfig.getOctave() > 0) {
-            List<Double> octaveFrequencies = OctaveGenerator.getOctaveFrequencies(
-                    AppConfig.getFrequencyCenter(),
-                    AppConfig.getOctave(),
-                    AppConfig.getFrequencyStart(),
-                    AppConfig.getFrequencyEnd());
+        double[] frequencyBins = new double[octaveFrequencies.size()];
+        double[] frequencyAmplitudes = new double[octaveFrequencies.size()];
 
-            frequencyBins = new double[octaveFrequencies.size()];
-            frequencyAmplitudes = new double[octaveFrequencies.size()];
+        UnivariateFunction interpolateFunction = interpolator.interpolate(bins, doublesAmplitudes);
 
-            // calculate the frequency step
-            // this is the resolution for interpolating and summing bins
-            double highLimit = OctaveGenerator.getHighLimit(octaveFrequencies.get(0), AppConfig.getOctave());
-            double lowLimit = OctaveGenerator.getLowLimit(octaveFrequencies.get(0), AppConfig.getOctave());
-            double step = Math.pow(2, ( 1d / (AppConfig.getOctave()) ));
+        int m = 0; // m is the position in the frequency vectors
+        for (int i = 0; i < octaveFrequencies.size(); i++) {
+            // get frequency bin
+            frequencyBins[m] = octaveFrequencies.get(i);
 
-            // improve resolution at the cost of performance
-            // step = step / (AppConfig.getOctave() / 2d);
+            double highLimit = OctaveGenerator.getHighLimit(octaveFrequencies.get(i), AppConfig.octave);
+            double lowLimit = OctaveGenerator.getLowLimit(octaveFrequencies.get(i), AppConfig.octave);
 
-            // k is the frequency index
+            double step = 1;
             double k = lowLimit;
 
-            // m is the position in the frequency vectors
-            int m = 0;
-
-            // setup the interpolator
-            UnivariateFunction interpolateFunction = interpolator.interpolate(bins, doublesAmplitudes);
-
-            for (int i = 0; i < octaveFrequencies.size(); i++) {
-                frequencyBins[m] = octaveFrequencies.get(i);
-
-                highLimit = OctaveGenerator.getHighLimit(octaveFrequencies.get(i), AppConfig.getOctave());
-
-                // group bins together
-                while (k < highLimit) {
-
-                    double amplitude = interpolateFunction.value(k);
-                    amplitude = (amplitude / doublesAmplitudes.length); // normalize (n/2)
-                    amplitude = (amplitude * windowCorrectionFactor); // apply window correction
-                    frequencyAmplitudes[m] = frequencyAmplitudes[m] + Math.pow(amplitude, 2); // sum up the "normalized window corrected" energy
-
-                    k = k + step;
-
-                    // reached upper limit
-                    if (k > AppConfig.getFrequencyEnd() || k > bins[bins.length-1]) {
-                        break;
-                    }
-                }
-
-                frequencyAmplitudes[m] = Math.sqrt(frequencyAmplitudes[m]); // square root the energy
-
-                if (AppConfig.getMaxLevel().equals("RMS")) {
-                    frequencyAmplitudes[m] = (Math.sqrt(Math.pow(frequencyAmplitudes[m], 2) / 2)); // calculate the RMS of the amplitude
-                }
-                frequencyAmplitudes[m] = (20 * Math.log10(frequencyAmplitudes[m])); // convert to logarithmic scale
-
-                AmplitudeWeightCalculator.WeightWindow weightWindow = AmplitudeWeightCalculator.WeightWindow.valueOf(AppConfig.getWeight());
-                frequencyAmplitudes[m] = (frequencyAmplitudes[m] + AmplitudeWeightCalculator.getDbWeight(frequencyBins[m], weightWindow)); // use weight to adjust the spectrum
-
-                m++;
+            // group amplitude together in frequency bin
+            while (k < highLimit) {
+                double amplitude = interpolateFunction.value(k);
+                frequencyAmplitudes[m] = frequencyAmplitudes[m] + Math.pow(amplitude, 2); // sum up the "normalized window corrected" energy
+                k = k + step;
             }
 
-        } else {
-            int n = 0;
-            for (int i = 0; i < bins.length; i++) {
-                double frequency = fft.binToHz(i, audioFormat.getSampleRate());
-                if ( AppConfig.getFrequencyStart() <= frequency && frequency <= AppConfig.getFrequencyEnd() ) {
-                    n++;
-                } else if (frequency > AppConfig.getFrequencyEnd()){
-                    break;
-                }
-            }
+            frequencyAmplitudes[m] = Math.sqrt(frequencyAmplitudes[m]); // square root the energy
+            frequencyAmplitudes[m] = AppConfig.maxLevel.equals("RMS") ? Math.sqrt(Math.pow(frequencyAmplitudes[m], 2) / 2) : frequencyAmplitudes[m]; // calculate the RMS of the amplitude
+            frequencyAmplitudes[m] = (20 * Math.log10(frequencyAmplitudes[m])); // convert to logarithmic scale
 
-            frequencyBins = new double[n];
-            frequencyAmplitudes = new double[n];
+            AmplitudeWeightCalculator.WeightWindow weightWindow = AmplitudeWeightCalculator.WeightWindow.valueOf(AppConfig.weight);
+            frequencyAmplitudes[m] = (frequencyAmplitudes[m] + AmplitudeWeightCalculator.getDbWeight(frequencyBins[m], weightWindow)); // use weight to adjust the spectrum
 
-            int m = 0;
-            for (int i = 0; i < bins.length; i++) {
-                double frequency = fft.binToHz(i, audioFormat.getSampleRate());
-                if (AppConfig.getFrequencyStart() <= frequency && frequency <= AppConfig.getFrequencyEnd()) {
-                    frequencyBins[m] = frequency;
-
-                    frequencyAmplitudes[m] = doublesAmplitudes[i];
-                    frequencyAmplitudes[m] = (frequencyAmplitudes[m] / doublesAmplitudes.length); // normalize (n/2)
-                    frequencyAmplitudes[m] = (frequencyAmplitudes[m] * windowCorrectionFactor); // apply window correction
-
-                    if (AppConfig.getMaxLevel().equals("RMS")) {
-                        frequencyAmplitudes[m] = (Math.sqrt(Math.pow(frequencyAmplitudes[m], 2) / 2)); // calculate the RMS of the amplitude
-                    }
-                    frequencyAmplitudes[m] = (20 * Math.log10(frequencyAmplitudes[m])); // convert to logarithmic scale
-
-                    AmplitudeWeightCalculator.WeightWindow weightWindow = AmplitudeWeightCalculator.WeightWindow.valueOf(AppConfig.getWeight());
-                    frequencyAmplitudes[m] = (frequencyAmplitudes[m] + AmplitudeWeightCalculator.getDbWeight(frequencyBins[m], weightWindow)); // use weight to adjust the spectrum
-
-                    m++;
-                }
-            }
+            m++;
         }
 
         listenerList.forEach(listener -> listener.frame(frequencyBins, frequencyAmplitudes));

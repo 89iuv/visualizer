@@ -5,10 +5,10 @@ import be.tarsos.dsp.AudioProcessor;
 import com.lazydash.audio.visualizer.spectrum.system.config.AppConfig;
 
 public class AudioEngineRestartProcessor implements AudioProcessor {
-    private String inputDevice = AppConfig.getInputDevice();
-    private int sampleRate = AppConfig.getSampleRate();
-    private int bufferSize = AppConfig.getBufferSize();
-    private int bufferOverlap = AppConfig.getBufferOverlap();
+    private String inputDevice = AppConfig.inputDevice;
+    private int sampleRate = AppConfig.sampleRate;
+    private int audioWindowSize = AppConfig.audioWindowSize;
+    private int audioWindowNumber = AppConfig.audioWindowNumber;
 
     private TarsosAudioEngine tarsosAudioEngine;
 
@@ -36,23 +36,23 @@ public class AudioEngineRestartProcessor implements AudioProcessor {
 
     private boolean isChangeDetected(){
         boolean isChanged = false;
-        if (!inputDevice.equals(AppConfig.getInputDevice())){
-            inputDevice = AppConfig.getInputDevice();
+        if (!inputDevice.equals(AppConfig.inputDevice)){
+            inputDevice = AppConfig.inputDevice;
             isChanged = true;
         }
 
-        if (sampleRate != AppConfig.getSampleRate()) {
-            sampleRate = AppConfig.getSampleRate();
+        if (sampleRate != AppConfig.sampleRate) {
+            sampleRate = AppConfig.sampleRate;
             isChanged = true;
         }
 
-        if (bufferSize != AppConfig.getBufferSize()) {
-            bufferSize = AppConfig.getBufferSize();
+        if (audioWindowSize != AppConfig.audioWindowSize) {
+            audioWindowSize = AppConfig.audioWindowSize;
             isChanged = true;
         }
 
-        if (bufferOverlap != AppConfig.getBufferOverlap()) {
-            bufferOverlap = AppConfig.getBufferOverlap();
+        if (audioWindowNumber != AppConfig.audioWindowNumber) {
+            audioWindowNumber = AppConfig.audioWindowNumber;
             isChanged = true;
         }
 

@@ -15,22 +15,25 @@
             <FxmlCounter fx:id="row" />
         </fx:define>
 
-        <Label text="Decay (pixels/s): " GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
-        <Slider fx:id="pixelsPerSecondDecay" min="0" max="2000" majorTickUnit="200" minorTickCount="10" showTickMarks="true" showTickLabels="true"
+        <Label text="Decay Time (ms): " GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
+        <Slider fx:id="pixelsPerSecondDecay" min="0" max="1000" majorTickUnit="200" minorTickCount="10" showTickMarks="true" showTickLabels="true"
                 GridPane.rowIndex="$row.value" GridPane.columnIndex="1" GridPane.fillWidth="true" GridPane.hgrow="ALWAYS"/>
         <Label fx:id="decayTimeValue" styleClass="sliderValueLabel" GridPane.rowIndex="$row.value" GridPane.columnIndex="2"/>
 
         <Label text="Decay acceleration (1/n): " GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
-        <Slider fx:id="decayAcceleration" min="0" max="50" majorTickUnit="5" minorTickCount="4" showTickMarks="true" showTickLabels="true"
+        <Slider fx:id="decayAcceleration" min="0" max="30" majorTickUnit="5" minorTickCount="4" showTickMarks="true" showTickLabels="true"
                 GridPane.rowIndex="$row.value" GridPane.columnIndex="1" GridPane.fillWidth="true" GridPane.hgrow="ALWAYS"/>
         <Label fx:id="decayAccelerationValue" styleClass="sliderValueLabel" GridPane.rowIndex="$row.value" GridPane.columnIndex="2"/>
 
         <Label text="Smoothness:" GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
         <Spinner fx:id="timeFilter" editable="true" GridPane.rowIndex="$row.value" GridPane.columnIndex="1">
             <valueFactory>
-                <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="100" amountToStepBy="1"/>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="10" amountToStepBy="1"/>
             </valueFactory>
         </Spinner>
+
+        <Label text="Type:" GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="smoothnessType" onAction="#updateSmoothnessType" GridPane.rowIndex="$row.value" GridPane.columnIndex="1"/>
 
     </GridPane>
 

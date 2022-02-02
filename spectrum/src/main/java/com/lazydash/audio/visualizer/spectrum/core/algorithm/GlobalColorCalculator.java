@@ -27,7 +27,7 @@ public class GlobalColorCalculator {
             if (startHz <= frequencyBar.getHz()
                     && frequencyBar.getHz() <= endHz) {
                 double barHeight = frequencyBar.getHeight();
-                double barIntensity = barHeight / AppConfig.getMaxBarHeight();
+                double barIntensity = barHeight / AppConfig.maxBarHeight;
 
                 Color barColor = frequencyBar.getColor();
                 sumRed = sumRed + (barColor.getRed() * barIntensity);
@@ -56,7 +56,7 @@ public class GlobalColorCalculator {
         } else if (peak.equals(Peak.MAX)) {
             intensity = maxIntensity;
         }
-        intensity = intensity * (AppConfig.getBrightness() / 100d);
+        intensity = intensity * (AppConfig.brightness / 100d);
 
         Color baseColor = SpectralColorConfig.baseColor;
         Color color = Color.color(avgRed, avgGreen, avgBlue);

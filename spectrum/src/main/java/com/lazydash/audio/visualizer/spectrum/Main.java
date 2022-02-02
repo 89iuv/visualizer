@@ -25,7 +25,7 @@ import java.util.Arrays;
 
 /*
 Intellij settings:
-    - vm options: -Djava.library.path=./dll --module-path "C:\Program Files\Java\javafx-sdk-11.0.2\lib" --add-modules=javafx.controls,javafx.fxml
+    - vm options: -Djava.library.path=./dll --module-path "/Users/vuveges/Programs/java/javafx-sdk-17.0.2/lib" --add-modules=javafx.controls,javafx.fxml
     - working directory: $MODULE_WORKING_DIR$
 */
 public class Main extends Application {
@@ -69,8 +69,6 @@ public class Main extends Application {
         Stage settingsStage = createSettingsStage();
 
         FrequencyBarsFFTService spectralFFTService = new FrequencyBarsFFTService();
-        FrequencyBarsFFTService arduinoFFTService = new FrequencyBarsFFTService();
-
         SpectralAnimator spectralAnimator = new SpectralAnimator(spectralFFTService, spectralView);
 
         // setup
@@ -79,17 +77,16 @@ public class Main extends Application {
 
         // wire
         tarsosAudioEngine.getFttListenerList().add(spectralFFTService);
-        tarsosAudioEngine.getFttListenerList().add(arduinoFFTService);
         PluginSystem.getInstance().registerAllFffPlugins(tarsosAudioEngine);
 
         wireSettingsStage(settingsStage, scene);
         wirePrimaryStage(stage, configFilePersistence, tarsosAudioEngine);
 
         // run
-        tarsosAudioEngine.start();
         stage.show();
-
         spectralAnimator.play();
+        tarsosAudioEngine.start();
+
     }
 
     private void wireSettingsStage(Stage settingsStage, Scene rootScene) {
@@ -102,8 +99,8 @@ public class Main extends Application {
 
     private void wirePrimaryStage(Stage primaryStage, ConfigFilePersistence configFilePersistence, TarsosAudioEngine tarsosAudioEngine) {
         primaryStage.setOnCloseRequest(event -> {
-            AppConfig.setWindowHeight(primaryStage.getHeight());
-            AppConfig.setWindowWidth(primaryStage.getWidth());
+            AppConfig.windowHeight = primaryStage.getHeight();
+            AppConfig.windowWidth = primaryStage.getWidth();
             configFilePersistence.persist(AppConfig.class, "./application.properties");
             PluginSystem.getInstance().stopAllPlugins();
             tarsosAudioEngine.stop();
@@ -141,8 +138,8 @@ public class Main extends Application {
         // setup
         stage.setTitle("Visualiser");
 
-        stage.setWidth(AppConfig.getWindowWidth());
-        stage.setHeight(AppConfig.getWindowHeight());
+        stage.setWidth(AppConfig.windowWidth);
+        stage.setHeight(AppConfig.windowHeight);
 
         stage.setScene(scene);
     }
@@ -151,6 +148,7 @@ public class Main extends Application {
         // create
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ui/fxml/spectrum/spectrum.fxml"));
         Parent root = fxmlLoader.load();
+
         root.getStylesheets().add(getClass().getResource("/ui/fxml/spectrum/style.css").toExternalForm());
         Scene settingsScene = new Scene(root);
         Stage settingsStage = new Stage();
@@ -160,6 +158,10 @@ public class Main extends Application {
         settingsStage.setScene(settingsScene);
         settingsStage.setHeight(560);
         settingsStage.setWidth(840);
+
+        // preload the settings page
+        settingsStage.show();
+        settingsStage.hide();
 
         return settingsStage;
     }

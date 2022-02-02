@@ -23,53 +23,52 @@ public class SpectralColorController {
 
 
     public void initialize() {
-        positionValue.setText(String.valueOf(AppConfig.getSpectralColorPosition()));
-        position.setValue(AppConfig.getSpectralColorPosition());
+        positionValue.setText(String.valueOf(AppConfig.spectralColorPosition));
+        position.setValue(AppConfig.spectralColorPosition);
         position.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                AppConfig.setSpectralColorPosition(newValue.intValue());
+                AppConfig.spectralColorPosition = newValue.intValue();
                 positionValue.setText(String.valueOf(Math.round(newValue.intValue())));
             }
         });
 
-        rangeValue.setText(String.valueOf(AppConfig.getSpectralColorRange()));
-        range.setValue(AppConfig.getSpectralColorRange());
+        rangeValue.setText(String.valueOf(AppConfig.spectralColorRange));
+        range.setValue(AppConfig.spectralColorRange);
         range.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                AppConfig.setSpectralColorRange(newValue.intValue());
+                AppConfig.spectralColorRange = newValue.intValue();
                 rangeValue.setText(String.valueOf(Math.round(newValue.intValue())));
             }
         });
 
-        saturationValue.setText(String.valueOf(AppConfig.getSaturation()));
-        saturation.setValue(AppConfig.getSaturation());
+        saturationValue.setText(String.valueOf(AppConfig.saturation));
+        saturation.setValue(AppConfig.saturation);
         saturation.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                AppConfig.setSaturation(newValue.intValue());
+                AppConfig.saturation = newValue.intValue();
                 saturationValue.setText(String.valueOf(Math.round(newValue.intValue())));
             }
         });
 
-        brightnessValue.setText(String.valueOf(AppConfig.getBrightness()));
-        brightness.setValue(AppConfig.getBrightness());
+        brightnessValue.setText(String.valueOf(AppConfig.brightness));
+        brightness.setValue(AppConfig.brightness);
         brightness.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                AppConfig.setBrightness(newValue.intValue());
+                AppConfig.brightness = newValue.intValue();
                 brightnessValue.setText(String.valueOf(Math.round(newValue.intValue())));
             }
         });
 
-        invert.setSelected(AppConfig.isSpectralColorInverted());
-        invert.setText(AppConfig.isSpectralColorInverted()? "yes" : "no");
+        invert.setSelected(AppConfig.spectralColorInverted);
+        invert.setText(AppConfig.spectralColorInverted? "yes" : "no");
         invert.setOnAction(actionEvent -> {
-            AppConfig.setSpectralColorInverted(invert.isSelected());
-            invert.setText(AppConfig.isSpectralColorInverted()? "yes" : "no");
+            AppConfig.spectralColorInverted = invert.isSelected();
+            invert.setText(AppConfig.spectralColorInverted ? "yes" : "no");
         });
 
     }
-
 }

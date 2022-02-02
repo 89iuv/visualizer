@@ -15,11 +15,11 @@ public class FrequencyBarsCreator {
             frequencyBars.add(new FrequencyBar(binsHz[i], amplitudes[i], Color.BLACK));
         }
 
-        double pos = AppConfig.getSpectralColorPosition();
-        double range = AppConfig.getSpectralColorRange();
-        double saturation = AppConfig.getSaturation() / 100d;
-        double brightness = AppConfig.getBrightness() / 100d;
-        boolean inverted = AppConfig.isSpectralColorInverted();
+        double pos = AppConfig.spectralColorPosition;
+        double range = AppConfig.spectralColorRange;
+        double saturation = AppConfig.saturation / 100d;
+        double brightness = AppConfig.brightness / 100d;
+        boolean inverted = AppConfig.spectralColorInverted;
 
         if (!inverted) {
             for (int i = 0; i < binsHz.length; i++) {

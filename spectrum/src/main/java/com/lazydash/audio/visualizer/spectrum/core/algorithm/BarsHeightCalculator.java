@@ -5,31 +5,30 @@ import com.lazydash.audio.visualizer.spectrum.system.config.AppConfig;
 public class BarsHeightCalculator {
     private long oldTime = System.nanoTime();
     private double[] oldAmplitudes;
-    private double[] oldDecayFactor;
+    private double[] oldDecayDecelSize;
 
     public double[] processAmplitudes(double[] newAmplitudes) {
         // init on first run or if number of newAmplitudes has changed
         if (oldAmplitudes == null || oldAmplitudes.length != newAmplitudes.length) {
             oldAmplitudes = newAmplitudes;
-            oldDecayFactor = new double[newAmplitudes.length];
+            oldDecayDecelSize = new double[newAmplitudes.length];
 
             return convertDbToPixels(newAmplitudes);
         }
 
-        int pixelsPerSecondDecay = AppConfig.getPixelsPerSecondDecay();
-        double secondsPassed = getSecondsPassed();
+        int millisToZero = AppConfig.millisToZero;
+        double secondsPassed = getMillisPassed();
 
         double[] pixelAmplitudes = convertDbToPixels(newAmplitudes);
-        oldAmplitudes = decayPixelsAmplitudes(oldAmplitudes, pixelAmplitudes, pixelsPerSecondDecay, secondsPassed);
+        oldAmplitudes = decayPixelsAmplitudes(oldAmplitudes, pixelAmplitudes, millisToZero, secondsPassed);
 
         return oldAmplitudes;
     }
 
     private double[] convertDbToPixels(double[] dbAmplitude) {
-        int signalThreshold = AppConfig.getSignalThreshold();
-        double maxBarHeight = AppConfig.getMaxBarHeight();
-        int signalAmplification = AppConfig.getSignalAmplification();
-        int minBarHeight = AppConfig.getMinBarHeight();
+        int signalThreshold = AppConfig.signalThreshold;
+        double maxBarHeight = AppConfig.maxBarHeight;
+        int signalAmplification = AppConfig.signalAmplification;
 
         double[] pixelsAmplitude = new double[dbAmplitude.length];
 
@@ -38,19 +37,9 @@ public class BarsHeightCalculator {
 
             double newHeight = dbAmplitude[i];
             newHeight = newHeight + Math.abs(signalThreshold);
-            newHeight = newHeight * (signalAmplification / 100d);
+            // normalizing the bar to the height of the window
             newHeight = (newHeight * maxBarHeight) / maxHeight;
-//            newHeight = Math.round(newHeight);
-
-            // apply limits
-            if (newHeight > maxBarHeight) {
-                // ceiling hit
-                newHeight = maxBarHeight;
-
-            } else if (newHeight < minBarHeight) {
-                // below floor
-                newHeight = minBarHeight;
-            }
+            newHeight = newHeight * (signalAmplification / 100d);
 
             pixelsAmplitude[i] = newHeight;
         }
@@ -58,46 +47,49 @@ public class BarsHeightCalculator {
         return pixelsAmplitude;
     }
 
-    private double[] decayPixelsAmplitudes(double[] oldAmplitudes, double[] newAmplitudes, double pixelsPerSecond, double secondsPassed) {
+    private double[] decayPixelsAmplitudes(double[] oldAmplitudes, double[] newAmplitudes, double millisToZero, double secondsPassed) {
         double[] processedAmplitudes = new double[newAmplitudes.length];
+        double maxBarHeight = AppConfig.maxBarHeight;
+        int minBarHeight = AppConfig.minBarHeight;
 
         for (int i = 0; i < processedAmplitudes.length; i++) {
             double oldHeight = oldAmplitudes[i];
             double newHeight = newAmplitudes[i];
 
-            if (newHeight >= oldHeight) {
+            double decayRatePixelsPerMilli = maxBarHeight / millisToZero;
+            double dbPerSecondDecay = decayRatePixelsPerMilli * secondsPassed;
+
+            if (newHeight < oldHeight - dbPerSecondDecay) {
+                double decaySize = dbPerSecondDecay;
+
+                double accelerationStep = (1d / AppConfig.accelerationFactor) * decaySize;
+                if (oldDecayDecelSize[i] + accelerationStep < dbPerSecondDecay) {
+                    oldDecayDecelSize[i] = oldDecayDecelSize[i] + accelerationStep;
+                    decaySize = oldDecayDecelSize[i];
+                }
+
+                processedAmplitudes[i] = oldHeight - decaySize;
+
+            } else  {
                 processedAmplitudes[i] = newHeight;
-                oldDecayFactor[i] = 0;
+                oldDecayDecelSize[i] = 0;
+            }
 
-            } else {
-//                double dbPerSecondDecay = (pixelsPerSecond + (0.01 * Math.pow(1.15, i) - 0.01)) * secondsPassed; // experiment with logarithmic function
-                double dbPerSecondDecay = pixelsPerSecond * secondsPassed;
-
-                if (AppConfig.getAccelerationFactor() > 0 && oldDecayFactor[i] < 1) {
-                    double accelerationStep = 1d / AppConfig.getAccelerationFactor();
-                    oldDecayFactor[i] = oldDecayFactor[i] + accelerationStep;
-                    dbPerSecondDecay = dbPerSecondDecay * oldDecayFactor[i];
-                }
-
-                if (newHeight > oldHeight - dbPerSecondDecay) {
-                    processedAmplitudes[i] = newHeight;
-                    oldDecayFactor[i] = 0;
-
-                } else {
-                    processedAmplitudes[i] = oldHeight - dbPerSecondDecay;
-
-                }
+            // apply limits
+            if (processedAmplitudes[i] < minBarHeight) {
+                // below floor
+                processedAmplitudes[i] = minBarHeight;
             }
         }
 
         return processedAmplitudes;
     }
 
-    private double getSecondsPassed() {
+    private double getMillisPassed() {
         long newTime = System.nanoTime();
         long deltaTime = newTime - oldTime;
         oldTime = newTime;
-        // convert nano to ms to seconds
-        return (deltaTime / 1000000d) / 1000d;
+        // convert nano to ms
+        return (deltaTime / 1000000d);
     }
 }

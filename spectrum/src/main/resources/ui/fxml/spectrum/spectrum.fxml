@@ -14,7 +14,7 @@
             <VBox fx:id="sideBarSettings">
             </VBox>
 
-            <Label text="Plugins" styleClass="settings-subtitle"/>
+            <Label fx:id="pluginsLabel" text="Plugins" styleClass="settings-subtitle" visible="false"/>
             <VBox fx:id="sideBarPlugins">
 
             </VBox>

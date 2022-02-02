@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import javax.sound.sampled.*;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
 public class TarsosAudioEngine {
@@ -25,10 +26,18 @@ public class TarsosAudioEngine {
 
     public void start() {
         try {
-            Mixer mixer = getMixer();
             AudioFormat audioFormat = getAudioFormat();
-            TargetDataLine line = getLine(mixer, audioFormat, AppConfig.getBufferSize());
-            run(line, audioFormat, AppConfig.getBufferSize(), AppConfig.getBufferOverlap());
+
+            float sampleRate = audioFormat.getSampleRate();
+            int audioWindowSize = AppConfig.audioWindowSize;
+            int audioWindowNumber = AppConfig.audioWindowNumber;
+
+            float buffer = sampleRate * (audioWindowSize / 1000f);
+            int bufferMax = (int) buffer * audioWindowNumber;
+            int bufferOverlap = bufferMax - (int) buffer;
+
+            TargetDataLine line = getLine(audioFormat, bufferMax);
+            run(line, audioFormat, bufferMax, bufferOverlap);
 
         } catch (LineUnavailableException e) {
             e.printStackTrace();
@@ -39,9 +48,13 @@ public class TarsosAudioEngine {
 
     public void stop() {
         try {
-            dispatcher.stop();
-            // wait 5 seconds for audio dispatcher to finish
-            audioThread.join(1 * 1000);
+            if (dispatcher != null) {
+                dispatcher.stop();
+
+                // wait 5 seconds for audio dispatcher to finish
+                audioThread.join(1 * 1000);
+            }
+
         } catch (InterruptedException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -53,17 +66,28 @@ public class TarsosAudioEngine {
         start();
     }
 
-    private Mixer getMixer() {
-        //noinspection OptionalGetWithoutIsPresent
-        Mixer.Info mixerInfo = Stream.of(AudioSystem.getMixerInfo())
-                .filter(curentMixerInfo -> curentMixerInfo.getName().contains(AppConfig.getInputDevice()))
-                .findFirst()
-                .get();
-        LOGGER.info("mixer info: " + mixerInfo);
-        return AudioSystem.getMixer(mixerInfo);
+    private TargetDataLine getLine(AudioFormat audioFormat, int lineBuffer) throws LineUnavailableException {
+        TargetDataLine targetDataLine;
+        try {
+                targetDataLine = getLineFromConfig(audioFormat, lineBuffer);
+
+        } catch (Exception e) {
+            LOGGER.info("Unable to get the audio line from config file");
+            targetDataLine = getFirstLineAvailable(audioFormat, lineBuffer);
+        }
+
+        return targetDataLine;
     }
 
-    private TargetDataLine getLine(Mixer mixer, AudioFormat audioFormat, int lineBuffer) throws LineUnavailableException {
+    private TargetDataLine getLineFromConfig(AudioFormat audioFormat, int lineBuffer) throws LineUnavailableException {
+        //noinspection OptionalGetWithoutIsPresent
+        Mixer.Info mixerInfo = Stream.of(AudioSystem.getMixerInfo())
+                .filter(curentMixerInfo -> curentMixerInfo.getName().equals(AppConfig.inputDevice))
+                .findFirst()
+                .get();
+        Mixer mixer = AudioSystem.getMixer(mixerInfo);
+        LOGGER.info("mixer info: " + mixerInfo);
+
         //noinspection OptionalGetWithoutIsPresent
         Line.Info lineInfo = Stream.of(mixer.getTargetLineInfo()).findFirst().get();
         TargetDataLine line = (TargetDataLine) mixer.getLine(lineInfo);
@@ -77,13 +101,44 @@ public class TarsosAudioEngine {
         return line;
     }
 
+    private TargetDataLine getFirstLineAvailable(AudioFormat audioFormat, int lineBuffer) throws LineUnavailableException {
+        TargetDataLine line;
+
+        for (Mixer.Info mixerInfo : AudioSystem.getMixerInfo()) {
+            Mixer mixer = AudioSystem.getMixer(mixerInfo);
+            for (Line.Info mixerLineInfo : mixer.getTargetLineInfo()) {
+                try {
+                    // try to get access to the mixer line
+                    // if successful ad the mixer name to the list
+                    line = (TargetDataLine) mixer.getLine(mixerLineInfo);
+                    line.open(audioFormat, lineBuffer);
+                    line.start();
+
+                    AppConfig.inputDevice = mixerInfo.getName();
+
+                    LOGGER.info("mixer info: " + mixerInfo);
+                    LOGGER.info("line format: " + line.getFormat());
+                    LOGGER.info("line info: " + line.getLineInfo());
+                    LOGGER.info("line bufferSize size: " + line.getBufferSize());
+
+                    return line;
+
+                } catch (Exception e) {
+                    // skip mixer if line can not be obtained
+                }
+            }
+        }
+
+        throw new LineUnavailableException("No available input line found");
+    }
+
     private AudioFormat getAudioFormat() {
         return new AudioFormat(
-                AppConfig.getSampleRate(),
-                AppConfig.getSampleSizeInBits(),
-                AppConfig.getChannels(),
-                AppConfig.isSigned(),
-                AppConfig.isBigEndian()
+                AppConfig.sampleRate,
+                AppConfig.sampleSizeInBits,
+                AppConfig.channels,
+                AppConfig.signed,
+                AppConfig.bigEndian
         );
     }
 
@@ -93,6 +148,7 @@ public class TarsosAudioEngine {
 
         dispatcher = new AudioDispatcher(audioStream, bufferSize, bufferOverlay);
         dispatcher.addAudioProcessor(new AudioEngineRestartProcessor(this));
+//        dispatcher.addAudioProcessor(new MultichannelToMono(audioFormat.getChannels(), true));
         dispatcher.addAudioProcessor(new FFTAudioProcessor(audioFormat, fttListenerList));
 
         // run the dispatcher (on a new thread).

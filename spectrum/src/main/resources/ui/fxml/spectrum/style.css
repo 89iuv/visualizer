@@ -1,3 +1,7 @@
+* {
+    -fx-font-smoothing-type: gray;
+}
+
 .title {
     -fx-font-size: 18px;
 }
@@ -15,13 +19,9 @@
     -fx-spacing: 4;
 }
 
-#hueStatus {
-    -fx-text-overrun: ellipsis;
-}
-
 #side-bar {
     -fx-pref-width: 130px;
-    -fx-background-color: WHITE;
+    -fx-background-color: #d9d9d9;
 }
 
 #center-pane {
@@ -34,7 +34,7 @@
     -fx-fill-width: true;
     -fx-max-width: Infinity;
     -fx-border-width: 0 0 0 2;
-    -fx-border-color: WHITE;
+    -fx-border-color: #d9d9d9;
     -fx-padding: 5 10 5 20;
 }
 

@@ -28,14 +28,21 @@ public class FrequencyBarsFFTService implements FFTListener {
     private double[] hzBins = null;
     private double[] amplitudes = null;
 
+    private double[] hzBinsOld = null;
+    private double[] amplitudesOld = null;
+
     private FFTTimeFilter fftTimeFilter = new FFTTimeFilter();
     private BarsHeightCalculator barsHeightCalculator = new BarsHeightCalculator();
-
 
     @Override
     public void frame(double[] hzBins, double[] normalizedAmplitudes) {
         try {
             lock.lock();
+
+            if (this.hzBins != null) {
+                LOGGER.info("Audio frame dropped");
+            }
+
             this.hzBins = hzBins;
             this.amplitudes = normalizedAmplitudes;
 
@@ -51,22 +58,31 @@ public class FrequencyBarsFFTService implements FFTListener {
 
         try {
             lock.lock();
-            returnBinz = this.hzBins;
-            returnAmplitudes = this.amplitudes;
+
+            if (this.hzBins == null) {
+                returnBinz = this.hzBinsOld;
+                returnAmplitudes = this.amplitudesOld;
+
+            } else {
+                returnBinz = this.hzBins;
+                returnAmplitudes = this.amplitudes;
+
+                this.hzBinsOld = this.hzBins;
+                this.amplitudesOld = this.amplitudes;
+
+                this.hzBins = null;
+                this.amplitudes = null;
+            }
 
         } finally {
             lock.unlock();
         }
 
-        List<FrequencyBar> frequencyBars;
+        List<FrequencyBar> frequencyBars = new ArrayList<>();
         if (returnAmplitudes != null) {
             returnAmplitudes = fftTimeFilter.filter(returnAmplitudes);
             returnAmplitudes = barsHeightCalculator.processAmplitudes(returnAmplitudes);
             frequencyBars = FrequencyBarsCreator.createFrequencyBars(returnBinz, returnAmplitudes);
-
-        } else {
-            // return empty array
-            frequencyBars = new ArrayList<>();
         }
 
         long newTime = System.currentTimeMillis();

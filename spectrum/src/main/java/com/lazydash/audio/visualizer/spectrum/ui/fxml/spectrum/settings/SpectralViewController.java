@@ -29,77 +29,72 @@ public class SpectralViewController {
     public Spinner<Integer> barGap;
 
     public void initialize() {
-        signalAmplificationValue.setText(String.valueOf(AppConfig.getSignalAmplification()));
-        signalAmplification.setValue(AppConfig.getSignalAmplification());
+        signalAmplificationValue.setText(String.valueOf(AppConfig.signalAmplification));
+        signalAmplification.setValue(AppConfig.signalAmplification);
         signalAmplification.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                AppConfig.setSignalAmplification(newValue.intValue());
-                signalAmplificationValue.setText(String.valueOf(AppConfig.getSignalAmplification()));
+                AppConfig.signalAmplification = newValue.intValue();
+                signalAmplificationValue.setText(String.valueOf(AppConfig.signalAmplification));
             }
         });
 
-        signalThresholdValue.setText(String.valueOf(AppConfig.getSignalThreshold()));
-        signalThreshold.setValue(AppConfig.getSignalThreshold());
+        signalThresholdValue.setText(String.valueOf(AppConfig.signalThreshold));
+        signalThreshold.setValue(AppConfig.signalThreshold);
         signalThreshold.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                AppConfig.setSignalThreshold(newValue.intValue());
-                signalThresholdValue.setText(String.valueOf(AppConfig.getSignalThreshold()));
+                AppConfig.signalThreshold = newValue.intValue();
+                signalThresholdValue.setText(String.valueOf(AppConfig.signalThreshold));
             }
         });
 
-        frequencyStart.getValueFactory().setValue(AppConfig.getFrequencyStart());
+        frequencyStart.getValueFactory().setValue(AppConfig.frequencyStart);
         frequencyStart.valueProperty().addListener((observable, oldValue, newValue) -> {
-            AppConfig.setFrequencyStart(newValue);
+            AppConfig.frequencyStart = newValue;
         });
 
-        frequencyCenter.getValueFactory().setValue(AppConfig.getFrequencyCenter());
+        frequencyCenter.getValueFactory().setValue(AppConfig.frequencyCenter);
         frequencyCenter.valueProperty().addListener((observable, oldValue, newValue) -> {
-            AppConfig.setFrequencyCenter(newValue);
+            AppConfig.frequencyCenter = newValue;
         });
 
-        frequencyEnd.getValueFactory().setValue(AppConfig.getFrequencyEnd());
+        frequencyEnd.getValueFactory().setValue(AppConfig.frequencyEnd);
         frequencyEnd.valueProperty().addListener((observable, oldValue, newValue) -> {
-            AppConfig.setFrequencyEnd(newValue);
+            AppConfig.frequencyEnd = newValue;
         });
 
-        frequencyEnd.getValueFactory().setValue(AppConfig.getFrequencyEnd());
-        frequencyEnd.valueProperty().addListener((observable, oldValue, newValue) -> {
-            AppConfig.setFrequencyEnd(newValue);
-        });
-
-        octave.getValueFactory().setValue(AppConfig.getOctave());
+        octave.getValueFactory().setValue(AppConfig.octave);
         octave.valueProperty().addListener((observable, oldValue, newValue) -> {
-            AppConfig.setOctave(newValue);
+            AppConfig.octave = newValue;
         });
 
-        maxLevel.setValue(AppConfig.getMaxLevel());
+        maxLevel.setValue(AppConfig.maxLevel);
         maxLevel.getItems().addAll(Arrays.asList("RMS", "Peak"));
 
-        weighting.setValue(AppConfig.getWeight());
+        weighting.setValue(AppConfig.weight);
 
         AmplitudeWeightCalculator.WeightWindow[] weightWindows = AmplitudeWeightCalculator.WeightWindow.values();
         List<String> collect = Arrays.stream(weightWindows).map(Enum::toString).collect(Collectors.toList());
         weighting.getItems().addAll(collect);
 
-        minBarHeight.getValueFactory().setValue(AppConfig.getMinBarHeight());
+        minBarHeight.getValueFactory().setValue(AppConfig.minBarHeight);
         minBarHeight.valueProperty().addListener((observable, oldValue, newValue) -> {
-            AppConfig.setMinBarHeight(newValue);
+            AppConfig.minBarHeight = newValue;
         });
 
-        barGap.getValueFactory().setValue(AppConfig.getBarGap());
+        barGap.getValueFactory().setValue(AppConfig.barGap);
         barGap.valueProperty().addListener((observable, oldValue, newValue) -> {
-            AppConfig.setBarGap(newValue);
+            AppConfig.barGap = newValue;
         });
     }
 
 
     public void updateMaxLeve(ActionEvent actionEvent) {
-        AppConfig.setMaxLevel(maxLevel.getValue());
+        AppConfig.maxLevel = maxLevel.getValue();
     }
 
     public void updateWeighting(ActionEvent actionEvent) {
-        AppConfig.setWeight(weighting.getValue());
+        AppConfig.weight = weighting.getValue();
     }
 }
