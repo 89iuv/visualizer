@@ -13,7 +13,7 @@ public class AppConfig {
 
     // Spectral View
     public static int signalAmplification = 100;
-    public static int signalThreshold = -28;
+    public static int signalThreshold = -34;
     public static String maxLevel = "RMS";
     public static String weight = "dBZ";
     public static int frequencyStart = 39;
@@ -36,7 +36,7 @@ public class AppConfig {
     // bar acceleration
     public static int millisToZero = 400;
     public static int accelerationFactor = 4;
-    public static int timeFilterSize = 3;
+    public static int timeFilterSize = 2;
     public static String smoothnessType = "WMA";
 
     // window

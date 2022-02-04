@@ -25,7 +25,7 @@ import java.util.Arrays;
 
 /*
 Intellij settings:
-    - vm options: -Djava.library.path=./dll --module-path "/Users/vuveges/Programs/java/javafx-sdk-17.0.2/lib" --add-modules=javafx.controls,javafx.fxml
+    - vm options: -Djava.library.path=./dll --module-path "/pathToJavaFxHome/lib" --add-modules=javafx.controls,javafx.fxml
     - working directory: $MODULE_WORKING_DIR$
 */
 public class Main extends Application {
