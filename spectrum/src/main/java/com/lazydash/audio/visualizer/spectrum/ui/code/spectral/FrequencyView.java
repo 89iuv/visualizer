@@ -4,20 +4,15 @@ package com.lazydash.audio.visualizer.spectrum.ui.code.spectral;
 import com.lazydash.audio.visualizer.spectrum.system.config.AppConfig;
 import javafx.scene.control.Label;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 
 public class FrequencyView {
     private Label hzLabel = new Label();
     private Rectangle rectangle = new Rectangle();
-    private boolean displayHzLabel = true;
 
     public FrequencyView() {
-        this.rectangle.widthProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.doubleValue() < 30) {
-                displayHzLabel = false;
-            } else {
-                displayHzLabel = true;
-            }
-        });
     }
 
     Label getHzLabel() {
@@ -29,11 +24,6 @@ public class FrequencyView {
     }
 
     public void setHzValue(double hz) {
-        if (!displayHzLabel) {
-            this.hzLabel.setText("");
-            return;
-        }
-
         if (hz >= 10000) {
             this.hzLabel.setText(String.format("%.0f", hz / 1000d) + "K");
 

@@ -4,7 +4,7 @@ public class AppConfig {
     // Audio Input
     public static String inputDevice = "";
     public static int sampleRate = 48000;
-    public static int sampleSizeInBits = 16;
+    public static int sampleSizeInBits = 24;
     public static int channels = 1;
     public static boolean signed = true;
     public static boolean bigEndian = false;

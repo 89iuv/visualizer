@@ -1,6 +1,7 @@
 package com.lazydash.audio.visualizer.spectrum.core.audio;
 
 import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.MultichannelToMono;
 import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
 import com.lazydash.audio.visualizer.spectrum.system.config.AppConfig;
 import org.slf4j.Logger;
@@ -153,6 +154,7 @@ public class TarsosAudioEngine {
 
         // run the dispatcher (on a new thread).
         audioThread = new Thread(dispatcher, "Audio dispatching");
+        audioThread.setPriority(Thread.MAX_PRIORITY);
         audioThread.setDaemon(true);
         audioThread.start();
     }

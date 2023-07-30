@@ -11,8 +11,10 @@ import com.lazydash.audio.visualizer.spectrum.ui.code.spectral.SpectralView;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +59,7 @@ public class Main extends Application {
         }
 
         // plugins
-        PluginSystem.getInstance().startAllPlugins();
+        //PluginSystem.getInstance().startAllPlugins();
 
         // create
         ConfigFilePersistence configFilePersistence = new ConfigFilePersistence();
@@ -77,7 +79,7 @@ public class Main extends Application {
 
         // wire
         tarsosAudioEngine.getFttListenerList().add(spectralFFTService);
-        PluginSystem.getInstance().registerAllFffPlugins(tarsosAudioEngine);
+        //PluginSystem.getInstance().registerAllFffPlugins(tarsosAudioEngine);
 
         wireSettingsStage(settingsStage, scene);
         wirePrimaryStage(stage, configFilePersistence, tarsosAudioEngine);

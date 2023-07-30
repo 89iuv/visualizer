@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * This class holds state information regarding to:
+ * This class holds state information regarding:
  *  - timeFiltering a.k.a smoothness
  *  - previous bar heights that are used in bad decay calculation
  */
@@ -34,17 +34,28 @@ public class FrequencyBarsFFTService implements FFTListener {
     private FFTTimeFilter fftTimeFilter = new FFTTimeFilter();
     private BarsHeightCalculator barsHeightCalculator = new BarsHeightCalculator();
 
+    //private int nrOfSameAudioFrame = 1;
+
     @Override
     public void frame(double[] hzBins, double[] normalizedAmplitudes) {
         try {
             lock.lock();
 
             if (this.hzBins != null) {
-                LOGGER.info("Audio frame dropped");
+                //LOGGER.info("Audio frame merged");
+
+                // average with last value so that we do not loose information
+                for (int i = 0; i<this.hzBins.length; i++) {
+                    this.amplitudes[i] = (this.amplitudes[i] + normalizedAmplitudes[i]) / 2d;
+                }
+
+            } else {
+                this.amplitudes = normalizedAmplitudes;
+
             }
 
             this.hzBins = hzBins;
-            this.amplitudes = normalizedAmplitudes;
+
 
         } finally {
             lock.unlock();
@@ -60,10 +71,13 @@ public class FrequencyBarsFFTService implements FFTListener {
             lock.lock();
 
             if (this.hzBins == null) {
+                //LOGGER.info("Nr of same audio frame taken: " + ++nrOfSameAudioFrame);
                 returnBinz = this.hzBinsOld;
                 returnAmplitudes = this.amplitudesOld;
 
             } else {
+                //nrOfSameAudioFrame = 1;
+
                 returnBinz = this.hzBins;
                 returnAmplitudes = this.amplitudes;
 

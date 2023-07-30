@@ -58,19 +58,18 @@ public class BarsHeightCalculator {
 
             double decayRatePixelsPerMilli = maxBarHeight / millisToZero;
             double dbPerSecondDecay = decayRatePixelsPerMilli * secondsPassed;
+            double decaySize = dbPerSecondDecay;
 
-            if (newHeight < oldHeight - dbPerSecondDecay) {
-                double decaySize = dbPerSecondDecay;
-
+            if (newHeight < oldHeight) {
                 double accelerationStep = (1d / AppConfig.accelerationFactor) * decaySize;
-                if (oldDecayDecelSize[i] + accelerationStep < dbPerSecondDecay) {
+                if (oldDecayDecelSize[i] + accelerationStep < decaySize) {
                     oldDecayDecelSize[i] = oldDecayDecelSize[i] + accelerationStep;
                     decaySize = oldDecayDecelSize[i];
                 }
 
-                processedAmplitudes[i] = oldHeight - decaySize;
+                processedAmplitudes[i] = Math.max(oldHeight - decaySize, newHeight);
 
-            } else  {
+            } else {
                 processedAmplitudes[i] = newHeight;
                 oldDecayDecelSize[i] = 0;
             }
