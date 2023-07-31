@@ -1,3 +1,5 @@
+<img width="1690" alt="image" src="https://github.com/89iuv/visualizer/assets/3298487/3682f44c-2e5d-4f9b-935f-5f66b168f86e">
+
 # Visualizer
 Visualizer is a real time application that takes the input sound from the pc and processed it through an FFT in order to display a spectrum representation of the sound.
 
