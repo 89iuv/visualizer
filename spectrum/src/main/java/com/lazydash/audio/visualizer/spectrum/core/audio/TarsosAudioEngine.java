@@ -52,7 +52,7 @@ public class TarsosAudioEngine {
             if (dispatcher != null) {
                 dispatcher.stop();
 
-                // wait 5 seconds for audio dispatcher to finish
+                // wait 1 seconds for audio dispatcher to finish
                 audioThread.join(1 * 1000);
             }
 

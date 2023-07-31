@@ -7,7 +7,7 @@
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.lazydash.audio.visualizer.spectrum.ui.fxml.spectrum.settings.BarDecayController">
 
-    <Label  styleClass="title" text="Bar decay" />
+    <Label styleClass="title" text="Bar decay" />
     <Separator styleClass="separator"/>
     <GridPane styleClass="settings-group">
 

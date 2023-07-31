@@ -1,12 +1,17 @@
 package com.lazydash.audio.visualizer.spectrum.ui.code.spectral;
 
 import com.lazydash.audio.visualizer.spectrum.core.service.FrequencyBarsFFTService;
+import com.lazydash.audio.visualizer.spectrum.ui.model.DebugPropertiesService;
 import javafx.animation.AnimationTimer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SpectralAnimator {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpectralAnimator.class);
+
+    private final DebugPropertiesService debugPropertiesService = DebugPropertiesService.getInstance();
+    private int nrFrame = 0;
+
     private long oldTime = System.currentTimeMillis();
 
     private FrequencyBarsFFTService spectralFFTService;
@@ -15,6 +20,16 @@ public class SpectralAnimator {
     private AnimationTimer animationTimer = new AnimationTimer() {
         @Override
         public void handle(long now) {
+            nrFrame++;
+
+            long newTime = System.currentTimeMillis();
+
+            if (newTime - oldTime > 1000) {
+                debugPropertiesService.getUiFps().setValue(nrFrame);
+                nrFrame = 0;
+                oldTime = newTime;
+            }
+
             updateSpectralView();
         }
     };
@@ -30,12 +45,6 @@ public class SpectralAnimator {
 
     private void updateSpectralView(){
         spectralView.updateState(spectralFFTService.getFrequencyBarList());
-
-        long newTime = System.currentTimeMillis();
-        long deltaTime = newTime - oldTime;
-
-//        LOGGER.info(String.valueOf(deltaTime));
-        oldTime = newTime;
     }
 
 }

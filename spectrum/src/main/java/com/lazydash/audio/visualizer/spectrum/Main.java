@@ -45,7 +45,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         // load all the native apis
-        Path dllPath = Paths.get("./dll");
+       /* Path dllPath = Paths.get("./dll");
         if (Files.exists(dllPath)) {
             String[] list = dllPath.toFile().list();
             if (list != null) {
@@ -56,7 +56,7 @@ public class Main extends Application {
                     }
                 });
             }
-        }
+        }*/
 
         // plugins
         //PluginSystem.getInstance().startAllPlugins();
@@ -104,14 +104,14 @@ public class Main extends Application {
             AppConfig.windowHeight = primaryStage.getHeight();
             AppConfig.windowWidth = primaryStage.getWidth();
             configFilePersistence.persist(AppConfig.class, "./application.properties");
-            PluginSystem.getInstance().stopAllPlugins();
+//            PluginSystem.getInstance().stopAllPlugins();
             tarsosAudioEngine.stop();
             Platform.exit();
 
-            // force exit in 5 seconds if application does not finish
+            // force exit in 1 seconds if application does not finish
             Thread exit = new Thread(() -> {
                 try {
-                    Thread.sleep(5 * 1000);
+                    Thread.sleep(1 * 1000);
                 } catch (InterruptedException e) {
                     // we expect that the sleep will be interrupted
                     // and the application should finish before the sleep is over

@@ -22,12 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SpectralView extends GridPane {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SpectralView.class);
     private List<FrequencyView> frequencyViewList = new ArrayList<>();
 
     public void configure() {
         this.setAlignment(Pos.BOTTOM_CENTER);
-//        this.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         this.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
 
         RowConstraints rowConstraintsAmplitudes = new RowConstraints();
@@ -40,16 +38,13 @@ public class SpectralView extends GridPane {
     }
 
     public void updateState(List<FrequencyBar> frequencyBarList) {
-        //this.setHgap(AppConfig.barGap);
-
         if (frequencyBarList.size() != frequencyViewList.size()) {
             createBars(frequencyBarList);
             updateBars(frequencyBarList);
-//            LOGGER.info("create bars");
 
         } else {
             updateBars(frequencyBarList);
-//            LOGGER.info("update bars");
+
         }
     }
 
@@ -61,16 +56,11 @@ public class SpectralView extends GridPane {
             FrequencyBar frequencyBar = frequencyBarList.get(i);
 
             frequencyView.setHzValue(frequencyBar.getHz());
-
             frequencyView.getRectangle().setFill(frequencyBar.getColor());
-//            frequencyView.getRectangle().setStroke(Color.GRAY);
-//            frequencyView.getRectangle().setStrokeType(StrokeType.INSIDE);
-
-            // rounding is needed because of the subpixel rendering
             frequencyView.getRectangle().setHeight(Math.round(frequencyBar.getHeight()));
 
             double rectangleWidth = (this.getWidth() / (frequencyViewList.size() + 1)) - AppConfig.barGap;
-            frequencyView.getRectangle().setWidth(rectangleWidth);
+            frequencyView.getRectangle().setWidth(Math.round(rectangleWidth));
             frequencyView.getHzLabel().setFont(Font.font(rectangleWidth / 2.6d));
         }
     }
@@ -82,8 +72,6 @@ public class SpectralView extends GridPane {
         for (int i = 0; i < frequencyBarList.size(); i++) {
             FrequencyView frequencyView = new FrequencyView();
             frequencyViewList.add(frequencyView);
-
-            //frequencyView.getHzLabel().setTextFill(Color.WHITE);
 
             this.add(frequencyView.getRectangle(), i, 0);
             this.add(frequencyView.getHzLabel(), i, 1);

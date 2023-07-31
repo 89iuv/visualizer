@@ -25,6 +25,7 @@ public class SettingsController {
         map.put("Spectral view", loadFxml("/ui/fxml/spectrum/settings/spectral_view.fxml"));
         map.put("Spectral color", loadFxml("/ui/fxml/spectrum/settings/spectral_color.fxml"));
         map.put("Bar decay", loadFxml("/ui/fxml/spectrum/settings/bar_decay.fxml"));
+        map.put("Debug", loadFxml("/ui/fxml/spectrum/settings/debug.fxml"));
 
         map.keySet().forEach((title) -> {
             addTitleToSettingsFMXL(title, map.get(title));

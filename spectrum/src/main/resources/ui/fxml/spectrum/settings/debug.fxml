@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.lazydash.audio.visualizer.spectrum.ui.fxml.common.FxmlCounter?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.lazydash.audio.visualizer.spectrum.ui.fxml.spectrum.settings.DebugController">
+
+    <Label styleClass="title" text="Debug" />
+    <Separator styleClass="separator"/>
+
+    <GridPane styleClass="settings-group">
+        <fx:define>
+            <FxmlCounter fx:id="row" />
+        </fx:define>
+
+        <Label text="UI frames per second: " GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
+        <Label fx:id="uiFps" GridPane.rowIndex="$row.value" GridPane.columnIndex="1"/>
+
+        <Label text="Audio frames merged per second: " GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
+        <Label fx:id="audioFramesMergedPerSecond" GridPane.rowIndex="$row.value" GridPane.columnIndex="1"/>
+
+        <Label text="Avg (same audio frame taken from ui frame) per second: " GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
+        <Label fx:id="avgSameAudioFrameFromUiFramePerSecond" GridPane.rowIndex="$row.value" GridPane.columnIndex="1"/>
+
+    </GridPane>
+
+</VBox>
