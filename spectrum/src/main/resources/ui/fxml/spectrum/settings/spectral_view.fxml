@@ -21,7 +21,7 @@
         <Label fx:id="signalAmplificationValue" styleClass="sliderValueLabel" GridPane.rowIndex="$row.value" GridPane.columnIndex="2"/>
 
         <Label text="Signal Threshold (db):" GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
-        <Slider prefWidth="250" fx:id="signalThreshold" min="-50" max="0" majorTickUnit="10" minorTickCount="4" showTickMarks="true" showTickLabels="true"
+        <Slider prefWidth="250" fx:id="signalThreshold" min="-60" max="0" majorTickUnit="10" minorTickCount="4" showTickMarks="true" showTickLabels="true"
                 GridPane.rowIndex="$row.value" GridPane.columnIndex="1"/>
         <Label fx:id="signalThresholdValue" styleClass="sliderValueLabel" GridPane.rowIndex="$row.value" GridPane.columnIndex="2"/>
 

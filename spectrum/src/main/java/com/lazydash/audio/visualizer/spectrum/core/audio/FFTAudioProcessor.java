@@ -3,33 +3,33 @@ package com.lazydash.audio.visualizer.spectrum.core.audio;
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.util.fft.FFT;
-import be.tarsos.dsp.util.fft.HammingWindow;
 import be.tarsos.dsp.util.fft.HannWindow;
 import be.tarsos.dsp.util.fft.WindowFunction;
 import com.lazydash.audio.visualizer.spectrum.core.algorithm.AmplitudeWeightCalculator;
 import com.lazydash.audio.visualizer.spectrum.core.algorithm.OctaveGenerator;
 import com.lazydash.audio.visualizer.spectrum.system.config.AppConfig;
 import org.apache.commons.math3.analysis.UnivariateFunction;
-import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sound.sampled.AudioFormat;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.IntStream;
 
 
 public class FFTAudioProcessor implements AudioProcessor {
     private static final Logger LOGGER = LoggerFactory.getLogger(FFTAudioProcessor.class);
-    long oldTime = System.currentTimeMillis();
 
     private List<FFTListener> listenerList;
     private AudioFormat audioFormat;
     private UnivariateInterpolator interpolator = new SplineInterpolator();
     private WindowFunction windowFunction = new HannWindow();
     private double windowCorrectionFactor = 2.00;
+
+    private LinkedList<float[]> fftWindowFrameList = new LinkedList<>();
 
     FFTAudioProcessor(AudioFormat audioFormat, List<FFTListener> listenerList) {
         this.audioFormat = audioFormat;
@@ -38,13 +38,30 @@ public class FFTAudioProcessor implements AudioProcessor {
 
     @Override
     public boolean process(AudioEvent audioEvent) {
-        float[] audioFloatBuffer = audioEvent.getFloatBuffer();
+        long t0 = System.currentTimeMillis();
+
+        float[] floatBuffer = audioEvent.getFloatBuffer();
 
         // the buffer must be copied into another array for processing otherwise strange behaviour
         // the audioFloatBuffer buffer is reused because of the offset
         // modifying it will create strange issues
-        float[] transformBuffer = new float[audioFloatBuffer.length];
-        System.arraycopy(audioFloatBuffer, 0, transformBuffer, 0, audioFloatBuffer.length);
+        float[] copiedFloatBuffer = new float[floatBuffer.length];
+        System.arraycopy(floatBuffer, 0, copiedFloatBuffer, 0, floatBuffer.length);
+
+        if (fftWindowFrameList.size() < AppConfig.audioWindowNumber) {
+            fftWindowFrameList.addLast(copiedFloatBuffer);
+        }
+
+        float[] transformBuffer = new float[copiedFloatBuffer.length * fftWindowFrameList.size()];
+
+        for (int i = 0; i < fftWindowFrameList.size(); i++) {
+            float[] fftWindowFrame = fftWindowFrameList.get(i);
+            System.arraycopy(fftWindowFrame, 0, transformBuffer, fftWindowFrame.length * i, fftWindowFrame.length);
+        }
+
+        if (fftWindowFrameList.size() >= AppConfig.audioWindowNumber) {
+            fftWindowFrameList.removeFirst();
+        }
 
         float[] amplitudes = new float[transformBuffer.length / 2];
 
@@ -101,10 +118,9 @@ public class FFTAudioProcessor implements AudioProcessor {
 
         listenerList.forEach(listener -> listener.frame(frequencyBins, frequencyAmplitudes));
 
-        long newTime = System.currentTimeMillis();
-        long deltaTime = newTime - oldTime;
-//        LOGGER.info(String.valueOf(deltaTime));
-        oldTime = newTime;
+        long t1 = System.currentTimeMillis();
+        long dt = t1 - t0;
+        //LOGGER.info("benchmark - fft computation: " + String.valueOf(dt));
 
         return true;
     }
