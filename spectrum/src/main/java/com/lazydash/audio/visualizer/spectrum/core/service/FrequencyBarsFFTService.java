@@ -1,8 +1,8 @@
 package com.lazydash.audio.visualizer.spectrum.core.service;
 
 import com.lazydash.audio.visualizer.spectrum.core.algorithm.BarsHeightCalculator;
-import com.lazydash.audio.visualizer.spectrum.core.algorithm.FFTTimeFilter;
 import com.lazydash.audio.visualizer.spectrum.core.algorithm.FrequencyBarsCreator;
+import com.lazydash.audio.visualizer.spectrum.core.algorithm.TimeFilterService;
 import com.lazydash.audio.visualizer.spectrum.core.audio.FFTListener;
 import com.lazydash.audio.visualizer.spectrum.core.model.FrequencyBar;
 import com.lazydash.audio.visualizer.spectrum.ui.model.DebugPropertiesService;
@@ -30,7 +30,7 @@ public class FrequencyBarsFFTService implements FFTListener {
     private double[] hzBinsOld = null;
     private double[] amplitudesOld = null;
 
-    private final FFTTimeFilter fftTimeFilter = new FFTTimeFilter();
+    private final TimeFilterService timeFilterService = new TimeFilterService();
     private final BarsHeightCalculator barsHeightCalculator = new BarsHeightCalculator();
 
     private long t0 = System.currentTimeMillis();
@@ -111,8 +111,8 @@ public class FrequencyBarsFFTService implements FFTListener {
 
         List<FrequencyBar> frequencyBars = new ArrayList<>();
         if (returnAmplitudes != null) {
-            returnAmplitudes = fftTimeFilter.filter(returnAmplitudes);
             returnAmplitudes = barsHeightCalculator.processAmplitudes(returnAmplitudes);
+            returnAmplitudes = timeFilterService.filter(returnAmplitudes);
             frequencyBars = FrequencyBarsCreator.createFrequencyBars(returnBinz, returnAmplitudes);
         }
 

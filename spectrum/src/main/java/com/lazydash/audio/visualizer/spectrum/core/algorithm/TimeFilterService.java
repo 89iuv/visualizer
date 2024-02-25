@@ -5,7 +5,7 @@ import com.lazydash.audio.visualizer.spectrum.system.config.AppConfig;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class FFTTimeFilter {
+public class TimeFilterService {
     private Queue<double[]> historyAmps = new LinkedList<>();
 
 

@@ -38,6 +38,7 @@ public class AppConfig {
     public static int accelerationFactor = 8;
     public static int timeFilterSize = 2;
     public static String smoothnessType = "WMA";
+    public static int motionBlur = 50;
 
     // window
     public static double windowWidth = 1700;

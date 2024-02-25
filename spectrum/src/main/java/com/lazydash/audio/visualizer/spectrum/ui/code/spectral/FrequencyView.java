@@ -1,16 +1,13 @@
 package com.lazydash.audio.visualizer.spectrum.ui.code.spectral;
 
 
-import com.lazydash.audio.visualizer.spectrum.system.config.AppConfig;
 import javafx.scene.control.Label;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontWeight;
 
 public class FrequencyView {
     private Label hzLabel = new Label();
     private Rectangle rectangle = new Rectangle();
+    private Rectangle shadow = new Rectangle();
 
     public FrequencyView() {
     }
@@ -21,6 +18,10 @@ public class FrequencyView {
 
     Rectangle getRectangle() {
         return rectangle;
+    }
+
+    public Rectangle getShadow() {
+        return shadow;
     }
 
     public void setHzValue(double hz) {

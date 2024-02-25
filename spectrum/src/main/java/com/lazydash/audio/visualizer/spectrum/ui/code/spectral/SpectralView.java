@@ -7,16 +7,12 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
-import javafx.scene.control.Label;
-import javafx.scene.control.OverrunStyle;
-import javafx.scene.effect.BlendMode;
-import javafx.scene.effect.Effect;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.StrokeType;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.text.Font;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,12 +50,26 @@ public class SpectralView extends GridPane {
         for (int i = 0; i < frequencyViewList.size(); i++) {
             FrequencyView frequencyView = frequencyViewList.get(i);
             FrequencyBar frequencyBar = frequencyBarList.get(i);
+            double rectangleWidth = (this.getWidth() / (frequencyViewList.size() + 1)) - AppConfig.barGap;
+
+            Stop[] stops = new Stop[]{
+                    new Stop(0, Color.WHITE),
+                    new Stop(1, Color.WHITE.interpolate(frequencyBar.getColor(), AppConfig.motionBlur / 100d))
+//                    new Stop(1, frequencyBar.getColor())
+            };
+
+            LinearGradient linearGradient = new LinearGradient(0.5, 0, 0.5, 1, true, CycleMethod.NO_CYCLE, stops);
+//            LinearGradient linearGradient = new LinearGradient(0.5, 1 - (AppConfig.motionBlur / 100d), 0.5, 1, true, CycleMethod.NO_CYCLE, stops);
+
+            frequencyView.getShadow().setHeight(frequencyView.getRectangle().getHeight() - Math.round(frequencyBar.getHeight()));
+            frequencyView.getShadow().setFill(linearGradient);
+
+            frequencyView.getRectangle().setHeight(Math.round(frequencyBar.getHeight()));
+            frequencyView.getRectangle().setFill(frequencyBar.getColor());
 
             frequencyView.setHzValue(frequencyBar.getHz());
-            frequencyView.getRectangle().setFill(frequencyBar.getColor());
-            frequencyView.getRectangle().setHeight(Math.round(frequencyBar.getHeight()));
 
-            double rectangleWidth = (this.getWidth() / (frequencyViewList.size() + 1)) - AppConfig.barGap;
+            frequencyView.getShadow().setWidth(Math.round(rectangleWidth));
             frequencyView.getRectangle().setWidth(Math.round(rectangleWidth));
             frequencyView.getHzLabel().setFont(Font.font(rectangleWidth / 2.6d));
         }
@@ -73,7 +83,12 @@ public class SpectralView extends GridPane {
             FrequencyView frequencyView = new FrequencyView();
             frequencyViewList.add(frequencyView);
 
-            this.add(frequencyView.getRectangle(), i, 0);
+            VBox vBox = new VBox();
+            vBox.setAlignment(Pos.BOTTOM_CENTER);
+            vBox.getChildren().add(frequencyView.getShadow());
+            vBox.getChildren().add(frequencyView.getRectangle());
+
+            this.add(vBox, i, 0);
             this.add(frequencyView.getHzLabel(), i, 1);
 
             GridPane.setValignment(frequencyView.getRectangle(), VPos.BOTTOM);

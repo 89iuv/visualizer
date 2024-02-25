@@ -19,6 +19,8 @@ public class BarDecayController {
     public Label decayAccelerationValue;
     public Spinner<Integer> timeFilter;
     public ComboBox<String> smoothnessType;
+    public Slider motionBlur;
+    public Label motionBlurValue;
 
     public void initialize() {
         decayTimeValue.setText(String.valueOf(AppConfig.millisToZero));
@@ -51,6 +53,16 @@ public class BarDecayController {
         smoothnessType.setValue(AppConfig.smoothnessType);
         smoothnessType.valueProperty().addListener((observable, oldValue, newValue) -> {
             AppConfig.smoothnessType = newValue;
+        });
+
+        motionBlurValue.setText(String.valueOf(AppConfig.motionBlur));
+        motionBlur.setValue(AppConfig.motionBlur);
+        motionBlur.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                AppConfig.motionBlur = newValue.intValue();
+                motionBlurValue.setText(String.valueOf(AppConfig.motionBlur));
+            }
         });
 
     }

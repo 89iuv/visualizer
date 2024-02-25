@@ -25,6 +25,11 @@
                 GridPane.rowIndex="$row.value" GridPane.columnIndex="1" GridPane.fillWidth="true" GridPane.hgrow="ALWAYS"/>
         <Label fx:id="decayAccelerationValue" styleClass="sliderValueLabel" GridPane.rowIndex="$row.value" GridPane.columnIndex="2"/>
 
+        <Label text="Motion blur: " GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
+        <Slider fx:id="motionBlur" min="0" max="100" majorTickUnit="10" minorTickCount="1" showTickMarks="true" showTickLabels="true"
+                GridPane.rowIndex="$row.value" GridPane.columnIndex="1" GridPane.fillWidth="true" GridPane.hgrow="ALWAYS"/>
+        <Label fx:id="motionBlurValue" styleClass="sliderValueLabel" GridPane.rowIndex="$row.value" GridPane.columnIndex="2"/>
+
         <Label text="Smoothness:" GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
         <Spinner fx:id="timeFilter" editable="true" GridPane.rowIndex="$row.value" GridPane.columnIndex="1">
             <valueFactory>
@@ -34,6 +39,8 @@
 
         <Label text="Type:" GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
         <ComboBox fx:id="smoothnessType" onAction="#updateSmoothnessType" GridPane.rowIndex="$row.value" GridPane.columnIndex="1"/>
+
+
 
     </GridPane>
 
