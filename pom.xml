@@ -15,12 +15,11 @@
     </modules>
 
     <properties>
-        <maven.compiler.target>17</maven.compiler.target>
-        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.release>21</maven.compiler.release>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <javafx-controls.version>17.0.2</javafx-controls.version>
+        <javafx-controls.version>21.0.2</javafx-controls.version>
         <pf4j.version>3.6.0</pf4j.version>
         <junit.version>4.13.2</junit.version>
     </properties>
