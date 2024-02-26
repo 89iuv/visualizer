@@ -27,9 +27,6 @@
 
         <Separator styleClass="separator" GridPane.rowIndex="$row.increment" GridPane.columnSpan="3"/>
 
-        <Label text="Max level: " GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
-        <ComboBox fx:id="maxLevel" onAction="#updateMaxLeve" GridPane.rowIndex="$row.value" GridPane.columnIndex="1"/>
-
         <Label text="Weighting: " GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
         <ComboBox fx:id="weighting" onAction="#updateWeighting" GridPane.rowIndex="$row.value" GridPane.columnIndex="1"/>
 

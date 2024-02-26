@@ -3,7 +3,6 @@ package com.lazydash.audio.visualizer.spectrum.core.audio;
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
-import be.tarsos.dsp.MultichannelToMono;
 import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
 import com.lazydash.audio.visualizer.spectrum.system.config.AppConfig;
 import org.slf4j.Logger;
@@ -90,7 +89,7 @@ public class TarsosAudioEngine {
         //noinspection OptionalGetWithoutIsPresent
         Line.Info lineInfo = Stream.of(mixer.getTargetLineInfo()).findFirst().get();
         TargetDataLine line = (TargetDataLine) mixer.getLine(lineInfo);
-        line.open(audioFormat, lineBuffer * 2);
+        line.open(audioFormat, lineBuffer);
         line.start();
 
         LOGGER.info("line format: " + line.getFormat());
@@ -168,7 +167,7 @@ public class TarsosAudioEngine {
         dispatcher.addAudioProcessor(new AudioEngineRestartProcessor(this));
 
         // could not get it working with stereo audio
-        dispatcher.addAudioProcessor(new MultichannelToMono(audioFormat.getChannels(), true));
+//        dispatcher.addAudioProcessor(new MultichannelToMono(audioFormat.getChannels(), true));
 
         dispatcher.addAudioProcessor(new FFTAudioProcessor(audioFormat, fttListenerList));
 

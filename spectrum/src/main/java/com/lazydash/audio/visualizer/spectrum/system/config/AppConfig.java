@@ -4,7 +4,7 @@ public class AppConfig {
     // Audio Input
     public static String inputDevice = "";
     public static int sampleRate = 48000;
-    public static int sampleSizeInBits = 16;
+    public static int sampleSizeInBits = 24;
     public static int channels = 1;
     public static boolean signed = true;
     public static boolean bigEndian = false;
@@ -14,7 +14,6 @@ public class AppConfig {
     // Spectral View
     public static int signalAmplification = 100;
     public static int signalThreshold = -34;
-    public static String maxLevel = "Peak";
     public static String weight = "dBZ";
     public static int frequencyStart = 34;
     public static int frequencyCenter = 1000;
