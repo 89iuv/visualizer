@@ -1,1 +1,0 @@
-In this folder copy the huesdk.dll for your target platform from the hue repo: https://github.com/PhilipsHue/HueSDK4EDK

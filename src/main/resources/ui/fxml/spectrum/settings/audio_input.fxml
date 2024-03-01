@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.lazydash.audio.visualizer.ui.fxml.common.FxmlCounter?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.lazydash.audio.visualizer.ui.fxml.spectrum.settings.AudioInputController">
+
+    <Label styleClass="title" text="Audio input" />
+    <Separator styleClass="separator"/>
+    <GridPane styleClass="settings-group">
+
+        <fx:define>
+            <FxmlCounter fx:id="row" />
+        </fx:define>
+
+        <Label text="Input device: " GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="inputDevice" onAction="#updateInputDevice" GridPane.rowIndex="$row.value" GridPane.columnIndex="1"/>
+
+        <Label text="Audio window size (ms): " GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
+        <Spinner fx:id="audioWindowSize" editable="true" GridPane.rowIndex="$row.value" GridPane.columnIndex="1">
+            <valueFactory>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="1" max="1000" amountToStepBy="1"/>
+            </valueFactory>
+        </Spinner>
+
+        <Label text="Audio window number:" GridPane.rowIndex="$row.increment" GridPane.columnIndex="0"/>
+        <Spinner fx:id="audioWindowNumber" editable="true" GridPane.rowIndex="$row.value" GridPane.columnIndex="1">
+            <valueFactory>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="1" max="10" amountToStepBy="1"/>
+            </valueFactory>
+        </Spinner>
+
+    </GridPane>
+
+</VBox>

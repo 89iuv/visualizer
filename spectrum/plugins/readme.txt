@@ -1,1 +1,0 @@
-Copy paste here any plugin jar or zip that you want to make available to the spectrum app.
