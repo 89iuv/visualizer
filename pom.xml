@@ -109,6 +109,7 @@
                             <descriptorRefs>
                                 <descriptorRef>jar-with-dependencies</descriptorRef>
                             </descriptorRefs>
+                            <outputDirectory>target/jar-with-dependencies</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -132,8 +133,9 @@
                     <appVersion>1.0.0</appVersion>
                     <vendor>com.lazydash</vendor>
                     <icon>src/main/resources/icon.icns</icon>
-                    <input>.</input>
-                    <mainJar>target/visualizer-1.0.0-SNAPSHOT-jar-with-dependencies.jar</mainJar>
+                    <input>target/jar-with-dependencies</input>
+                    <mainJar>visualizer-1.0.0-SNAPSHOT-jar-with-dependencies.jar</mainJar>
+                    <mainClass>com.lazydash.audio.visualizer.Launcher</mainClass>
                     <destination>target/dist</destination>
                 </configuration>
             </plugin>
