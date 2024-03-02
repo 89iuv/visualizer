@@ -28,7 +28,7 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      run: mvn clean install jpackage:jpackage
+      run: mvn --no-transfer-progress clean install jpackage:jpackage
     - name: Upload installer
       uses: actions/upload-artifact@v3
       with:
