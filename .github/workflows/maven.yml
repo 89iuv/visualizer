@@ -35,8 +35,9 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         path: ./target/dist/visualizer_1.0.0_amd64.deb
-        name: linux-installer
+        name: linux-installer.deb
         retention-days: 1
+        if-no-files-found: error
   
   build-on-mac:
 
@@ -58,8 +59,9 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         path: ./target/dist/Visualizer-1.0.0.dmg
-        name: linux-installer
+        name: macos-installer.dmg
         retention-days: 1
+        if-no-files-found: error
 
   build-on-windows:
 
@@ -80,6 +82,7 @@ jobs:
     - name: Upload installer
       uses: actions/upload-artifact@v4
       with:
-        path: ./target/dist/visualizer_1.0.0_amd64.deb
-        name: linux-installer
+        path: ./target/dist/Visualizer-1.0.0.exe
+        name: windows-installer.exe
         retention-days: 1
+        if-no-files-found: error
