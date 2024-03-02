@@ -142,7 +142,7 @@ public class Main extends Application {
 
     private void configureStage(Stage stage, Scene scene) {
         // setup
-        stage.setTitle("Visualiser");
+        stage.setTitle("Visualizer");
 
         stage.setWidth(AppConfig.windowWidth);
         stage.setHeight(AppConfig.windowHeight);

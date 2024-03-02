@@ -11,7 +11,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>21</maven.compiler.release>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <javafx-controls.version>21.0.2</javafx-controls.version>
         <TarsosDSP.version>2.5</TarsosDSP.version>
         <commons-math3.version>3.6.1</commons-math3.version>
@@ -45,6 +46,7 @@
             <artifactId>core</artifactId>
             <version>${TarsosDSP.version}</version>
         </dependency>
+
         <dependency>
             <groupId>be.tarsos.dsp</groupId>
             <artifactId>jvm</artifactId>
@@ -63,7 +65,6 @@
             <artifactId>hipparchus-core</artifactId>
             <version>3.0</version>
         </dependency>
-
 
         <dependency>
             <groupId>org.slf4j</groupId>
