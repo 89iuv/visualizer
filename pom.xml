@@ -138,6 +138,7 @@
                     <mainJar>visualizer-1.0.0-SNAPSHOT-jar-with-dependencies.jar</mainJar>
                     <mainClass>com.lazydash.audio.visualizer.Launcher</mainClass>
                     <destination>target/dist</destination>
+                    <verbose>true</verbose>
                 </configuration>
             </plugin>
 
