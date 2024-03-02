@@ -133,7 +133,6 @@
                     <name>Visualizer</name>
                     <appVersion>1.0.0</appVersion>
                     <vendor>com.lazydash</vendor>
-                    <icon>src/main/resources/icon.icns</icon>
                     <input>target/jar-with-dependencies</input>
                     <mainJar>visualizer-1.0.0-SNAPSHOT-jar-with-dependencies.jar</mainJar>
                     <mainClass>com.lazydash.audio.visualizer.Launcher</mainClass>
@@ -144,5 +143,56 @@
 
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>build-on-ubuntu</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.panteleyev</groupId>
+                        <artifactId>jpackage-maven-plugin</artifactId>
+                        <version>1.4.0</version>
+                        <configuration>
+                            <icon>src/main/resources/icon.png</icon>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>build-on-mac</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.panteleyev</groupId>
+                        <artifactId>jpackage-maven-plugin</artifactId>
+                        <version>1.4.0</version>
+                        <configuration>
+                            <icon>src/main/resources/icon.icns</icon>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>build-on-windows</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.panteleyev</groupId>
+                        <artifactId>jpackage-maven-plugin</artifactId>
+                        <version>1.4.0</version>
+                        <configuration>
+                            <icon>src/main/resources/icon.png</icon>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
