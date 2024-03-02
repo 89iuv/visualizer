@@ -26,7 +26,7 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
         cache: maven
-    - run: mvn --no-transfer-progress clean install jpackage:jpackage
+    - run: mvn --no-transfer-progress -Pbuild-on-ubuntu clean install jpackage:jpackage
     - run: ls -al target/dist
     - uses: actions/upload-artifact@v4
       with:
@@ -46,7 +46,7 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
         cache: maven
-    - run: mvn --no-transfer-progress clean install jpackage:jpackage
+    - run: mvn --no-transfer-progress -Pbuild-on-mac clean install jpackage:jpackage
     - run: ls -al target/dist
     - uses: actions/upload-artifact@v4
       with:
@@ -66,7 +66,7 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
         cache: maven
-    - run: mvn --no-transfer-progress clean install jpackage:jpackage
+    - run: mvn --no-transfer-progress -Pbuild-on-windows clean install jpackage:jpackage
     - run: dir target/dist
     - uses: actions/upload-artifact@v4
       with:
