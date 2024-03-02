@@ -29,3 +29,9 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn clean install jpackage:jpackage
+    - name: Upload installer
+      uses: actions/upload-artifact@v3
+      with:
+        path: ./target/dist/Visualizer-1.0.0.*
+        name: linux-installer
+        retention-days: 1
