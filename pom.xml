@@ -178,6 +178,7 @@
                     <vendor>${project.groupId}</vendor>
                     <runtimeImage>target/image</runtimeImage>
                     <destination>target/dist</destination>
+                    <module>visualizer/com.lazydash.audio.visualizer.Main</module>
                 </configuration>
             </plugin>
 
