@@ -40,6 +40,14 @@ public class AppConfig {
     public static int motionBlur = 40;
 
     // window
+    public static boolean windowDecorations = true;
     public static double windowWidth = 1700;
     public static double windowHeight = 400;
+
+    public static double windowX = -1;
+    public static double windowY = -1;
+    public static double opacity = 100;
+    public static boolean enableHoverOpacity = false;
+    public static double hoverOpacity = 100;
+    public static boolean enableAlwaysOnTop;
 }

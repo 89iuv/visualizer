@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.lazydash.audio.visualizer.ui.fxml.settings.categories.WindowController"
+            prefHeight="400.0" prefWidth="600.0">
+
+    <Label styleClass="title" text="Window" />
+    <Separator styleClass="separator"/>
+    <GridPane styleClass="settings-group">
+
+        <Label text="Enable always on top (requires restart): " GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <CheckBox fx:id="enableAlwaysOnTop" text="yes" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="Window decorations (requires restart): " GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <CheckBox fx:id="windowDecorations" text="yes" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Opacity (%): " GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <Slider fx:id="opacity" majorTickUnit="10" minorTickCount="5" showTickMarks="true" showTickLabels="true"
+                GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.fillWidth="true" GridPane.hgrow="ALWAYS"/>
+        <Label fx:id="opacityValue" styleClass="sliderValueLabel" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+
+        <Label text="Enable on hover opacity: " GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <CheckBox fx:id="enableHoverOpacity" text="yes" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+        <Label text="Hover Opacity (%): " GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <Slider fx:id="hoverOpacity" majorTickUnit="10" minorTickCount="5" showTickMarks="true" showTickLabels="true"
+                GridPane.rowIndex="4" GridPane.columnIndex="1" GridPane.fillWidth="true" GridPane.hgrow="ALWAYS"/>
+        <Label fx:id="hoverOpacityValue" styleClass="sliderValueLabel" GridPane.rowIndex="4" GridPane.columnIndex="2"/>
+
+
+    </GridPane>
+
+</VBox>

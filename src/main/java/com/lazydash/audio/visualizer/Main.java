@@ -9,13 +9,17 @@ import com.lazydash.audio.visualizer.ui.code.spectral.SpectralView;
 import com.lazydash.audio.visualizer.ui.model.WindowPropertiesService;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,11 +72,6 @@ public class Main extends Application {
         wireSettingsStage(settingsStage, scene);
         wirePrimaryStage(stage, configFilePersistence, tarsosAudioEngine);
 
-        // set taskbar icon
-//        Toolkit defaultToolkit = Toolkit.getDefaultToolkit();
-//        Image image = defaultToolkit.getImage(getClass().getResource("/icon.png"));
-//        Taskbar.getTaskbar().setIconImage(image);
-
 
         // set click and move for scene
         scene.setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -108,6 +107,8 @@ public class Main extends Application {
         primaryStage.setOnCloseRequest(event -> {
             AppConfig.windowHeight = primaryStage.getHeight();
             AppConfig.windowWidth = primaryStage.getWidth();
+            AppConfig.windowX = primaryStage.getX();
+            AppConfig.windowY = primaryStage.getY();
             configFilePersistence.persist(AppConfig.class, CONFIG_VISUALIZER_APPLICATION_PROPERTIES);
             tarsosAudioEngine.stop();
             Platform.exit();
@@ -146,6 +147,38 @@ public class Main extends Application {
 
         stage.setWidth(AppConfig.windowWidth);
         stage.setHeight(AppConfig.windowHeight);
+
+        if (AppConfig.windowX == -1 || AppConfig.windowY == -1) {
+            stage.centerOnScreen();
+        } else {
+            stage.setX(AppConfig.windowX);
+            stage.setY(AppConfig.windowY);
+        }
+
+        stage.setOpacity(AppConfig.opacity / 100d);
+        WindowPropertiesService.opacityProperty = stage.opacityProperty();
+
+        stage.setAlwaysOnTop(AppConfig.enableAlwaysOnTop);
+
+        if (AppConfig.windowDecorations) {
+            stage.initStyle(StageStyle.DECORATED);
+        } else {
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.setResizable(true);
+            scene.setFill(Color.TRANSPARENT);
+        }
+
+        scene.setOnMouseEntered(event -> {
+            if (AppConfig.enableHoverOpacity) {
+                stage.setOpacity(AppConfig.hoverOpacity / 100d);
+            }
+        });
+
+        scene.setOnMouseExited(event -> {
+            if (AppConfig.enableHoverOpacity) {
+                stage.setOpacity(AppConfig.opacity / 100d);
+            }
+        });
 
         stage.setScene(scene);
     }

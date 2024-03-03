@@ -22,6 +22,7 @@ public class SettingsController {
         map.put("Spectral view", loadFxml("/ui/fxml/settings/categories/spectral_view.fxml"));
         map.put("Spectral color", loadFxml("/ui/fxml/settings/categories/spectral_color.fxml"));
         map.put("Bar decay", loadFxml("/ui/fxml/settings/categories/bar_decay.fxml"));
+        map.put("Window", loadFxml("/ui/fxml/settings/categories/window.fxml"));
         map.put("Debug", loadFxml("/ui/fxml/settings/categories/debug.fxml"));
 
         map.keySet().forEach((title) -> {

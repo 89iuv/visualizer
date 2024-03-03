@@ -8,10 +8,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.Stop;
+import javafx.scene.paint.*;
 import javafx.scene.text.Font;
 
 import java.util.ArrayList;
@@ -19,13 +16,13 @@ import java.util.List;
 
 public class SpectralView extends GridPane {
     private final List<FrequencyView> frequencyViewList = new ArrayList<>();
-//    private Color backgroundColor = Color.WHITE;
     private Color backgroundColor = Color.TRANSPARENT;
     private Background background = new Background(new BackgroundFill(backgroundColor, CornerRadii.EMPTY, Insets.EMPTY));
 
     public void configure() {
         this.setAlignment(Pos.BOTTOM_CENTER);
         this.setBackground(background);
+        this.setBorder(Border.stroke(Color.GRAY));
 
         RowConstraints rowConstraintsAmplitudes = new RowConstraints();
         rowConstraintsAmplitudes.setVgrow(Priority.NEVER);
