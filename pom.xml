@@ -24,6 +24,7 @@
 
         <junit.version>4.13.2</junit.version>
 
+        <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
         <moditect-maven-plugin.version>1.0.0.Final</moditect-maven-plugin.version>
         <javafx-maven-plugin.version>0.0.8</javafx-maven-plugin.version>
         <jpackage-maven-plugin.version>1.4.0</jpackage-maven-plugin.version>
@@ -91,6 +92,13 @@
 
     <build>
         <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+            </plugin>
+
             <plugin>
                 <groupId>org.moditect</groupId>
                 <artifactId>moditect-maven-plugin</artifactId>
@@ -112,6 +120,8 @@
                                         <version>${hipparchus-core.version}</version>
                                     </artifact>
                                     <moduleInfoSource>
+<!--                                        # Generate module-info.java-->
+<!--                                        jdeps &#45;&#45;generate-module-info <output-path-for-module-info.java> <path-to-non-modular-jar>-->
                                         module hipparchus.core {
                                         exports org.hipparchus;
                                         exports org.hipparchus.analysis;
@@ -163,9 +173,9 @@
                 <artifactId>jpackage-maven-plugin</artifactId>
                 <version>${jpackage-maven-plugin.version}</version>
                 <configuration>
-                    <name>${pom.artifactId}</name>
-                    <appVersion>${pom.version}</appVersion>
-                    <vendor>${pom.groupId}</vendor>
+                    <name>${project.artifactId}</name>
+                    <appVersion>${project.version}</appVersion>
+                    <vendor>${project.groupId}</vendor>
                     <runtimeImage>target/image</runtimeImage>
                     <destination>target/dist</destination>
                 </configuration>
