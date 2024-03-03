@@ -2,13 +2,15 @@ package com.lazydash.audio.visualizer.ui.code.spectral;
 
 import com.lazydash.audio.visualizer.core.model.FrequencyBar;
 import com.lazydash.audio.visualizer.system.config.AppConfig;
-import com.lazydash.audio.visualizer.ui.model.WindowPropertiesService;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.layout.*;
-import javafx.scene.paint.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.text.Font;
 
 import java.util.ArrayList;
@@ -22,15 +24,16 @@ public class SpectralView extends GridPane {
     public void configure() {
         this.setAlignment(Pos.BOTTOM_CENTER);
         this.setBackground(background);
-        this.setBorder(Border.stroke(Color.GRAY));
+//        this.setBorder(Border.stroke(Color.GRAY));
 
         RowConstraints rowConstraintsAmplitudes = new RowConstraints();
         rowConstraintsAmplitudes.setVgrow(Priority.NEVER);
         this.getRowConstraints().add(rowConstraintsAmplitudes);
 
-        WindowPropertiesService.heightProperty.addListener((observable, oldValue, newValue) -> {
+        this.heightProperty().addListener((observable, oldValue, newValue) -> {
             AppConfig.maxBarHeight = newValue.intValue() - AppConfig.hzLabelHeight;
         });
+
     }
 
     public void updateState(List<FrequencyBar> frequencyBarList) {
