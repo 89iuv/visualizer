@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.lazydash.audio.visualizer.ui.fxml.settings.categories.SpectralViewController">
+
+    <Label styleClass="title" text="Spectral view" />
+    <Separator styleClass="separator"/>
+    <GridPane styleClass="settings-group">
+        <Label text="Signal amplification (factor):" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <Slider fx:id="signalAmplification" min="0" max="150" majorTickUnit="25" minorTickCount="4" showTickMarks="true" showTickLabels="true"
+                GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.fillWidth="true" GridPane.hgrow="ALWAYS"/>
+        <Label fx:id="signalAmplificationValue" styleClass="sliderValueLabel" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+
+        <Label text="Signal Threshold (db):" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <Slider prefWidth="250" fx:id="signalThreshold" min="-60" max="0" majorTickUnit="10" minorTickCount="4" showTickMarks="true" showTickLabels="true"
+                GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+        <Label fx:id="signalThresholdValue" styleClass="sliderValueLabel" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+
+        <Separator styleClass="separator" GridPane.rowIndex="2" GridPane.columnSpan="3"/>
+
+        <Label text="Weighting: " GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="weighting" onAction="#updateWeighting" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+        <Separator styleClass="separator" GridPane.rowIndex="4" GridPane.columnSpan="3"/>
+
+        <Label text="Frequency start:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+        <Spinner fx:id="frequencyStart" editable="true" GridPane.rowIndex="5" GridPane.columnIndex="1">
+            <valueFactory>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="24000" amountToStepBy="1"/>
+            </valueFactory>
+        </Spinner>
+
+        <Label text="Frequency center:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+        <Spinner fx:id="frequencyCenter" editable="true" GridPane.rowIndex="6" GridPane.columnIndex="1">
+            <valueFactory>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="24000" amountToStepBy="1"/>
+            </valueFactory>
+        </Spinner>
+
+        <Label text="Frequency end:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+        <Spinner fx:id="frequencyEnd" editable="true" GridPane.rowIndex="7" GridPane.columnIndex="1">
+            <valueFactory>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="24000" amountToStepBy="1"/>
+            </valueFactory>
+        </Spinner>
+
+        <Separator styleClass="separator" GridPane.rowIndex="8" GridPane.columnSpan="3"/>
+
+        <Label text="Octave (1/n):" GridPane.rowIndex="9" GridPane.columnIndex="0"/>
+        <Spinner fx:id="octave" editable="true" GridPane.rowIndex="9" GridPane.columnIndex="1">
+            <valueFactory>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="1" max="24" amountToStepBy="1"/>
+            </valueFactory>
+        </Spinner>
+
+        <Separator styleClass="separator" GridPane.rowIndex="10" GridPane.columnSpan="3"/>
+
+        <Label text="Min bar height (pixels):" GridPane.rowIndex="11" GridPane.columnIndex="0"/>
+        <Spinner fx:id="minBarHeight" editable="true" GridPane.rowIndex="11" GridPane.columnIndex="1">
+            <valueFactory>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="999" amountToStepBy="1"/>
+            </valueFactory>
+        </Spinner>
+
+        <Label text="Bar gap (pixels):" GridPane.rowIndex="12" GridPane.columnIndex="0"/>
+        <Spinner fx:id="barGap" editable="true" GridPane.rowIndex="12" GridPane.columnIndex="1">
+            <valueFactory>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="30" amountToStepBy="1"/>
+            </valueFactory>
+        </Spinner>
+
+    </GridPane>
+
+</VBox>

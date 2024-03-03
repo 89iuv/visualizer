@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.lazydash.audio.visualizer.ui.fxml.spectrum.SettingsController">
+            fx:controller="com.lazydash.audio.visualizer.ui.fxml.settings.SettingsController">
 
     <left>
         <VBox id="side-bar">
             <VBox fx:id="sideBarSettings">
-
-            </VBox>
-
-            <Label fx:id="pluginsLabel" text="Plugins" styleClass="settings-subtitle" visible="false"/>
-            <VBox fx:id="sideBarPlugins">
 
             </VBox>
         </VBox>

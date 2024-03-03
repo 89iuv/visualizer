@@ -9,12 +9,9 @@ module visualizer {
 
     exports com.lazydash.audio.visualizer to javafx.graphics;
 
-    exports com.lazydash.audio.visualizer.ui.fxml.spectrum to javafx.fxml;
-    opens com.lazydash.audio.visualizer.ui.fxml.spectrum to javafx.fxml;
+    exports com.lazydash.audio.visualizer.ui.fxml.settings to javafx.fxml;
+    opens com.lazydash.audio.visualizer.ui.fxml.settings to javafx.fxml;
 
-    exports com.lazydash.audio.visualizer.ui.fxml.common to javafx.fxml;
-    opens com.lazydash.audio.visualizer.ui.fxml.common to javafx.fxml;
-
-    exports com.lazydash.audio.visualizer.ui.fxml.spectrum.settings to javafx.fxml;
-    opens com.lazydash.audio.visualizer.ui.fxml.spectrum.settings to javafx.fxml;
+    exports com.lazydash.audio.visualizer.ui.fxml.settings.categories to javafx.fxml;
+    opens com.lazydash.audio.visualizer.ui.fxml.settings.categories to javafx.fxml;
 }

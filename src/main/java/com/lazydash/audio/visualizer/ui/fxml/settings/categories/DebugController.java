@@ -1,4 +1,4 @@
-package com.lazydash.audio.visualizer.ui.fxml.spectrum.settings;
+package com.lazydash.audio.visualizer.ui.fxml.settings.categories;
 
 import com.lazydash.audio.visualizer.ui.model.DebugPropertiesService;
 import javafx.scene.control.Label;

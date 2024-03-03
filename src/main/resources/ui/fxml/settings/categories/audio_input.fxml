@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.lazydash.audio.visualizer.ui.fxml.settings.categories.AudioInputController">
+
+    <Label styleClass="title" text="Audio input" />
+    <Separator styleClass="separator"/>
+    <GridPane styleClass="settings-group">
+        <Label text="Input device: " GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="inputDevice" onAction="#updateInputDevice" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="Audio window size (ms): " GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <Spinner fx:id="audioWindowSize" editable="true" GridPane.rowIndex="1" GridPane.columnIndex="1">
+            <valueFactory>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="1" max="1000" amountToStepBy="1"/>
+            </valueFactory>
+        </Spinner>
+
+        <Label text="Audio window number:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <Spinner fx:id="audioWindowNumber" editable="true" GridPane.rowIndex="2" GridPane.columnIndex="1">
+            <valueFactory>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="1" max="10" amountToStepBy="1"/>
+            </valueFactory>
+        </Spinner>
+
+    </GridPane>
+
+</VBox>

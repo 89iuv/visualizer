@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.lazydash.audio.visualizer.ui.fxml.settings.categories.SpectralColorController">
+
+    <Label  styleClass="title" text="Spectral Color" />
+    <Separator styleClass="separator"/>
+    <GridPane styleClass="settings-group">
+        <Label text="Position (degrees): " GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <Slider fx:id="position" max="360" majorTickUnit="30" minorTickCount="5" showTickMarks="true" showTickLabels="true"
+                GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.fillWidth="true" GridPane.hgrow="ALWAYS"/>
+        <Label fx:id="positionValue" styleClass="sliderValueLabel" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+
+        <Label text="Range (degrees): " GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <Slider fx:id="range" max="360" majorTickUnit="30" minorTickCount="5" showTickMarks="true" showTickLabels="true"
+                GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.fillWidth="true" GridPane.hgrow="ALWAYS"/>
+        <Label fx:id="rangeValue" styleClass="sliderValueLabel" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+
+        <Label text="Saturation (%): " GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <Slider fx:id="saturation" majorTickUnit="10" minorTickCount="5" showTickMarks="true" showTickLabels="true"
+                GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.fillWidth="true" GridPane.hgrow="ALWAYS"/>
+        <Label fx:id="saturationValue" styleClass="sliderValueLabel" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+
+        <Label text="Brightness (%): " GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <Slider fx:id="brightness" majorTickUnit="10" minorTickCount="5" showTickMarks="true" showTickLabels="true"
+                GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.fillWidth="true" GridPane.hgrow="ALWAYS"/>
+        <Label fx:id="brightnessValue" styleClass="sliderValueLabel" GridPane.rowIndex="3" GridPane.columnIndex="2"/>
+
+        <Label text="Invert: " GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <CheckBox fx:id="invert" text="yes" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+    </GridPane>
+
+</VBox>

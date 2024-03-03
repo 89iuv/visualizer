@@ -152,10 +152,10 @@ public class Main extends Application {
 
     private Stage createSettingsStage() throws IOException {
         // create
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ui/fxml/spectrum/spectrum.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ui/fxml/settings/settings.fxml"));
         Parent root = fxmlLoader.load();
 
-        root.getStylesheets().add(getClass().getResource("/ui/fxml/spectrum/style.css").toExternalForm());
+        root.getStylesheets().add(getClass().getResource("/ui/fxml/style.css").toExternalForm());
         Scene settingsScene = new Scene(root);
         Stage settingsStage = new Stage();
 

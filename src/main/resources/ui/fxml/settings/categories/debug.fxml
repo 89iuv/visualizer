@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.lazydash.audio.visualizer.ui.fxml.settings.categories.DebugController">
+
+    <Label styleClass="title" text="Debug" />
+    <Separator styleClass="separator"/>
+    <GridPane styleClass="settings-group">
+        <Label text="UI frames per second: " GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <Label fx:id="uiFps" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="Audio frames merged per second: " GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <Label fx:id="audioFramesMergedPerSecond" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Avg (same audio frame taken from ui frame) per second: " GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <Label fx:id="avgSameAudioFrameFromUiFramePerSecond" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+    </GridPane>
+
+</VBox>
