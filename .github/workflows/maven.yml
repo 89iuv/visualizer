@@ -30,7 +30,7 @@ jobs:
     - run: ls -al target/dist
     - uses: actions/upload-artifact@v4
       with:
-        path: ./target/dist/visualizer_1.0.0_amd64.deb
+        path: ./target/dist/*.deb
         name: linux-installer.deb
         retention-days: 1
         if-no-files-found: error
@@ -50,7 +50,7 @@ jobs:
     - run: ls -al target/dist
     - uses: actions/upload-artifact@v4
       with:
-        path: ./target/dist/Visualizer-1.0.0.dmg
+        path: ./target/dist/*.dmg
         name: macos-installer.dmg
         retention-days: 1
         if-no-files-found: error
@@ -70,7 +70,7 @@ jobs:
     - run: dir target/dist
     - uses: actions/upload-artifact@v4
       with:
-        path: ./target/dist/Visualizer-1.0.0.exe
+        path: ./target/dist/*.exe
         name: windows-installer.exe
         retention-days: 1
         if-no-files-found: error
