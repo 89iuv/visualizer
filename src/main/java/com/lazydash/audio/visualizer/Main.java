@@ -34,8 +34,7 @@ Using Maven:
 */
 public class Main extends Application {
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
-//    public static final String CONFIG_VISUALIZER_APPLICATION_PROPERTIES = System.getProperty("user.home") + "/.config/visualizer/application.properties";
-    public static final String CONFIG_VISUALIZER_APPLICATION_PROPERTIES = ".config/application.properties";
+    public static final String CONFIG_VISUALIZER_APPLICATION_PROPERTIES = System.getProperty("user.home") + "/.config/visualizer/application.properties";
 
     private Stage stage;
     private SpectralView spectralView;
