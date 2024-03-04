@@ -27,7 +27,7 @@ public class SpectralView extends GridPane {
 
         this.hoverProperty().addListener((observable, oldValue, newValue) -> {
             Color borderColor = Color.TRANSPARENT;
-            if (AppConfig.enableAlwaysOnTop) {
+            if (!AppConfig.windowDecorations && AppConfig.enableAlwaysOnTop) {
                 if (newValue) {
                     borderColor = Color.GRAY;
                 }
@@ -39,10 +39,12 @@ public class SpectralView extends GridPane {
 
         });
 
-        Color borderColor = Color.GRAY;
-        this.setBorder(new Border(new BorderStroke(borderColor, borderColor, borderColor, borderColor,
-                BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
-                CornerRadii.EMPTY, new BorderWidths(1), Insets.EMPTY)));
+        if (!AppConfig.windowDecorations) {
+            Color borderColor = Color.GRAY;
+            this.setBorder(new Border(new BorderStroke(borderColor, borderColor, borderColor, borderColor,
+                    BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
+                    CornerRadii.EMPTY, new BorderWidths(1), Insets.EMPTY)));
+        }
 
         RowConstraints rowConstraintsAmplitudes = new RowConstraints();
         rowConstraintsAmplitudes.setVgrow(Priority.NEVER);
@@ -54,17 +56,12 @@ public class SpectralView extends GridPane {
 
     }
 
-    public void addBorder() {
-        if (!AppConfig.windowDecorations) {
-        Color borderColor = Color.GRAY;
-        this.setBorder(new Border(new BorderStroke(borderColor, borderColor, borderColor, borderColor,
-                BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
-                CornerRadii.EMPTY, new BorderWidths(1), Insets.EMPTY)));
-        }
-    }
-
-    public void removeBorder() {
+    public void updateBorder() {
         Color borderColor = Color.TRANSPARENT;
+        if (!AppConfig.windowDecorations && AppConfig.enableAlwaysOnTop) {
+            borderColor = Color.GRAY;
+        }
+
         this.setBorder(new Border(new BorderStroke(borderColor, borderColor, borderColor, borderColor,
                 BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
                 CornerRadii.EMPTY, new BorderWidths(1), Insets.EMPTY)));

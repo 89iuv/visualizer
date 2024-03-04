@@ -191,9 +191,7 @@ public class Main extends Application {
             @Override
             public void handle(MouseEvent event) {
                 if (event.getButton().equals(MouseButton.PRIMARY)){
-                    if (!AppConfig.windowDecorations) {
-                        spectralView.addBorder();
-                    }
+                    spectralView.updateBorder();
 
                     stage.setX(event.getScreenX() - xOffset);
                     stage.setY(event.getScreenY() - yOffset - (stage.getHeight() - scene.getHeight()));
@@ -203,9 +201,7 @@ public class Main extends Application {
 
         scene.setOnMouseReleased(event -> {
             if (event.getButton().equals(MouseButton.PRIMARY)) {
-                if (!AppConfig.windowDecorations){
-                    spectralView.removeBorder();
-                }
+                spectralView.updateBorder();
             }
         });
 
@@ -232,9 +228,11 @@ public class Main extends Application {
             try {
                 if (AppConfig.windowDecorations) {
                     AppConfig.windowDecorations = false;
+                    spectralView.updateBorder();
                     switchWindowDecoration.setText("Enable transparency");
                 } else {
                     AppConfig.windowDecorations = true;
+                    spectralView.updateBorder();
                     switchWindowDecoration.setText("Disable transparency");
                 }
 
@@ -256,13 +254,13 @@ public class Main extends Application {
                 AppConfig.enableAlwaysOnTop = false;
                 stage.setAlwaysOnTop(false);
                 stage.setOpacity(AppConfig.opacity / 100d);
-                spectralView.removeBorder();
+                spectralView.updateBorder();
                 enableAlwaysOnTop.setText("Enable always on top");
             } else {
                 AppConfig.enableAlwaysOnTop = true;
                 stage.setAlwaysOnTop(true);
-                stage.setOpacity(AppConfig.hoverOpacity / 100d);
-                spectralView.addBorder();
+                stage.setOpacity(AppConfig.opacity / 100d);
+                spectralView.updateBorder();
                 enableAlwaysOnTop.setText("Disable always on top");
             }
         });
