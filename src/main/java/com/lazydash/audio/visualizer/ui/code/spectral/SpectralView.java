@@ -2,7 +2,6 @@ package com.lazydash.audio.visualizer.ui.code.spectral;
 
 import com.lazydash.audio.visualizer.core.model.FrequencyBar;
 import com.lazydash.audio.visualizer.system.config.AppConfig;
-import com.lazydash.audio.visualizer.ui.model.WindowPropertiesService;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -19,7 +18,6 @@ import java.util.List;
 
 public class SpectralView extends GridPane {
     private final List<FrequencyView> frequencyViewList = new ArrayList<>();
-//    private Color backgroundColor = Color.WHITE;
     private Color backgroundColor = Color.TRANSPARENT;
     private Background background = new Background(new BackgroundFill(backgroundColor, CornerRadii.EMPTY, Insets.EMPTY));
 
@@ -27,13 +25,46 @@ public class SpectralView extends GridPane {
         this.setAlignment(Pos.BOTTOM_CENTER);
         this.setBackground(background);
 
+        this.hoverProperty().addListener((observable, oldValue, newValue) -> {
+            Color borderColor = Color.TRANSPARENT;
+            if (!AppConfig.windowDecorations && AppConfig.enableAlwaysOnTop) {
+                if (newValue) {
+                    borderColor = Color.GRAY;
+                }
+            }
+
+            this.setBorder(new Border(new BorderStroke(borderColor, borderColor, borderColor, borderColor,
+                    BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
+                    CornerRadii.EMPTY, new BorderWidths(1), Insets.EMPTY)));
+
+        });
+
+        if (!AppConfig.windowDecorations) {
+            Color borderColor = Color.GRAY;
+            this.setBorder(new Border(new BorderStroke(borderColor, borderColor, borderColor, borderColor,
+                    BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
+                    CornerRadii.EMPTY, new BorderWidths(1), Insets.EMPTY)));
+        }
+
         RowConstraints rowConstraintsAmplitudes = new RowConstraints();
         rowConstraintsAmplitudes.setVgrow(Priority.NEVER);
         this.getRowConstraints().add(rowConstraintsAmplitudes);
 
-        WindowPropertiesService.heightProperty.addListener((observable, oldValue, newValue) -> {
+        this.heightProperty().addListener((observable, oldValue, newValue) -> {
             AppConfig.maxBarHeight = newValue.intValue() - AppConfig.hzLabelHeight;
         });
+
+    }
+
+    public void updateBorder() {
+        Color borderColor = Color.TRANSPARENT;
+        if (!AppConfig.windowDecorations && AppConfig.enableAlwaysOnTop) {
+            borderColor = Color.GRAY;
+        }
+
+        this.setBorder(new Border(new BorderStroke(borderColor, borderColor, borderColor, borderColor,
+                BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
+                CornerRadii.EMPTY, new BorderWidths(1), Insets.EMPTY)));
     }
 
     public void updateState(List<FrequencyBar> frequencyBarList) {
@@ -73,7 +104,7 @@ public class SpectralView extends GridPane {
 
             frequencyView.setHzValue(frequencyBar.getHz());
             frequencyView.getHzLabel().setFont(Font.font(rectangleWidth / 2.5d));
-            frequencyView.getHzLabel().setFill(Color.BLACK);
+            frequencyView.getHzLabel().setFill(Color.valueOf(AppConfig.textColor));
 
         }
     }

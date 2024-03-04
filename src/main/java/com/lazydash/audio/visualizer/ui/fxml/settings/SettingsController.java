@@ -18,11 +18,11 @@ public class SettingsController {
 
     public void initialize() {
         Map<String, Parent> map = new LinkedHashMap<>();
-        map.put("Audio input", loadFxml("/ui/fxml/settings/categories/audio_input.fxml"));
-        map.put("Spectral view", loadFxml("/ui/fxml/settings/categories/spectral_view.fxml"));
-        map.put("Spectral color", loadFxml("/ui/fxml/settings/categories/spectral_color.fxml"));
-        map.put("Bar decay", loadFxml("/ui/fxml/settings/categories/bar_decay.fxml"));
-        map.put("Debug", loadFxml("/ui/fxml/settings/categories/debug.fxml"));
+        map.put("Audio Input", loadFxml("/ui/fxml/settings/categories/audio_input.fxml"));
+        map.put("Spectral Limits", loadFxml("/ui/fxml/settings/categories/spectral_limits.fxml"));
+        map.put("Appearance & Colors", loadFxml("/ui/fxml/settings/categories/appearance_and_colors.fxml"));
+        map.put("Frequency Decay", loadFxml("/ui/fxml/settings/categories/frequency_decay.fxml"));
+        map.put("Debug Information", loadFxml("/ui/fxml/settings/categories/debug_information.fxml"));
 
         map.keySet().forEach((title) -> {
             addTitleToSettingsFMXL(title, map.get(title));

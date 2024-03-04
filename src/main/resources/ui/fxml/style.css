@@ -3,7 +3,9 @@
 }
 
 .title {
-    -fx-font-size: 18px;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 30 0;
 }
 
 .sliderValueLabel {
@@ -11,7 +13,7 @@
 }
 
 .settings-group {
-    -fx-vgap: 4;
+    -fx-vgap: 10;
     -fx-hgap: 20;
 }
 
@@ -19,22 +21,26 @@
     -fx-spacing: 4;
 }
 
+#settings {
+    -fx-padding: 10 0 10 0;
+}
+
 #side-bar {
-    -fx-pref-width: 130px;
-    -fx-background-color: lightgrey;
+    -fx-padding: 5 10 5 10;
+    -fx-pref-width: 170px;
+    -fx-border-width: 0px 1px 0px 0px;
+    -fx-border-color: lightgray;
 }
 
 #center-pane {
     -fx-padding: 5 20 5 20;
-    -fx-border-width: 0 0 0 3;
 }
 
 .side-bar-text {
     -fx-font-size: 14px;
     -fx-fill-width: true;
     -fx-max-width: Infinity;
-    -fx-border-width: 0 0 0 2;
-    -fx-padding: 5 10 5 20;
+    -fx-padding: 5 10 5 10;
 }
 
 .selected {
@@ -47,11 +53,6 @@
     -fx-padding: 10 0 10 0;
 }
 
-.settings-subtitle {
-    -fx-font-size: 14pt;
-    -fx-padding: 10 10 2 10;
-}
-
 .scroll-pane {
-    -fx-background-color:transparent;
+    -fx-background-color: transparent;
 }
