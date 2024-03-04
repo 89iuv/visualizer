@@ -6,8 +6,7 @@
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.lazydash.audio.visualizer.ui.fxml.settings.categories.AudioInputController">
 
-    <Label styleClass="title" text="Audio input" />
-    <Separator styleClass="separator"/>
+    <Label styleClass="title" text="Audio Input" />
     <GridPane styleClass="settings-group">
         <Label text="Input device: " GridPane.rowIndex="0" GridPane.columnIndex="0"/>
         <ComboBox fx:id="inputDevice" onAction="#updateInputDevice" GridPane.rowIndex="0" GridPane.columnIndex="1"/>

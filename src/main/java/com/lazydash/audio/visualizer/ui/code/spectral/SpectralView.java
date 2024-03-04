@@ -24,7 +24,25 @@ public class SpectralView extends GridPane {
     public void configure() {
         this.setAlignment(Pos.BOTTOM_CENTER);
         this.setBackground(background);
-//        this.setBorder(Border.stroke(Color.GRAY));
+
+        this.hoverProperty().addListener((observable, oldValue, newValue) -> {
+            Color borderColor = Color.TRANSPARENT;
+            if (AppConfig.enableAlwaysOnTop) {
+                if (newValue) {
+                    borderColor = Color.GRAY;
+                }
+            }
+
+            this.setBorder(new Border(new BorderStroke(borderColor, borderColor, borderColor, borderColor,
+                    BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
+                    CornerRadii.EMPTY, new BorderWidths(1), Insets.EMPTY)));
+
+        });
+
+        Color borderColor = Color.GRAY;
+        this.setBorder(new Border(new BorderStroke(borderColor, borderColor, borderColor, borderColor,
+                BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
+                CornerRadii.EMPTY, new BorderWidths(1), Insets.EMPTY)));
 
         RowConstraints rowConstraintsAmplitudes = new RowConstraints();
         rowConstraintsAmplitudes.setVgrow(Priority.NEVER);
@@ -34,6 +52,22 @@ public class SpectralView extends GridPane {
             AppConfig.maxBarHeight = newValue.intValue() - AppConfig.hzLabelHeight;
         });
 
+    }
+
+    public void addBorder() {
+        if (!AppConfig.windowDecorations) {
+        Color borderColor = Color.GRAY;
+        this.setBorder(new Border(new BorderStroke(borderColor, borderColor, borderColor, borderColor,
+                BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
+                CornerRadii.EMPTY, new BorderWidths(1), Insets.EMPTY)));
+        }
+    }
+
+    public void removeBorder() {
+        Color borderColor = Color.TRANSPARENT;
+        this.setBorder(new Border(new BorderStroke(borderColor, borderColor, borderColor, borderColor,
+                BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
+                CornerRadii.EMPTY, new BorderWidths(1), Insets.EMPTY)));
     }
 
     public void updateState(List<FrequencyBar> frequencyBarList) {
@@ -73,7 +107,7 @@ public class SpectralView extends GridPane {
 
             frequencyView.setHzValue(frequencyBar.getHz());
             frequencyView.getHzLabel().setFont(Font.font(rectangleWidth / 2.5d));
-            frequencyView.getHzLabel().setFill(Color.BLACK);
+            frequencyView.getHzLabel().setFill(Color.valueOf(AppConfig.textColor));
 
         }
     }

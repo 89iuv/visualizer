@@ -6,8 +6,7 @@
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.lazydash.audio.visualizer.ui.fxml.settings.categories.SpectralViewController">
 
-    <Label styleClass="title" text="Spectral view" />
-    <Separator styleClass="separator"/>
+    <Label styleClass="title" text="Spectral Limits" />
     <GridPane styleClass="settings-group">
         <Label text="Signal amplification (factor):" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
         <Slider fx:id="signalAmplification" min="0" max="150" majorTickUnit="25" minorTickCount="4" showTickMarks="true" showTickLabels="true"

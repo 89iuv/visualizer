@@ -6,8 +6,7 @@
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.lazydash.audio.visualizer.ui.fxml.settings.categories.BarDecayController">
 
-    <Label styleClass="title" text="Bar decay" />
-    <Separator styleClass="separator"/>
+    <Label styleClass="title" text="Frequency Decay" />
     <GridPane styleClass="settings-group">
         <Label text="Decay Time (ms): " GridPane.rowIndex="0" GridPane.columnIndex="0"/>
         <Slider fx:id="pixelsPerSecondDecay" max="1000" majorTickUnit="200" minorTickCount="10" showTickMarks="true" showTickLabels="true"

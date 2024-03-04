@@ -114,6 +114,13 @@ public class Main extends Application {
 
         Stage stage = new Stage();
         stage.setTitle("Visualizer");
+        if (AppConfig.enableAlwaysOnTop) {
+            stage.setAlwaysOnTop(true);
+            stage.setOpacity(AppConfig.hoverOpacity);
+        } else {
+            stage.setAlwaysOnTop(false);
+            stage.setOpacity(AppConfig.opacity);
+        }
         stage.setScene(scene);
 
         // set width and height
@@ -136,6 +143,14 @@ public class Main extends Application {
             AppConfig.windowY = newValue.doubleValue();
         });
 
+        stage.heightProperty().addListener((observable, oldValue, newValue) -> {
+            AppConfig.windowHeight = newValue.doubleValue();
+        });
+
+        stage.widthProperty().addListener((observable, oldValue, newValue) -> {
+            AppConfig.windowWidth = newValue.doubleValue();
+        });
+
         // set opacity
         stage.setOpacity(AppConfig.opacity / 100d);
         WindowPropertiesService.opacityProperty = stage.opacityProperty();
@@ -152,12 +167,12 @@ public class Main extends Application {
 
         // set opacity based on mouse events
         scene.setOnMouseEntered(event -> {
-            if (AppConfig.enableHoverOpacity) {
+            if (AppConfig.enableAlwaysOnTop && AppConfig.enableHoverOpacity) {
                 stage.setOpacity(AppConfig.hoverOpacity / 100d);
             }
         });
         scene.setOnMouseExited(event -> {
-            if (AppConfig.enableHoverOpacity) {
+            if (AppConfig.enableAlwaysOnTop && AppConfig.enableHoverOpacity) {
                 stage.setOpacity(AppConfig.opacity / 100d);
             }
         });
@@ -166,49 +181,61 @@ public class Main extends Application {
         scene.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                xOffset = event.getSceneX();
-                yOffset = event.getSceneY();
+                if (event.getButton().equals(MouseButton.PRIMARY)) {
+                    xOffset = event.getSceneX();
+                    yOffset = event.getSceneY();
+                }
             }
         });
         scene.setOnMouseDragged(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                stage.setX(event.getScreenX() - xOffset);
-                stage.setY(event.getScreenY() - yOffset - (stage.getHeight() - scene.getHeight()));
-            }
-        });
+                if (event.getButton().equals(MouseButton.PRIMARY)){
+                    if (!AppConfig.windowDecorations) {
+                        spectralView.addBorder();
+                    }
 
-        // create context menu
-        ContextMenu contextMenu = creaateContextMenu(stage);
-        scene.setOnMouseClicked(event -> {
-            if (event.getButton().equals(MouseButton.PRIMARY)) {
-                contextMenu.hide();
-            }
-
-            if (event.getButton().equals(MouseButton.SECONDARY)) {
-                if (stage.isFocused()) {
-                    contextMenu.show(stage, event.getScreenX(),event.getScreenY());
+                    stage.setX(event.getScreenX() - xOffset);
+                    stage.setY(event.getScreenY() - yOffset - (stage.getHeight() - scene.getHeight()));
                 }
             }
         });
 
-        stage.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue) {
-                stage.setAlwaysOnTop(AppConfig.enableAlwaysOnTop);
+        scene.setOnMouseReleased(event -> {
+            if (event.getButton().equals(MouseButton.PRIMARY)) {
+                if (!AppConfig.windowDecorations){
+                    spectralView.removeBorder();
+                }
             }
+        });
+
+
+
+        // create context menu
+        ContextMenu contextMenu = creaateContextMenu(stage);
+
+        scene.setOnContextMenuRequested(event -> {
+            contextMenu.show(stage, event.getScreenX(), event.getScreenY());
         });
 
         return stage;
     }
 
     private ContextMenu creaateContextMenu(Stage stage) throws IOException {
-        MenuItem switchWindowDecoration = new MenuItem("Switch window decoration");
+        MenuItem switchWindowDecoration = new MenuItem();
+        if (AppConfig.windowDecorations) {
+            switchWindowDecoration.setText("Enable transparency");
+        } else {
+            switchWindowDecoration.setText("Disable transparency");
+        }
         switchWindowDecoration.setOnAction(event -> {
             try {
                 if (AppConfig.windowDecorations) {
                     AppConfig.windowDecorations = false;
+                    switchWindowDecoration.setText("Enable transparency");
                 } else {
                     AppConfig.windowDecorations = true;
+                    switchWindowDecoration.setText("Disable transparency");
                 }
 
                restartUI();
@@ -226,22 +253,23 @@ public class Main extends Application {
 
         enableAlwaysOnTop.setOnAction(event -> {
             if (stage.isAlwaysOnTop()) {
-                stage.setAlwaysOnTop(false);
                 AppConfig.enableAlwaysOnTop = false;
+                stage.setAlwaysOnTop(false);
+                stage.setOpacity(AppConfig.opacity / 100d);
+                spectralView.removeBorder();
                 enableAlwaysOnTop.setText("Enable always on top");
             } else {
-                stage.setAlwaysOnTop(true);
                 AppConfig.enableAlwaysOnTop = true;
+                stage.setAlwaysOnTop(true);
+                stage.setOpacity(AppConfig.hoverOpacity / 100d);
+                spectralView.addBorder();
                 enableAlwaysOnTop.setText("Disable always on top");
             }
         });
 
-        MenuItem setToBack = new MenuItem("Send to Back");
-        setToBack.setOnAction(event -> {
-            if (stage.isAlwaysOnTop()) {
-                stage.setAlwaysOnTop(false);
-            }
-            stage.toBack();
+        MenuItem minimize = new MenuItem("Minimize");
+        minimize.setOnAction(event -> {
+            stage.setIconified(true);
         });
 
         Stage settingsStage = createSettingsStage();
@@ -258,9 +286,10 @@ public class Main extends Application {
         ContextMenu contextMenu = new ContextMenu();
         contextMenu.getItems().add(switchWindowDecoration);
         contextMenu.getItems().add(enableAlwaysOnTop);
-        contextMenu.getItems().add(setToBack);
+        contextMenu.getItems().add(minimize);
         contextMenu.getItems().add(settings);
         contextMenu.getItems().add(exit);
+
         contextMenu.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
                 contextMenu.hide();
@@ -282,8 +311,8 @@ public class Main extends Application {
         // setup
         settingsStage.setTitle("Settings");
         settingsStage.setScene(settingsScene);
-        settingsStage.setHeight(560);
-        settingsStage.setWidth(840);
+        settingsStage.setHeight(600);
+        settingsStage.setWidth(900);
 
         // preload the settings page
         settingsStage.show();

@@ -31,6 +31,8 @@ public class AppConfig {
     public static int saturation = 100;
     public static int brightness = 95;
     public static boolean spectralColorInverted = false;
+    public static double opacity = 100;
+    public static String textColor = "#000000";
 
     // bar acceleration
     public static int millisToZero = 380;
@@ -43,11 +45,9 @@ public class AppConfig {
     public static boolean windowDecorations = true;
     public static double windowWidth = 1700;
     public static double windowHeight = 400;
-
     public static double windowX = -1;
     public static double windowY = -1;
-    public static double opacity = 100;
     public static boolean enableHoverOpacity = false;
     public static double hoverOpacity = 100;
-    public static boolean enableAlwaysOnTop;
+    public static boolean enableAlwaysOnTop = false;
 }

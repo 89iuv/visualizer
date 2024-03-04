@@ -6,8 +6,7 @@
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.lazydash.audio.visualizer.ui.fxml.settings.categories.DebugController">
 
-    <Label styleClass="title" text="Debug" />
-    <Separator styleClass="separator"/>
+    <Label styleClass="title" text="Debug Information" />
     <GridPane styleClass="settings-group">
         <Label text="UI frames per second: " GridPane.rowIndex="0" GridPane.columnIndex="0"/>
         <Label fx:id="uiFps" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
