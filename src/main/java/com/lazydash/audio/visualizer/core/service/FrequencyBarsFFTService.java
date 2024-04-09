@@ -111,8 +111,10 @@ public class FrequencyBarsFFTService implements FFTListener {
 
         List<FrequencyBar> frequencyBars = new ArrayList<>();
         if (returnAmplitudes != null) {
-            returnAmplitudes = barsHeightCalculator.processAmplitudes(returnAmplitudes);
+            // setting this at the signal level otherwise it will impact other functionality
             returnAmplitudes = timeFilter.filter(returnAmplitudes);
+
+            returnAmplitudes = barsHeightCalculator.processAmplitudes(returnAmplitudes);
             frequencyBars = FrequencyBarsCreator.createFrequencyBars(returnBinz, returnAmplitudes);
         }
 

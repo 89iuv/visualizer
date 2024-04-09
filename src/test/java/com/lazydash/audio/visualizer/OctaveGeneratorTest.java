@@ -15,7 +15,7 @@ public class OctaveGeneratorTest {
         double highLimit = OctaveGenerator.getHighCutoffLimit(center, band);
         double lowLimit = OctaveGenerator.getLowCutoffLimit(center, band);
 
-        System.out.println(lowLimit + " " + center + " " + highLimit);
+//        System.out.println(lowLimit + " " + center + " " + highLimit);
 
     }
 
@@ -29,7 +29,7 @@ public class OctaveGeneratorTest {
             int highLimit = OctaveGenerator.getHighCutoffLimit(center, band);
             int lowLimit = OctaveGenerator.getLowCutoffLimit(center, band);
 
-            System.out.println(lowLimit + " " + center + " " + highLimit);
+//            System.out.println(lowLimit + " " + center + " " + highLimit);
         });
     }
 

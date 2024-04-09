@@ -76,7 +76,6 @@ public class SpectralColorController {
         textColorPicker.setValue(Color.valueOf(AppConfig.textColor));
         textColorPicker.setOnAction(event -> {
             AppConfig.textColor = textColorPicker.getValue().toString();
-            System.out.println(AppConfig.textColor);
         });
 
         opacityValue.setText(String.valueOf(Math.round(AppConfig.opacity)));

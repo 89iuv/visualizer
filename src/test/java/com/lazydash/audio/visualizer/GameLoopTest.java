@@ -61,7 +61,7 @@ public class GameLoopTest {
                         long newTime = System.nanoTime();
                         long deltaTime = newTime - oldTime;
                         oldTime = newTime;
-                        System.out.println(String.format("%.2f", deltaTime / 1000000d));
+//                        System.out.println(String.format("%.2f", deltaTime / 1000000d));
 
                         long loopStart = System.nanoTime();
 

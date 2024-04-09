@@ -18,8 +18,8 @@ import java.util.List;
 
 public class SpectralView extends GridPane {
     private final List<FrequencyView> frequencyViewList = new ArrayList<>();
-    private Color backgroundColor = Color.TRANSPARENT;
-    private Background background = new Background(new BackgroundFill(backgroundColor, CornerRadii.EMPTY, Insets.EMPTY));
+    private final Color backgroundColor = Color.TRANSPARENT;
+    private final Background background = new Background(new BackgroundFill(backgroundColor, CornerRadii.EMPTY, Insets.EMPTY));
 
     public void configure() {
         this.setAlignment(Pos.BOTTOM_CENTER);
@@ -81,30 +81,36 @@ public class SpectralView extends GridPane {
     private void updateBars(List<FrequencyBar> frequencyBarList) {
         this.setHgap(AppConfig.barGap);
 
+        double rectangleWidth = (this.getWidth() / (frequencyViewList.size() + 1) - AppConfig.barGap);
+
         for (int i = 0; i < frequencyViewList.size(); i++) {
             FrequencyView frequencyView = frequencyViewList.get(i);
             FrequencyBar frequencyBar = frequencyBarList.get(i);
-            double rectangleWidth = (this.getWidth() / (frequencyViewList.size() + 1)) - AppConfig.barGap;
 
-            Stop[] stops = new Stop[]{
-                    new Stop(0, backgroundColor),
-                    new Stop(1, frequencyBar.getColor()),
-            };
+            double shadowHeight = frequencyView.getRectangle().getHeight() - frequencyBar.getHeight();
+            if (AppConfig.motionBlur != 0 && shadowHeight > 0) {
+                Stop[] stops = new Stop[]{
+                        new Stop(0, backgroundColor),
+                        new Stop(1, frequencyBar.getColor()),
+                };
 
-            LinearGradient linearGradient = new LinearGradient(0.5, 0, 0.5, 1, true, CycleMethod.NO_CYCLE, stops);
+                LinearGradient linearGradient = new LinearGradient(0.5, 0, 0.5,  1, true, CycleMethod.NO_CYCLE, stops);
 
-            frequencyView.getShadow().setHeight(Math.round(frequencyView.getRectangle().getHeight() - Math.round(frequencyBar.getHeight())));
-            frequencyView.getShadow().setFill(linearGradient);
-            frequencyView.getShadow().setOpacity(AppConfig.motionBlur / 100d);
-            frequencyView.getShadow().setWidth(Math.round(rectangleWidth));
+                frequencyView.getShadow().setFill(linearGradient);
+                frequencyView.getShadow().setHeight(Math.round(shadowHeight));
+                frequencyView.getShadow().setOpacity(AppConfig.motionBlur / 100d);
+                frequencyView.getShadow().setWidth(rectangleWidth);
+            } else {
+                frequencyView.getShadow().setHeight(0);
+            }
 
-            frequencyView.getRectangle().setHeight(Math.round(frequencyBar.getHeight()));
             frequencyView.getRectangle().setFill(frequencyBar.getColor());
-            frequencyView.getRectangle().setWidth(Math.round(rectangleWidth));
+            frequencyView.getRectangle().setHeight(Math.round(frequencyBar.getHeight()));
+            frequencyView.getRectangle().setWidth(rectangleWidth);
 
             frequencyView.setHzValue(frequencyBar.getHz());
-            frequencyView.getHzLabel().setFont(Font.font(rectangleWidth / 2.5d));
             frequencyView.getHzLabel().setFill(Color.valueOf(AppConfig.textColor));
+            frequencyView.getHzLabel().setFont(Font.font(rectangleWidth / 2.5d));
 
         }
     }
