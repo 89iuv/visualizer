@@ -17,10 +17,10 @@ public class BarsHeightCalculator {
         }
 
         int millisToZero = AppConfig.millisToZero;
-        double secondsPassed = getMillisPassed();
+        double millisPassed = getMillisPassed();
 
         double[] pixelAmplitudes = convertDbToPixels(newAmplitudes);
-        oldAmplitudes = decayPixelsAmplitudes(oldAmplitudes, pixelAmplitudes, millisToZero, secondsPassed);
+        oldAmplitudes = decayPixelsAmplitudes(oldAmplitudes, pixelAmplitudes, millisToZero, millisPassed);
 
         return oldAmplitudes;
     }
@@ -47,7 +47,7 @@ public class BarsHeightCalculator {
         return pixelsAmplitude;
     }
 
-    private double[] decayPixelsAmplitudes(double[] oldAmplitudes, double[] newAmplitudes, double millisToZero, double secondsPassed) {
+    private double[] decayPixelsAmplitudes(double[] oldAmplitudes, double[] newAmplitudes, double millisToZero, double millisPassed) {
         double[] processedAmplitudes = new double[newAmplitudes.length];
         double maxBarHeight = AppConfig.maxBarHeight;
         int minBarHeight = AppConfig.minBarHeight;
@@ -57,14 +57,14 @@ public class BarsHeightCalculator {
             double newHeight = newAmplitudes[i];
 
             double decayRatePixelsPerMilli = maxBarHeight / millisToZero;
-            double dbPerSecondDecay = decayRatePixelsPerMilli * secondsPassed;
-            double decaySize = dbPerSecondDecay;
+            double decaySize = decayRatePixelsPerMilli * millisPassed;
 
             if (newHeight < oldHeight) {
                 double accelerationStep = (1d / AppConfig.accelerationFactor) * decaySize;
-                if (oldDecayDecelSize[i] + accelerationStep < decaySize) {
-                    oldDecayDecelSize[i] = oldDecayDecelSize[i] + accelerationStep;
-                    decaySize = oldDecayDecelSize[i];
+                double nextAccelerationSize = oldDecayDecelSize[i] + accelerationStep;
+                if (nextAccelerationSize < decaySize) {
+                    decaySize = nextAccelerationSize;
+                    oldDecayDecelSize[i] = nextAccelerationSize;
                 }
 
                 processedAmplitudes[i] = Math.max(oldHeight - decaySize, newHeight);
