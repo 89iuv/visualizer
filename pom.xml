@@ -12,22 +12,22 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
 
-        <javafx-controls.version>17.0.10</javafx-controls.version>
+        <javafx-controls.version>21.0.4</javafx-controls.version>
 
         <TarsosDSP.version>2.5</TarsosDSP.version>
-        <slf4j-api.version>2.0.9</slf4j-api.version>
+        <slf4j-api.version>2.0.16</slf4j-api.version>
 
-        <hipparchus-core.version>3.0</hipparchus-core.version>
+        <hipparchus-core.version>3.1</hipparchus-core.version>
 
         <junit.version>4.13.2</junit.version>
 
-        <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
-        <moditect-maven-plugin.version>1.0.0.Final</moditect-maven-plugin.version>
+        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+        <moditect-maven-plugin.version>1.2.2.Final</moditect-maven-plugin.version>
         <javafx-maven-plugin.version>0.0.8</javafx-maven-plugin.version>
-        <jpackage-maven-plugin.version>1.4.0</jpackage-maven-plugin.version>
+        <jpackage-maven-plugin.version>1.6.4</jpackage-maven-plugin.version>
     </properties>
 
     <repositories>
@@ -196,7 +196,7 @@
                     <plugin>
                         <groupId>org.panteleyev</groupId>
                         <artifactId>jpackage-maven-plugin</artifactId>
-                        <version>1.4.0</version>
+                        <version>${jpackage-maven-plugin.version}</version>
                         <configuration>
                             <icon>src/main/resources/icon.png</icon>
                         </configuration>
@@ -214,7 +214,7 @@
                     <plugin>
                         <groupId>org.panteleyev</groupId>
                         <artifactId>jpackage-maven-plugin</artifactId>
-                        <version>1.4.0</version>
+                        <version>${jpackage-maven-plugin.version}</version>
                         <configuration>
                             <icon>src/main/resources/icon.icns</icon>
                         </configuration>
@@ -229,7 +229,7 @@
                     <plugin>
                         <groupId>org.panteleyev</groupId>
                         <artifactId>jpackage-maven-plugin</artifactId>
-                        <version>1.4.0</version>
+                        <version>${jpackage-maven-plugin.version}</version>
                         <configuration>
                             <icon>src/main/resources/icon.ico</icon>
                         </configuration>
