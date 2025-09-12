@@ -8,7 +8,7 @@
             fx:controller="com.lazydash.audio.visualizer.ui.fxml.settings.SettingsController">
 
     <left>
-        <VBox id="side-bar">
+        <VBox id="side-bar" minWidth="200">
             <VBox fx:id="sideBarSettings">
 
             </VBox>

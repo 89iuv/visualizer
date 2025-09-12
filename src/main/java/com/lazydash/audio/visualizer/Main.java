@@ -79,8 +79,8 @@ public class Main extends Application {
 
     @Override
     public void stop() throws Exception {
-        AppConfig.windowHeight = stage.getHeight();
-        AppConfig.windowWidth = stage.getWidth();
+        AppConfig.windowHeight = (int) Math.round(stage.getHeight());
+        AppConfig.windowWidth = (int) Math.round(stage.getWidth());
         AppConfig.windowX = stage.getX();
         AppConfig.windowY = stage.getY();
         configFilePersistence.persist(AppConfig.class, CONFIG_VISUALIZER_APPLICATION_PROPERTIES);
@@ -146,11 +146,11 @@ public class Main extends Application {
         });
 
         stage.heightProperty().addListener((observable, oldValue, newValue) -> {
-            AppConfig.windowHeight = newValue.doubleValue();
+            AppConfig.windowHeight = newValue.intValue();
         });
 
         stage.widthProperty().addListener((observable, oldValue, newValue) -> {
-            AppConfig.windowWidth = newValue.doubleValue();
+            AppConfig.windowWidth = newValue.intValue();
         });
 
         // set opacity

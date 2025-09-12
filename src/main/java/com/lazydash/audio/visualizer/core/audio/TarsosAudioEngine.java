@@ -34,7 +34,7 @@ public class TarsosAudioEngine {
 
             int buffer = (int) (audioWindowSize * (sampleRate / 1000.0d));
 
-            TargetDataLine line = getLine(audioFormat, buffer);
+            TargetDataLine line = getLine(audioFormat, buffer * 2);
             run(line, audioFormat, buffer, 0);
 
         } catch (LineUnavailableException e) {

@@ -22,7 +22,7 @@ public class AppConfig {
     public static int minBarHeight = 2;
     public static int barGap = 1;
 
-    public static double maxBarHeight = 352;
+    public static int maxBarHeight = 352;
     public static int hzLabelHeight = 20;
 
     // spectral color
@@ -43,8 +43,8 @@ public class AppConfig {
 
     // window
     public static boolean windowDecorations = true;
-    public static double windowWidth = 1700;
-    public static double windowHeight = 400;
+    public static int windowWidth = 1700;
+    public static int windowHeight = 400;
     public static double windowX = -1;
     public static double windowY = -1;
     public static boolean enableHoverOpacity = false;

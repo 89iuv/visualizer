@@ -6,17 +6,15 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
+import javafx.scene.effect.BlendMode;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.Stop;
+import javafx.scene.paint.*;
 import javafx.scene.text.Font;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SpectralView extends GridPane {
+public class SpectralView extends HBox {
     private final List<FrequencyView> frequencyViewList = new ArrayList<>();
     private final Color backgroundColor = Color.TRANSPARENT;
     private final Background background = new Background(new BackgroundFill(backgroundColor, CornerRadii.EMPTY, Insets.EMPTY));
@@ -45,10 +43,6 @@ public class SpectralView extends GridPane {
                     BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
                     CornerRadii.EMPTY, new BorderWidths(1), Insets.EMPTY)));
         }
-
-        RowConstraints rowConstraintsAmplitudes = new RowConstraints();
-        rowConstraintsAmplitudes.setVgrow(Priority.NEVER);
-        this.getRowConstraints().add(rowConstraintsAmplitudes);
 
         this.heightProperty().addListener((observable, oldValue, newValue) -> {
             AppConfig.maxBarHeight = newValue.intValue() - AppConfig.hzLabelHeight;
@@ -79,9 +73,9 @@ public class SpectralView extends GridPane {
     }
 
     private void updateBars(List<FrequencyBar> frequencyBarList) {
-        this.setHgap(AppConfig.barGap);
+        this.setSpacing(AppConfig.barGap);
 
-        double rectangleWidth = (this.getWidth() / (frequencyViewList.size() + 1) - AppConfig.barGap);
+        double rectangleWidth = (this.getWidth() / (frequencyViewList.size()) - (AppConfig.barGap * 2));
 
         for (int i = 0; i < frequencyViewList.size(); i++) {
             FrequencyView frequencyView = frequencyViewList.get(i);
@@ -102,6 +96,7 @@ public class SpectralView extends GridPane {
                 frequencyView.getShadow().setWidth(rectangleWidth);
             } else {
                 frequencyView.getShadow().setHeight(0);
+                frequencyView.getShadow().setWidth(rectangleWidth);
             }
 
             frequencyView.getRectangle().setFill(frequencyBar.getColor());
@@ -125,17 +120,14 @@ public class SpectralView extends GridPane {
 
             VBox amplitudeVBox = new VBox();
             amplitudeVBox.setAlignment(Pos.BOTTOM_CENTER);
+            amplitudeVBox.setSpacing(-2);
             amplitudeVBox.getChildren().add(frequencyView.getShadow());
             amplitudeVBox.getChildren().add(frequencyView.getRectangle());
-            this.add(amplitudeVBox, i, 0);
+            amplitudeVBox.getChildren().add(frequencyView.getHzLabel());
 
-            VBox hzVBox = new VBox();
-            hzVBox.setAlignment(Pos.BOTTOM_CENTER);
-            hzVBox.getChildren().add(frequencyView.getHzLabel());
-            this.add(hzVBox, i, 1);
+            this.getChildren().add(amplitudeVBox);
 
-            GridPane.setValignment(frequencyView.getRectangle(), VPos.BOTTOM);
-            GridPane.setHalignment(frequencyView.getHzLabel(), HPos.CENTER);
+            HBox.setMargin(this, Insets.EMPTY);
         }
     }
 }

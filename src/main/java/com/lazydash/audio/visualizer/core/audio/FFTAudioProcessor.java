@@ -10,6 +10,7 @@ import com.lazydash.audio.visualizer.core.algorithm.OctaveGenerator;
 import com.lazydash.audio.visualizer.system.config.AppConfig;
 import org.hipparchus.analysis.UnivariateFunction;
 import org.hipparchus.analysis.interpolation.AkimaSplineInterpolator;
+import org.hipparchus.analysis.interpolation.LinearInterpolator;
 import org.hipparchus.analysis.interpolation.UnivariateInterpolator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
